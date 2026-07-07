@@ -16,6 +16,7 @@ import { stageDescription, executeStage } from './stage/Stage';
 import { taskDescription, executeTask } from './task/Task';
 import { teamDescription, executeTeam } from './team/Team';
 import { userDescription, executeUser } from './user/User';
+import { webhookDescription, executeWebhook } from './webhook/Webhook';
 
 // The Resource dropdown (alphabetically sorted by name).
 export const resourceOptions: INodePropertyOptions[] = [
@@ -34,6 +35,7 @@ export const resourceOptions: INodePropertyOptions[] = [
 	{ name: 'Task', value: 'task' },
 	{ name: 'Team', value: 'team' },
 	{ name: 'User', value: 'user' },
+	{ name: 'Webhook', value: 'webhook' },
 ];
 
 // Concatenated per-resource property definitions (operations + fields).
@@ -53,6 +55,7 @@ export const resourceProperties: INodeProperties[] = [
 	...taskDescription,
 	...teamDescription,
 	...userDescription,
+	...webhookDescription,
 ];
 
 // Dispatch to the right resource implementation.
@@ -93,6 +96,8 @@ export async function executeResource(
 			return executeTeam.call(this, operation, i);
 		case 'user':
 			return executeUser.call(this, operation, i);
+		case 'webhook':
+			return executeWebhook.call(this, operation, i);
 		default:
 			throw new NodeOperationError(
 				this.getNode(),
