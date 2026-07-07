@@ -1,44 +1,45 @@
-import {
+import type {
+	IAuthenticateGeneric,
+	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
-	IAuthenticateGeneric,
 } from 'n8n-workflow';
 
-// Classe de credenciais para a API do RD Station CRM
-// Esta classe gerencia a autenticação com a API do RD Station CRM usando um token privado
 export class RdStationCrmApi implements ICredentialType {
-	// Define o nome da credencial, que será mostrado na interface do n8n
 	name = 'rdStationCrmApi';
-	
-	// Fornece um nome amigável para exibição na interface
+
 	displayName = 'RD Station CRM API';
-	
-	// Descrição que aparecerá na interface do n8n ao selecionar esta credencial
-	description = 'Credenciais para a API do RD Station CRM';
-	
-	// Documentação exibida na interface do n8n (URL da documentação da API)
-	documentationUrl = 'https://developers.rdstation.com/en/reference';
-	
-	// Define as propriedades da credencial (campos que o usuário deve preencher)
+
+	documentationUrl = 'https://developers.rdstation.com/reference/crm-v1-token';
+
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Token de API do RD Station CRM',
+			displayName: 'API Token',
 			name: 'apiToken',
 			type: 'string',
+			typeOptions: { password: true },
 			default: '',
 			required: true,
-			description: 'Token privado do usuário para autenticação nas requisições do RD Station CRM',
+			description:
+				'Your private RD Station CRM user token. Find it in RD Station CRM under Settings → Integrations → API. It is sent as the "token" query-string parameter on every request.',
 		},
 	];
 
-	// Método de autenticação que especifica como o token deve ser usado nas requisições
-	// Neste caso, o token será adicionado como parâmetro de query string em todas as requisições
+	// The token travels as a query-string parameter, as required by the RD Station CRM v1 API.
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
 			qs: {
 				token: '={{$credentials.apiToken}}',
 			},
+		},
+	};
+
+	// Validates the token against the lightweight /token/check endpoint.
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: 'https://crm.rdstation.com/api/v1',
+			url: '/token/check',
 		},
 	};
 }

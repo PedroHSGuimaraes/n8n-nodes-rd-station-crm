@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
+	<rect width="60" height="60" rx="13" fill="#07E5EB"/>
+	<path d="M12 41 L25 28 L33 35 L46 21" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+	<path d="M39 21 H46 V28" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+	<text x="30" y="40" font-family="'DM Sans','Trebuchet MS',Verdana,Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="-0.5" fill="#FFFFFF" text-anchor="middle">RD</text>
+</svg>

@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-rd-station-crm.rdStationCrmTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Sales"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://developers.rdstation.com/reference/crm-v1-webhooks"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm#readme"
+			}
+		]
+	}
+}
