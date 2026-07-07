@@ -15,14 +15,17 @@
     "integração"
   ],
   "license": "MIT",
-  "homepage": "https://www.npmjs.com/package/n8n-nodes-rd-station-crm",
+  "homepage": "https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm#readme",
   "author": {
-    "name": "Desenvolvedor RD Station",
-    "email": "dev@rdstation.com"
+    "name": "Pedro Henrique Santos Guimarães",
+    "email": "pedro.guimaraes02@hotmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rdstation/n8n-nodes-rd-station-crm.git"
+    "url": "git+https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm/issues"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
