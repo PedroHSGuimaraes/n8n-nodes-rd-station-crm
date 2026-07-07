@@ -516,7 +516,6 @@ export const dealDescription: INodeProperties[] = [
 	},
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function readDealCustomFields(this: IExecuteFunctions, i: number): IDataObject[] | undefined {
 	const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 	if (Array.isArray(customFieldsUi.field)) {
@@ -532,7 +531,6 @@ export async function executeDeal(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;

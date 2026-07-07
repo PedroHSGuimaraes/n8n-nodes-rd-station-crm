@@ -114,7 +114,6 @@ export async function executeUser(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'get') {
 		const userId = this.getNodeParameter('userId', i) as string;

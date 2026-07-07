@@ -152,7 +152,6 @@ export async function executeStage(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'create') {
 		const dealPipelineId = this.getNodeParameter('dealPipelineId', i) as string;

@@ -6,6 +6,7 @@ import type {
 	IWebhookFunctions,
 	IWebhookResponseData,
 } from 'n8n-workflow';
+import { NodeConnectionTypes } from 'n8n-workflow';
 
 import { RD_CRM_WEBHOOK_EVENTS } from '../RdStationCrm/helpers/constants';
 import { rdCrmApiRequest } from '../RdStationCrm/transport';
@@ -19,7 +20,7 @@ export class RdStationCrmTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'RD Station CRM Trigger',
 		name: 'rdStationCrmTrigger',
-		icon: 'file:rdStationCrm.svg',
+		icon: { light: 'file:rdStationCrm.svg', dark: 'file:rdStationCrm.dark.svg' },
 		group: ['trigger'],
 		version: 1,
 		subtitle: '=Events: {{$parameter["events"].join(", ")}}',
@@ -28,7 +29,7 @@ export class RdStationCrmTrigger implements INodeType {
 			name: 'RD Station CRM Trigger',
 		},
 		inputs: [],
-		outputs: ['main'],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'rdStationCrmApi',

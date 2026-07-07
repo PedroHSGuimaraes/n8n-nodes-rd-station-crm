@@ -61,7 +61,6 @@ export async function executeResource(
 	resource: string,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	switch (resource) {
 		case 'campaign':

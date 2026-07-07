@@ -2,7 +2,6 @@ import type { ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../transport';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toOptions(items: any[], labelKey = 'name'): INodePropertyOptions[] {
 	return items
 		.filter(Boolean)

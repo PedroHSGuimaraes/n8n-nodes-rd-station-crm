@@ -1,254 +1,91 @@
 # n8n-nodes-rd-station-crm
 
-Nós personalizados do n8n para integração com a API do RD Station CRM (v1).
+This is an [n8n](https://n8n.io/) community node. It lets you use **[RD Station CRM](https://www.rdstation.com/crm/)** in your n8n workflows.
 
-## 🚀 Funcionalidades
+RD Station CRM is a sales CRM used to manage contacts, deals, pipelines and tasks. This package integrates with the **RD Station CRM API v1**.
 
-Este pacote fornece nós personalizados para o n8n que permitem integração completa com a API do RD Station CRM, incluindo:
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-### 📋 Nós Disponíveis
+[Installation](#installation) · [Credentials](#credentials) · [Operations](#operations) · [Trigger](#trigger) · [Compatibility](#compatibility) · [Resources](#resources)
 
-1. **RD Station CRM Contatos** - Gerenciamento de contatos
-2. **RD Station CRM Negócios** - Operações com negócios/deals
-3. **RD Station CRM Tarefas** - Gestão de tarefas
-4. **RD Station CRM Notas** - Criação e gerenciamento de notas
-5. **RD Station CRM Empresas** - Operações com empresas
-6. **RD Station CRM Produtos de Negócio** - Gestão de produtos em negócios
-7. **RD Station CRM Usuários** - Informações de usuários
-8. **RD Station CRM Times** - Gestão de equipes
-9. **RD Station CRM Pipelines** - Operações com funis de vendas
-10. **RD Station CRM Campanhas** - Gestão de campanhas
-11. **RD Station CRM Fontes** - Informações sobre fontes de leads
-12. **RD Station CRM Motivos de Perda** - Gestão de motivos de perda
-13. **RD Station CRM Webhooks** - Configuração de webhooks
+---
 
-### 🔑 Credenciais
+## Installation
 
-- **RD Station CRM API** - Autenticação via token de API
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## 📦 Instalação
-
-### Instalação via n8n Community Nodes
-
-1. Acesse as configurações do n8n
-2. Vá para "Community Nodes"
-3. Clique em "Install"
-4. Digite: `n8n-nodes-rd-station-crm`
-5. Clique em "Install"
-
-### Instalação Manual
-
-```bash
-# Clone o repositório
-git clone https://github.com/rdstation/n8n-nodes-rd-station-crm.git
-cd n8n-nodes-rd-station-crm
-
-# Instale as dependências
-npm install
-
-# Compile o projeto
-npm run build
-
-# Instale globalmente (opcional)
-npm install -g .
-```
-
-## 🔧 Configuração
-
-### Obtendo o Token de API
-
-1. Acesse sua conta do RD Station CRM
-2. Vá para Configurações > Integrações > API
-3. Gere um novo token de API
-4. Copie o token gerado
-
-### Configurando as Credenciais no n8n
-
-1. No n8n, vá para "Credentials"
-2. Clique em "Add Credential"
-3. Selecione "RD Station CRM API"
-4. Cole seu token de API no campo correspondente
-5. Teste a conexão e salve
-
-## 🛠️ Desenvolvimento
-
-### Estrutura do Projeto
+In n8n, go to **Settings → Community Nodes → Install**, and enter:
 
 ```
-n8n-nodes-rd-station-crm/
-├── credentials/           # Definições de credenciais
-│   └── RdStationCrmApi.credentials.ts
-├── nodes/                # Nós do n8n
-│   ├── RdStationCrmContacts.node.ts
-│   ├── RdStationCrmDeals.node.ts
-│   ├── RdStationCrmTasks.node.ts
-│   ├── RdStationCrmNotes.node.ts
-│   ├── RdStationCrmCompanies.node.ts
-│   ├── RdStationCrmDealProducts.node.ts
-│   ├── RdStationCrmUsers.node.ts
-│   ├── RdStationCrmTeams.node.ts
-│   ├── RdStationCrmPipelines.node.ts
-│   ├── RdStationCrmCampaigns.node.ts
-│   ├── RdStationCrmSources.node.ts
-│   ├── RdStationCrmLossReasons.node.ts
-│   ├── RdStationCrmWebhooks.node.ts
-│   └── rdstation.svg      # Ícone dos nós
-├── dist/                 # Arquivos compilados
-├── index.ts              # Arquivo principal de exportação
-├── package.json          # Configurações do pacote
-├── tsconfig.json         # Configurações do TypeScript
-└── gulpfile.js          # Tarefas de build
+n8n-nodes-rd-station-crm
 ```
 
-### Scripts Disponíveis
+## Credentials
 
-```bash
-# Compilar o projeto
-npm run build
+You need an **RD Station CRM API token**.
 
-# Modo de desenvolvimento (watch)
-npm run dev
+1. Sign in to RD Station CRM (a Basic, Pro or Advanced plan with Developer Mode enabled is required).
+2. Go to **Settings → Integrations → API**.
+3. Copy your private user token.
+4. In n8n, create a new **RD Station CRM API** credential and paste the token.
 
-# Executar linter
-npm run lint
+The token is sent as the `token` query-string parameter on every request. The credential includes a built-in test that calls `GET /token/check` so you can verify it works before running a workflow.
 
-# Corrigir problemas de linting
-npm run lintfix
+## Operations
 
-# Formatar código
-npm run format
-```
+This package ships a single **RD Station CRM** action node with a **Resource → Operation** selector, plus an **RD Station CRM Trigger** node.
 
-## 🔄 Correções Implementadas
+| Resource | Operations |
+| --- | --- |
+| **Contact** | Create, Get, Get Many, Update |
+| **Deal** | Create, Get, Get Many, Update, Get Contacts, Mark as Won, Mark as Lost, Move to Stage |
+| **Organization** | Create, Get, Get Many, Update, Get Contacts |
+| **Task** | Create, Get, Get Many, Update |
+| **Note** | Create, Get Many |
+| **Pipeline** | Create, Get, Get Many, Update |
+| **Stage** | Create, Get, Get Many, Update |
+| **Product** | Create, Get, Get Many, Update |
+| **Deal Product** | Add, Get Many, Update, Remove |
+| **Custom Field** | Create, Get, Get Many, Update, Delete |
+| **Source** | Create, Get, Get Many, Update |
+| **Campaign** | Create, Get, Get Many, Update |
+| **Loss Reason** | Create, Get, Get Many, Update |
+| **User** | Get, Get Many, Get Current |
+| **Team** | Get, Get Many |
 
-### Versão 1.0.2 - Correções de Carregamento
+Highlights:
 
-**Problemas Corrigidos:**
+- **Dynamic dropdowns** — pipelines, stages, users, teams, sources, campaigns, loss reasons, products and custom fields are loaded straight from your account, so you pick by name instead of copying IDs.
+- **Return All** — every *Get Many* operation can page through all results automatically, or you can cap it with a limit.
+- Fields you pick by name accept an expression as a fallback ("Name or ID").
 
-1. **Inconsistência no package.json**: Removidos nós inexistentes (`RdStationCrmFunnels`, `RdStationCrmStages`) e adicionado o nó `RdStationCrmPipelines` que estava faltando
-2. **Arquivo index.js otimizado**: Simplificado para apenas redirecionar para `dist/index.js`
-3. **Configuração TypeScript melhorada**: Adicionadas opções para melhor compatibilidade
-4. **Estrutura de diretórios corrigida**: Removidos subdiretórios desnecessários em `dist/nodes`
-5. **Gulpfile otimizado**: Corrigida a cópia de ícones SVG
+### Example
 
-**Erro Resolvido:**
+*Create a deal and move it to a stage:*
 
-```
-Error loading package "n8n-nodes-rd-station-crm": The "paths[1]" argument must be of type string. Received an instance of Object
-```
+1. **RD Station CRM** → Resource **Deal**, Operation **Create**. Set a name, pick a **Stage** and **Owner** from the dropdowns.
+2. **RD Station CRM** → Resource **Deal**, Operation **Move to Stage**, using the ID from the previous node.
 
-**Alterações Técnicas:**
+## Trigger
 
-- Corrigida a exportação de `nodeTypes` e `credentialTypes` no arquivo principal
-- Melhorada a resolução de módulos no TypeScript
-- Removidas estruturas de diretórios duplicadas
-- Otimizada a configuração do Gulp para cópia de ícones
+The **RD Station CRM Trigger** node starts a workflow when events happen in RD Station CRM. Select one or more events under **Trigger On** (a webhook is registered per event when the workflow is activated, and removed when it is deactivated).
 
-## 📚 Documentação da API
+Supported events include deal, contact, organization, task, product, campaign, source and loss-reason `created` / `updated` / `deleted` events.
 
-Para mais informações sobre a API do RD Station CRM, consulte:
+> **Tip:** RD Station delivers each event at least once and retries on failure. Deduplicate downstream on the payload's `transaction_uuid` if exactly-once processing matters.
 
-- [Documentação Oficial da API](https://developers.rdstation.com/en/reference)
-- [Guia de Autenticação](https://developers.rdstation.com/en/authentication)
+## Compatibility
 
-## 🤝 Contribuição
+- Requires n8n with `n8nNodesApiVersion` 1.
+- Targets the RD Station CRM **API v1**.
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+> **Upgrading from 1.x:** version 2.0.0 is a full rewrite. The previous 13 separate nodes were consolidated into a single **RD Station CRM** node (plus a trigger). Workflows built on the 1.x nodes must be updated to use the new node.
 
-## 📄 Licença
+## Resources
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+- [RD Station CRM API reference](https://developers.rdstation.com/reference)
 
-## 🆘 Suporte
+## License
 
-Se você encontrar problemas ou tiver dúvidas:
-
-1. Verifique se o token de API está correto
-2. Confirme se a versão do n8n é compatível
-3. Consulte os logs do n8n para mais detalhes sobre erros
-4. Abra uma issue no repositório do GitHub
-
-## 📈 Versões
-
-- **1.3.1** - Correção completa da estrutura de campos de email
-  - **Emails**: Corrigida estrutura de campos de email nos nós Contatos e Negociações
-  - Adicionados campos `type` (personal/work/other) e `primary` (boolean) para emails
-  - Implementado processamento correto de emails com valores padrão
-  - Garantida compatibilidade com a API oficial do RD Station CRM v1
-- **1.3.0** - Correção completa de todos os nós seguindo a documentação oficial da API
-  - **Contatos**: Corrigida estrutura de requisições, adicionados campos customizados e base legal
-  - **Organizações**: Corrigido endpoint para `/organizations`, adicionados campos customizados
-  - **Negociações**: Mantidas correções da v1.2.0
-  - Todos os nós agora seguem exatamente a estrutura da API oficial do RD Station CRM v1
-  - Padronizada estrutura de dados com objetos aninhados (ex: `{ contact: {...} }`)
-  - Corrigidos tipos de campos e valores padrão
-  - Adicionados campos obrigatórios faltantes
-  - Melhoradas descrições de todos os campos
-- **1.2.0** - Reescrita completa do nó de Negociações seguindo exatamente a documentação oficial da API
-  - Corrigida estrutura de requisições para seguir exatamente o formato da API oficial
-  - Corrigidos tipos de campos (boolean vs string) conforme documentação
-  - Corrigido tratamento do campo `win` com valores true/false/null
-  - Corrigido formato de datas para yyyy-mm-dd
-  - Corrigida estrutura de contatos existentes (usando `_id` em vez de apenas `id`)
-  - Adicionado suporte para base legal em contatos
-  - Separado campo `deal_stage_id` no update conforme documentação
-  - Melhoradas descrições de todos os campos seguindo a documentação oficial
-  - Corrigidos filtros de período com validação booleana adequada
-- **1.1.0** - Atualização completa do nó de Negociações (Deals) seguindo a documentação oficial da API
-  - Adicionados todos os parâmetros de query para listagem de negociações
-  - Implementados filtros de período (fechamento, criação, previsão)
-  - Adicionado suporte completo para campos customizados
-  - Implementada criação de novos contatos junto com a negociação
-  - Adicionado suporte para associar contatos existentes
-  - Implementado gerenciamento de produtos na negociação
-  - Adicionados campos de campanha, fonte e organização
-  - Melhorada a estrutura de dados seguindo exatamente a API oficial
-- **1.0.9** - Correção na estrutura do package.json para compatibilidade com n8n
-- **1.0.7** - Correções de sintaxe no package.json
-- **1.0.6** - Correções de carregamento e otimizações finais
-- **1.0.5** - Versão com nome alternativo para compatibilidade
-- **1.0.4** - Correções de carregamento e otimizações
-- **1.0.3** - Correções de carregamento e otimizações finais
-- **1.0.2** - Correções de carregamento e otimizações
-- **1.0.1** - Versão inicial com todos os nós básicos
-- **1.0.0** - Primeira versão estável
-
-## 🚀 Como Publicar no NPM
-
-Para desenvolvedores que desejam publicar este pacote:
-
-### Pré-requisitos
-
-1. Conta no [npmjs.com](https://www.npmjs.com/)
-2. Login no npm: `npm login`
-
-### Opção 1: Script Automático (Windows)
-
-```bash
-# Execute o script de publicação
-.\publish.bat
-# ou
-.\publish.ps1
-```
-
-### Opção 2: Manual
-
-```bash
-# 1. Fazer build
-npm run build
-
-# 2. Verificar conteúdo
-npm pack --dry-run
-
-# 3. Publicar
-npm publish
-```
-
-### Verificação Pós-Publicação
-
-- Acesse: https://www.npmjs.com/package/n8n-nodes-rd-station-crm
-- Teste a instalação: `npm install n8n-nodes-rd-station-crm`
+[MIT](LICENSE.md)

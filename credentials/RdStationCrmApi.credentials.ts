@@ -10,6 +10,8 @@ export class RdStationCrmApi implements ICredentialType {
 
 	displayName = 'RD Station CRM API';
 
+	icon = { light: 'file:rdStationCrm.svg', dark: 'file:rdStationCrm.dark.svg' } as const;
+
 	documentationUrl = 'https://developers.rdstation.com/reference/crm-v1-token';
 
 	properties: INodeProperties[] = [

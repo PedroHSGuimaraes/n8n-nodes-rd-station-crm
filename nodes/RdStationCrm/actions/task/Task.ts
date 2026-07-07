@@ -284,7 +284,6 @@ export async function executeTask(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'create') {
 		const subject = this.getNodeParameter('subject', i) as string;

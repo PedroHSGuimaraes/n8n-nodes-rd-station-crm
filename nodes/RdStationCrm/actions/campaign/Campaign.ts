@@ -126,7 +126,6 @@ export async function executeCampaign(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;

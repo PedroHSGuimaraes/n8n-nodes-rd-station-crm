@@ -97,7 +97,6 @@ export async function executeTeam(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'get') {
 		const teamId = this.getNodeParameter('teamId', i) as string;

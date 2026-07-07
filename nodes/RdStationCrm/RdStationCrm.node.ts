@@ -5,6 +5,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { executeResource, resourceOptions, resourceProperties } from './actions';
 import { loadOptions } from './methods/loadOptions';
@@ -13,7 +14,7 @@ export class RdStationCrm implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'RD Station CRM',
 		name: 'rdStationCrm',
-		icon: 'file:rdStationCrm.svg',
+		icon: { light: 'file:rdStationCrm.svg', dark: 'file:rdStationCrm.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -21,8 +22,8 @@ export class RdStationCrm implements INodeType {
 		defaults: {
 			name: 'RD Station CRM',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		usableAsTool: true,
 		credentials: [
 			{
@@ -72,7 +73,7 @@ export class RdStationCrm implements INodeType {
 					});
 					continue;
 				}
-				throw error;
+				throw new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
 			}
 		}
 

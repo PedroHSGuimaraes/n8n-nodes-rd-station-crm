@@ -136,7 +136,6 @@ export async function executeNote(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	if (operation === 'create') {
 		const dealId = this.getNodeParameter('dealId', i) as string;

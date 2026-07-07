@@ -28,7 +28,6 @@ export async function rdCrmApiRequest(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const options: IHttpRequestOptions = {
 		method,
@@ -73,9 +72,7 @@ export async function rdCrmApiRequestAllItems(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any[]> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const returnData: any[] = [];
 	const query: IDataObject = { ...qs };
 	query.page = (query.page as number) || 1;
@@ -89,7 +86,6 @@ export async function rdCrmApiRequestAllItems(
 		guard += 1;
 		const responseData = await rdCrmApiRequest.call(this, method, endpoint, body, query);
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let items: any[];
 		if (Array.isArray(responseData)) {
 			items = responseData;
