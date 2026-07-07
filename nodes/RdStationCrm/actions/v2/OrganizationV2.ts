@@ -222,7 +222,8 @@ export async function executeOrganizationV2(
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildOrganizationV2Body({ name, ...additionalFields }, customFieldsUi);
-		return rdCrmV2Request.call(this, 'POST', '/organizations', body);
+		const response = await rdCrmV2Request.call(this, 'POST', '/organizations', body);
+		return response.data ?? response;
 	}
 
 	if (operation === 'get') {
@@ -252,7 +253,8 @@ export async function executeOrganizationV2(
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildOrganizationV2Body({ ...updateFields }, customFieldsUi);
-		return rdCrmV2Request.call(this, 'PUT', `/organizations/${organizationId}`, body);
+		const response = await rdCrmV2Request.call(this, 'PUT', `/organizations/${organizationId}`, body);
+		return response.data ?? response;
 	}
 
 	return {};

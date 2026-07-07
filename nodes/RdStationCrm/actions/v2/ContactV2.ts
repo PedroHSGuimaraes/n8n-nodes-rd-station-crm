@@ -251,7 +251,8 @@ export async function executeContactV2(
 		const phonesUi = this.getNodeParameter('phonesUi', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildContactV2Body({ name, ...additionalFields, emailsUi, phonesUi }, customFieldsUi);
-		return rdCrmV2Request.call(this, 'POST', '/contacts', body);
+		const response = await rdCrmV2Request.call(this, 'POST', '/contacts', body);
+		return response.data ?? response;
 	}
 
 	if (operation === 'get') {
@@ -281,7 +282,8 @@ export async function executeContactV2(
 		const phonesUi = this.getNodeParameter('phonesUi', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildContactV2Body({ ...updateFields, emailsUi, phonesUi }, customFieldsUi);
-		return rdCrmV2Request.call(this, 'PUT', `/contacts/${contactId}`, body);
+		const response = await rdCrmV2Request.call(this, 'PUT', `/contacts/${contactId}`, body);
+		return response.data ?? response;
 	}
 
 	return {};

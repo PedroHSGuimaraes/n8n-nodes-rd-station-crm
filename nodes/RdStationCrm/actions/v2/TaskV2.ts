@@ -193,7 +193,8 @@ export async function executeTaskV2(
 		const type = this.getNodeParameter('type', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
 		const body = buildTaskV2Body({ name, type, ...additionalFields });
-		return rdCrmV2Request.call(this, 'POST', '/tasks', body);
+		const response = await rdCrmV2Request.call(this, 'POST', '/tasks', body);
+		return response.data ?? response;
 	}
 
 	if (operation === 'get') {
@@ -220,7 +221,8 @@ export async function executeTaskV2(
 		const taskId = this.getNodeParameter('taskId', i) as string;
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const body = buildTaskV2Body({ ...updateFields });
-		return rdCrmV2Request.call(this, 'PUT', `/tasks/${taskId}`, body);
+		const response = await rdCrmV2Request.call(this, 'PUT', `/tasks/${taskId}`, body);
+		return response.data ?? response;
 	}
 
 	return {};

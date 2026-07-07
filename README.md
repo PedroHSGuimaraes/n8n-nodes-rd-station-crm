@@ -2,7 +2,7 @@
 
 This is an [n8n](https://n8n.io/) community node. It lets you use **[RD Station CRM](https://www.rdstation.com/crm/)** in your n8n workflows.
 
-RD Station CRM is a sales CRM used to manage contacts, deals, pipelines and tasks. This package integrates with the **RD Station CRM API v1**.
+RD Station CRM is a sales CRM used to manage contacts, deals, pipelines and tasks. This package supports both the **RD Station CRM API v1** (token) and **v2** (OAuth2), selectable per node.
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
@@ -30,6 +30,16 @@ You need an **RD Station CRM API token**.
 4. In n8n, create a new **RD Station CRM API** credential and paste the token.
 
 The token is sent as the `token` query-string parameter on every request. The credential includes a built-in test that calls `GET /token/check` so you can verify it works before running a workflow.
+
+### OAuth2 (API v2)
+
+The node also supports the **RD Station CRM API v2** via OAuth2. Set the node's **Authentication** field to **OAuth2 (API V2)** and create an **RD Station CRM OAuth2 API** credential.
+
+1. Register an app in the [RD Station App Store — App Publisher](https://appstore.rdstation.com/pt-BR/publisher), targeting the **RD Station CRM** product.
+2. Add n8n's OAuth callback URL (shown in the credential) as an authorized redirect URL — it must be `https://`.
+3. Copy the generated **Client ID** and **Client Secret** into the credential and connect.
+
+n8n handles the token refresh (including RD's rolling refresh-token rotation) automatically. Note: RD's refresh token expires after 14 days of inactivity, after which you must reconnect.
 
 ## Operations
 
