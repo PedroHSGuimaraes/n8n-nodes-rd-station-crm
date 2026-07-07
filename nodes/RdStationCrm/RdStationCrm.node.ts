@@ -7,8 +7,15 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
-import { executeResource, resourceOptions, resourceProperties } from './actions';
+import {
+	executeResource,
+	resourceOptions,
+	resourceOptionsV2,
+	resourceProperties,
+	resourcePropertiesV2,
+} from './actions';
 import { loadOptions } from './methods/loadOptions';
+import { loadOptionsV2 } from './methods/loadOptionsV2';
 
 export class RdStationCrm implements INodeType {
 	description: INodeTypeDescription = {
@@ -29,23 +36,52 @@ export class RdStationCrm implements INodeType {
 			{
 				name: 'rdStationCrmApi',
 				required: true,
+				displayOptions: { show: { authentication: ['accessToken'] } },
+			},
+			{
+				name: 'rdStationCrmOAuth2Api',
+				required: true,
+				displayOptions: { show: { authentication: ['oauth2'] } },
 			},
 		],
 		properties: [
+			{
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{ name: 'Access Token (API V1)', value: 'accessToken' },
+					{ name: 'OAuth2 (API V2)', value: 'oauth2' },
+				],
+				default: 'accessToken',
+				description: 'API v1 uses a private token; API v2 uses OAuth2',
+			},
 			{
 				displayName: 'Resource',
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
+				displayOptions: { show: { authentication: ['accessToken'] } },
 				options: resourceOptions,
 				default: 'contact',
 			},
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: { show: { authentication: ['oauth2'] } },
+				options: resourceOptionsV2,
+				default: 'contactV2',
+			},
 			...resourceProperties,
+			...resourcePropertiesV2,
 		],
 	};
 
 	methods = {
-		loadOptions,
+		loadOptions: { ...loadOptions, ...loadOptionsV2 },
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {

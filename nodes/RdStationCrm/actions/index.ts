@@ -18,6 +18,14 @@ import { teamDescription, executeTeam } from './team/Team';
 import { userDescription, executeUser } from './user/User';
 import { webhookDescription, executeWebhook } from './webhook/Webhook';
 
+// v2 (OAuth2) resources — separate values (…V2) so they never collide with v1.
+import { contactV2Description, executeContactV2 } from './v2/ContactV2';
+import { customFieldV2Description, executeCustomFieldV2 } from './v2/CustomFieldV2';
+import { dealV2Description, executeDealV2 } from './v2/DealV2';
+import { noteV2Description, executeNoteV2 } from './v2/NoteV2';
+import { organizationV2Description, executeOrganizationV2 } from './v2/OrganizationV2';
+import { taskV2Description, executeTaskV2 } from './v2/TaskV2';
+
 // The Resource dropdown (alphabetically sorted by name).
 export const resourceOptions: INodePropertyOptions[] = [
 	{ name: 'Campaign', value: 'campaign' },
@@ -56,6 +64,26 @@ export const resourceProperties: INodeProperties[] = [
 	...teamDescription,
 	...userDescription,
 	...webhookDescription,
+];
+
+// The v2 (OAuth2) Resource dropdown — shown when Authentication = OAuth2.
+export const resourceOptionsV2: INodePropertyOptions[] = [
+	{ name: 'Contact', value: 'contactV2' },
+	{ name: 'Custom Field', value: 'customFieldV2' },
+	{ name: 'Deal', value: 'dealV2' },
+	{ name: 'Note', value: 'noteV2' },
+	{ name: 'Organization', value: 'organizationV2' },
+	{ name: 'Task', value: 'taskV2' },
+];
+
+// Concatenated v2 per-resource property definitions.
+export const resourcePropertiesV2: INodeProperties[] = [
+	...contactV2Description,
+	...customFieldV2Description,
+	...dealV2Description,
+	...noteV2Description,
+	...organizationV2Description,
+	...taskV2Description,
 ];
 
 // Dispatch to the right resource implementation.
@@ -98,6 +126,19 @@ export async function executeResource(
 			return executeUser.call(this, operation, i);
 		case 'webhook':
 			return executeWebhook.call(this, operation, i);
+		// v2 (OAuth2) resources
+		case 'contactV2':
+			return executeContactV2.call(this, operation, i);
+		case 'customFieldV2':
+			return executeCustomFieldV2.call(this, operation, i);
+		case 'dealV2':
+			return executeDealV2.call(this, operation, i);
+		case 'noteV2':
+			return executeNoteV2.call(this, operation, i);
+		case 'organizationV2':
+			return executeOrganizationV2.call(this, operation, i);
+		case 'taskV2':
+			return executeTaskV2.call(this, operation, i);
 		default:
 			throw new NodeOperationError(
 				this.getNode(),

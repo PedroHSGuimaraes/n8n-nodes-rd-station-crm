@@ -40,7 +40,8 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/RdStationCrmApi.credentials.js"
+      "dist/credentials/RdStationCrmApi.credentials.js",
+      "dist/credentials/RdStationCrmOAuth2Api.credentials.js"
     ],
     "nodes": [
       "dist/nodes/RdStationCrm/RdStationCrm.node.js",
