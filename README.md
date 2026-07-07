@@ -37,7 +37,11 @@ n8n-nodes-rd-station-crm
 
 ## 🔑 Credenciais
 
-O node aceita **dois tipos de credencial**, um para cada versão da API. Você escolhe qual usar no campo **Authentication** do node.
+O node aceita **dois tipos de credencial**, um para cada versão da API. Ao criar a credencial, escolha no seletor do topo entre **Access Token (API V1)** e **OAuth2 (API V2)**:
+
+![Seleção de autenticação na credencial: Access Token (API V1) ou OAuth2 (API V2)](https://raw.githubusercontent.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm/master/docs/credential-auth.png)
+
+No node, o campo **Authentication** define qual das duas credenciais será usada.
 
 ### 1. RD Station CRM API — token (API v1)
 
