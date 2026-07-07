@@ -216,7 +216,9 @@ n8n-nodes-rd-station-crm/
 
 ## 📈 Versões
 
-- **2.1.0** — Ícone restaurado para o logo original "RD Station" (v1.3.1). Publicação da **API v2 (OAuth2)**: credencial `RdStationCrmOAuth2Api`, seletor de Authentication (v1/v2), transporte v2 (Bearer, envelope `{ data }`, paginação `links.next`) e 6 recursos principais (Contact, Deal, Organization, Task, Note, Custom Field). O auth por **token (v1) continua** e é o padrão.
+- **2.1.4** — Ícone passa a usar o **símbolo (marca) do RD Station** — quadrado e nítido em qualquer tamanho do nó (light preto, dark branco, chevron ciano nos dois temas).
+- **2.1.1–2.1.3** — README completo em pt-BR e screenshot da seleção de autenticação.
+- **2.1.0** — Publicação da API v2 (OAuth2) e ajustes de ícone. Publicação da **API v2 (OAuth2)**: credencial `RdStationCrmOAuth2Api`, seletor de Authentication (v1/v2), transporte v2 (Bearer, envelope `{ data }`, paginação `links.next`) e 6 recursos principais (Contact, Deal, Organization, Task, Note, Custom Field). O auth por **token (v1) continua** e é o padrão.
 - **2.0.2** — Recurso **Webhook** (Create, Get, Get Many, Update, Delete).
 - **2.0.1** — Publicação com **provenance** (via GitHub Action) e ajustes de ícone/lint.
 - **2.0.0** — Reescrita completa: node único `RD Station CRM` (Recurso → Operação) + `RD Station CRM Trigger`, dropdowns dinâmicos e Return All.

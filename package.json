@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-rd-station-crm",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "n8n community node for RD Station CRM: API v1 (private token) and API v2 (OAuth2) — contacts, deals, organizations, tasks, notes, pipelines, stages, products, custom fields, sources, campaigns, loss reasons, users, teams and a real webhook trigger.",
   "keywords": [
     "n8n-community-node-package",
