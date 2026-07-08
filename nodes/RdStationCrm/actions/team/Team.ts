@@ -18,13 +18,13 @@ export const teamDescription: INodeProperties[] = [
 				name: 'Get',
 				value: 'get',
 				action: 'Get a team',
-				description: 'Get a single team by ID',
+				description: 'Retrieve a single team by its ID from RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many teams',
-				description: 'Get many teams',
+				description: 'Retrieve a paginated list of teams (groups of users) from RD Station CRM',
 			},
 		],
 		default: 'get',
@@ -38,7 +38,7 @@ export const teamDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForTeams, operation: ['get'] } },
-		description: 'The ID of the team',
+		description: 'ID of the team to retrieve, obtained from a get many teams operation',
 	},
 
 	// ----- Get Many controls -----

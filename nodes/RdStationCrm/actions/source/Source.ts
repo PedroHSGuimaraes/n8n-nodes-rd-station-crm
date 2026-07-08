@@ -18,25 +18,25 @@ export const sourceDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a source',
-				description: 'Create a new deal source',
+				description: 'Create a new deal source (origin of a deal) in RD Station CRM and return the created record including its ID',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a source',
-				description: 'Get a single deal source by ID',
+				description: 'Retrieve a single deal source from RD Station CRM by its unique ID',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many sources',
-				description: 'Get many deal sources',
+				description: 'Retrieve a paginated list of deal sources from RD Station CRM, with an optional name filter',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a source',
-				description: 'Update an existing deal source',
+				description: 'Update an existing RD Station CRM deal source identified by its ID and return the updated record',
 			},
 		],
 		default: 'create',
@@ -50,7 +50,7 @@ export const sourceDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForSources, operation: ['get', 'update'] } },
-		description: 'The ID of the deal source',
+		description: 'Unique ID of the deal source to retrieve or update, as returned by a Create or Get Many source operation',
 	},
 
 	// ----- name (create) -----
@@ -61,7 +61,7 @@ export const sourceDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForSources, operation: ['create'] } },
-		description: 'Name of the deal source',
+		description: 'Name of the deal source (where a deal originated), for example Website or Indication',
 	},
 
 	// ----- Additional / Update fields -----
@@ -117,7 +117,7 @@ export const sourceDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForSources, operation: ['getMany'] } },
 		options: [
-			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Search by deal source name' },
+			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Filter deal sources by name, returning those whose name matches the given text' },
 		],
 	},
 ];

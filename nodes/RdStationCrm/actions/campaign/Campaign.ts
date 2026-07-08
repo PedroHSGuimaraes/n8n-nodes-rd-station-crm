@@ -18,25 +18,25 @@ export const campaignDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a campaign',
-				description: 'Create a new campaign',
+				description: 'Create a new marketing campaign in RD Station CRM and return the created record including its ID',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a campaign',
-				description: 'Get a single campaign by ID',
+				description: 'Retrieve a single campaign from RD Station CRM by its unique ID',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many campaigns',
-				description: 'Get many campaigns',
+				description: 'Retrieve a paginated list of campaigns from RD Station CRM, with an optional name filter',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a campaign',
-				description: 'Update an existing campaign',
+				description: 'Update an existing RD Station CRM campaign identified by its ID and return the updated record',
 			},
 		],
 		default: 'create',
@@ -50,7 +50,7 @@ export const campaignDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForCampaigns, operation: ['get', 'update'] } },
-		description: 'The ID of the campaign',
+		description: 'Unique ID of the campaign to retrieve or update, as returned by a Create or Get Many campaign operation',
 	},
 
 	// ----- name (create) -----
@@ -61,7 +61,7 @@ export const campaignDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForCampaigns, operation: ['create'] } },
-		description: 'Name of the campaign',
+		description: 'Name of the marketing campaign, for example Black Friday 2026',
 	},
 
 	// ----- Additional / Update fields -----
@@ -117,7 +117,7 @@ export const campaignDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForCampaigns, operation: ['getMany'] } },
 		options: [
-			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Search by campaign name' },
+			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Filter campaigns by name, returning those whose name matches the given text' },
 		],
 	},
 ];

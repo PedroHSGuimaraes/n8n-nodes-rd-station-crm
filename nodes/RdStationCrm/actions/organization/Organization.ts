@@ -18,31 +18,31 @@ export const organizationDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create an organization',
-				description: 'Create a new organization',
+				description: 'Create a new organization (company or account) in RD Station CRM and return the created record including its ID',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get an organization',
-				description: 'Get a single organization by ID',
+				description: 'Retrieve a single organization from RD Station CRM by its unique ID',
 			},
 			{
 				name: 'Get Contacts',
 				value: 'getContacts',
 				action: 'Get contacts of an organization',
-				description: 'Get many contacts linked to an organization',
+				description: 'Retrieve the contacts (people) linked to a given organization in RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many organizations',
-				description: 'Get many organizations',
+				description: 'Retrieve a paginated list of organizations from RD Station CRM, with optional filters and sorting',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update an organization',
-				description: 'Update an existing organization',
+				description: 'Update an existing RD Station CRM organization identified by its ID and return the updated record',
 			},
 		],
 		default: 'create',
@@ -58,7 +58,7 @@ export const organizationDescription: INodeProperties[] = [
 		displayOptions: {
 			show: { ...showOnlyForOrganizations, operation: ['get', 'update', 'getContacts'] },
 		},
-		description: 'The ID of the organization',
+		description: 'Unique ID of the organization to retrieve, update, or list contacts for, as returned by a Create or Get Many organization operation',
 	},
 
 	// ----- name (create) -----
@@ -69,7 +69,7 @@ export const organizationDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForOrganizations, operation: ['create'] } },
-		description: 'Name of the organization',
+		description: 'Name of the organization (company or account), for example Acme Ltda',
 	},
 
 	// ----- Custom Fields (create + update) -----
@@ -91,7 +91,7 @@ export const organizationDescription: INodeProperties[] = [
 						name: 'fieldId',
 						type: 'options',
 						description:
-							'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+							'Organization custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getOrganizationCustomFields' },
 						default: '',
 					},
@@ -115,13 +115,13 @@ export const organizationDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForOrganizations, operation: ['create'] } },
 		options: [
-			{ displayName: 'Resume', name: 'resume', type: 'string', default: '', description: 'Short description of the organization' },
+			{ displayName: 'Resume', name: 'resume', type: 'string', default: '', description: 'Short text description or summary of the organization' },
 			{
 				displayName: 'Segments',
 				name: 'organizationSegments',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of segment names to link',
+				description: 'Comma-separated list of segment names to link to the organization, for example Enterprise,Priority',
 			},
 			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
 			{
@@ -129,7 +129,7 @@ export const organizationDescription: INodeProperties[] = [
 				name: 'userId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -144,13 +144,13 @@ export const organizationDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showOnlyForOrganizations, operation: ['update'] } },
 		options: [
 			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
-			{ displayName: 'Resume', name: 'resume', type: 'string', default: '', description: 'Short description of the organization' },
+			{ displayName: 'Resume', name: 'resume', type: 'string', default: '', description: 'Short text description or summary of the organization' },
 			{
 				displayName: 'Segments',
 				name: 'organizationSegments',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of segment names to link',
+				description: 'Comma-separated list of segment names to link to the organization, for example Enterprise,Priority',
 			},
 			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
 			{
@@ -158,7 +158,7 @@ export const organizationDescription: INodeProperties[] = [
 				name: 'userId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -197,13 +197,13 @@ export const organizationDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForOrganizations, operation: ['getMany'] } },
 		options: [
-			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Search by organization name' },
+			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Filter organizations by name, returning those whose name matches the given text' },
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},

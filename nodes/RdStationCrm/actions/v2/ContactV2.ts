@@ -20,10 +20,10 @@ export const contactV2Description: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: showOnly },
 		options: [
-			{ name: 'Create', value: 'create', action: 'Create a contact', description: 'Create a new contact' },
-			{ name: 'Get', value: 'get', action: 'Get a contact', description: 'Get a single contact by ID' },
-			{ name: 'Get Many', value: 'getMany', action: 'Get many contacts', description: 'Get many contacts' },
-			{ name: 'Update', value: 'update', action: 'Update a contact', description: 'Update an existing contact' },
+			{ name: 'Create', value: 'create', action: 'Create a contact', description: 'Create a new contact (person or lead) in RD Station CRM (API v2) and return the created record' },
+			{ name: 'Get', value: 'get', action: 'Get a contact', description: 'Retrieve a single contact by its ID from RD Station CRM (API v2)' },
+			{ name: 'Get Many', value: 'getMany', action: 'Get many contacts', description: 'Retrieve a paginated list of contacts from RD Station CRM (API v2)' },
+			{ name: 'Update', value: 'update', action: 'Update a contact', description: 'Update fields of an existing contact in RD Station CRM (API v2)' },
 		],
 		default: 'create',
 	},
@@ -35,7 +35,7 @@ export const contactV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['get', 'update'] } },
-		description: 'The ID of the contact',
+		description: 'Unique identifier of the contact to operate on, taken from the ID returned by a create or get contacts operation',
 	},
 
 	{
@@ -45,7 +45,7 @@ export const contactV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Name of the contact',
+		description: 'Full name of the contact, for example Maria Silva',
 	},
 
 	{
@@ -114,7 +114,7 @@ export const contactV2Description: INodeProperties[] = [
 						name: 'slug',
 						type: 'options',
 						description:
-							'Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+							'Custom field of the contact to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getContactCustomFieldsV2' },
 						default: '',
 					},
@@ -139,7 +139,7 @@ export const contactV2Description: INodeProperties[] = [
 				name: 'organization_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -162,7 +162,7 @@ export const contactV2Description: INodeProperties[] = [
 				name: 'organization_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -202,7 +202,7 @@ export const contactV2Description: INodeProperties[] = [
 				default: '',
 				placeholder: 'e.g. name:~John',
 				description:
-					'RDQL filter expression, e.g. <code>job_title:~Director</code>. See the RD Station CRM v2 docs.',
+					'RDQL filter expression to narrow the contacts returned, for example <code>job_title:~Director</code>, see the RD Station CRM v2 docs',
 			},
 		],
 	},

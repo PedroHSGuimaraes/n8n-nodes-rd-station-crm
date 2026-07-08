@@ -20,13 +20,13 @@ export const dealV2Description: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: showOnly },
 		options: [
-			{ name: 'Create', value: 'create', action: 'Create a deal', description: 'Create a new deal' },
-			{ name: 'Get', value: 'get', action: 'Get a deal', description: 'Get a single deal by ID' },
-			{ name: 'Get Many', value: 'getMany', action: 'Get many deals', description: 'Get many deals' },
-			{ name: 'Mark as Lost', value: 'markLost', action: 'Mark a deal as lost', description: 'Mark a deal as lost' },
-			{ name: 'Mark as Won', value: 'markWon', action: 'Mark a deal as won', description: 'Mark a deal as won' },
-			{ name: 'Move to Stage', value: 'moveToStage', action: 'Move a deal to a stage', description: 'Move a deal to a different stage' },
-			{ name: 'Update', value: 'update', action: 'Update a deal', description: 'Update an existing deal' },
+			{ name: 'Create', value: 'create', action: 'Create a deal', description: 'Create a new deal (sales opportunity) in RD Station CRM (API v2) and return the created record' },
+			{ name: 'Get', value: 'get', action: 'Get a deal', description: 'Retrieve a single deal by its ID from RD Station CRM (API v2)' },
+			{ name: 'Get Many', value: 'getMany', action: 'Get many deals', description: 'Retrieve a paginated list of deals from RD Station CRM (API v2)' },
+			{ name: 'Mark as Lost', value: 'markLost', action: 'Mark a deal as lost', description: 'Mark a deal as lost in RD Station CRM (API v2), setting its status to lost with a loss reason' },
+			{ name: 'Mark as Won', value: 'markWon', action: 'Mark a deal as won', description: 'Mark a deal as won in RD Station CRM (API v2), setting its status to won' },
+			{ name: 'Move to Stage', value: 'moveToStage', action: 'Move a deal to a stage', description: 'Move a deal to a different pipeline stage in RD Station CRM (API v2)' },
+			{ name: 'Update', value: 'update', action: 'Update a deal', description: 'Update fields of an existing deal in RD Station CRM (API v2)' },
 		],
 		default: 'create',
 	},
@@ -40,7 +40,7 @@ export const dealV2Description: INodeProperties[] = [
 		displayOptions: {
 			show: { ...showOnly, operation: ['get', 'update', 'markWon', 'markLost', 'moveToStage'] },
 		},
-		description: 'The ID of the deal',
+		description: 'Unique identifier of the deal to operate on, taken from the ID returned by a create or get deals operation',
 	},
 
 	{
@@ -50,7 +50,7 @@ export const dealV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Name of the deal',
+		description: 'Title of the deal to create, for example Website redesign for Acme',
 	},
 
 	{
@@ -61,7 +61,7 @@ export const dealV2Description: INodeProperties[] = [
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['markLost'] } },
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'Reason the deal was lost, required when marking a deal as lost. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getLossReasonsV2' },
 	},
 	{
@@ -72,7 +72,7 @@ export const dealV2Description: INodeProperties[] = [
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['moveToStage'] } },
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'Pipeline stage to move the deal into. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getStagesV2' },
 	},
 
@@ -94,7 +94,7 @@ export const dealV2Description: INodeProperties[] = [
 						name: 'slug',
 						type: 'options',
 						description:
-							'Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+							'Custom field of the deal to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getDealCustomFieldsV2' },
 						default: '',
 					},
@@ -117,7 +117,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'campaign_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Marketing campaign to associate with the deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getCampaignsV2' },
 				default: '',
 			},
@@ -126,7 +126,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'contact_ids',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of contact IDs to associate with the deal',
+				description: 'Comma-separated list of contact IDs to associate with the deal, each ID coming from a contact create or get operation',
 			},
 			{ displayName: 'Expected Close Date', name: 'expected_close_date', type: 'dateTime', default: '' },
 			{ displayName: 'One Time Price', name: 'one_time_price', type: 'number', default: 0 },
@@ -135,7 +135,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'organization_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) that the deal belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -144,7 +144,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'owner_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'User who owns and is responsible for the deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -155,7 +155,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'source_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Origin or lead source of the deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getSourcesV2' },
 				default: '',
 			},
@@ -164,7 +164,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'stage_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Pipeline stage of the deal in the sales funnel. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getStagesV2' },
 				default: '',
 			},
@@ -186,7 +186,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'organization_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) that the deal belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -195,7 +195,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'owner_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'User who owns and is responsible for the deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -206,7 +206,7 @@ export const dealV2Description: INodeProperties[] = [
 				name: 'stage_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Pipeline stage of the deal in the sales funnel. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getStagesV2' },
 				default: '',
 			},
@@ -245,7 +245,7 @@ export const dealV2Description: INodeProperties[] = [
 				default: '',
 				placeholder: 'e.g. name:~Website',
 				description:
-					'RDQL filter expression, e.g. <code>name:~Website</code>. See the RD Station CRM v2 docs.',
+					'RDQL filter expression to narrow the deals returned, for example <code>name:~Website</code>, see the RD Station CRM v2 docs',
 			},
 		],
 	},
@@ -264,7 +264,7 @@ export const dealV2Description: INodeProperties[] = [
 				default: '',
 				placeholder: 'e.g. -created_at',
 				description:
-					'Sort expression, e.g. <code>-created_at</code>. See the RD Station CRM v2 docs.',
+					'Field to sort the deals by, prefix with a hyphen for descending order, for example <code>-created_at</code>',
 			},
 		],
 	},

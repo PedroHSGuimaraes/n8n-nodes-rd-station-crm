@@ -9,7 +9,7 @@ O RD Station CRM é o CRM de vendas usado para gerenciar contatos, negociações
 
 [n8n](https://n8n.io/) é uma plataforma de automação de fluxos com [licença fair-code](https://docs.n8n.io/reference/license/).
 
-[Instalação](#-instalação) · [Credenciais](#-credenciais) · [Nós e Operações](#-nós-e-operações) · [Trigger](#-trigger) · [v1 vs v2](#-v1-ou-v2-qual-usar) · [Desenvolvimento](#️-desenvolvimento) · [Versões](#-versões)
+[Instalação](#-instalação) · [Credenciais](#-credenciais) · [Nós e Operações](#-nós-e-operações) · [Trigger](#-trigger) · [Tool de IA](#-usar-como-tool-de-agente-de-ia) · [v1 vs v2](#-v1-ou-v2-qual-usar) · [Desenvolvimento](#️-desenvolvimento) · [Versões](#-versões)
 
 ---
 
@@ -21,6 +21,7 @@ O RD Station CRM é o CRM de vendas usado para gerenciar contatos, negociações
 - **Dropdowns dinâmicos** — funis, etapas, usuários, times, fontes, campanhas, motivos de perda, produtos e campos personalizados são carregados direto da sua conta: você escolhe pelo nome, sem copiar IDs.
 - **Return All** — toda operação *Get Many* pagina todos os resultados automaticamente (ou você limita a quantidade).
 - **Trigger de verdade** — registra um webhook por evento ao ativar o workflow e remove ao desativar.
+- **Usável como Tool de IA** — o node tem `usableAsTool: true`, então um **AI Agent** do n8n pode chamar qualquer operação (criar contato, mover negócio de etapa, buscar tarefas…) preenchendo os parâmetros sozinho via `$fromAI()`. Veja [Usar como Tool de Agente de IA](#-usar-como-tool-de-agente-de-ia).
 - **Zero dependências de runtime** — usa o `httpRequestWithAuthentication` do próprio n8n. Passa no ESLint `@n8n/eslint-plugin-community-nodes` (0 erros) e é publicado no npm **com provenance**.
 
 ## 📦 Instalação
@@ -153,6 +154,53 @@ Eventos suportados (23):
 
 > **Dica:** o RD entrega cada evento **pelo menos uma vez** e tenta de novo em caso de falha. Se você precisa de processamento exatamente-uma-vez, deduplique a jusante pelo `transaction_uuid` do payload.
 
+## 🤖 Usar como Tool de Agente de IA
+
+O node `RD Station CRM` é **usável como tool** por nós de **AI Agent** do n8n (Tools Agent). Isso deixa o modelo **executar ações no seu CRM sozinho** — por exemplo: *"crie um contato chamado Maria com o e-mail maria@empresa.com e abra um negócio para ela no funil de Vendas"*.
+
+### Como ligar (2 passos)
+
+1. **No servidor n8n**, habilite o uso de community nodes como tools (por segurança, vem **desligado por padrão**). Defina a variável de ambiente:
+
+   ```bash
+   N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+   ```
+
+   | Instalação | Onde definir |
+   | --- | --- |
+   | **Docker / docker-compose** | Adicione em `environment:` do serviço n8n (ou no `.env`) e recrie o container (`docker compose up -d`). |
+   | **npm / npx** | Exporte antes de subir: `export N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true && n8n start`. |
+   | **n8n Cloud** | Já habilitado nos planos que suportam community nodes. |
+
+   > Sem essa variável o node **não aparece** na lista de tools do AI Agent — é a causa nº 1 de "não acho o node como tool".
+
+2. **No workflow**, adicione um node **AI Agent**, conecte um **Chat Model** e, no conector **Tool**, adicione o **RD Station CRM**. Escolha o **Recurso** e a **Operação** que o agente pode usar (ex.: Contact → Create). Uma tool por operação é a prática recomendada.
+
+### Deixe o modelo preencher os campos (`$fromAI`)
+
+Em cada campo do node em modo tool aparece o botão **"Let the model define this"**, que usa a expressão:
+
+```
+{{ $fromAI('email', 'E-mail do contato a ser criado', 'string') }}
+```
+
+- Assinatura: `$fromAI(key, description?, type?, defaultValue?)` — `key` de 1–64 caracteres (`[a-zA-Z0-9_-]`); `type` = `string` | `number` | `boolean` | `json`.
+- Você pode **misturar**: fixar alguns campos (ex.: sempre o mesmo funil) e deixar o modelo preencher outros (nome, e-mail, valor).
+- As **descrições de cada operação e campo** deste node foram escritas para o LLM entender o que cada uma faz e como preencher — quanto mais específico o seu prompt/System Message do agente, melhor o resultado.
+
+### Boas práticas
+
+- **Restrinja o escopo:** exponha só as operações que o agente precisa (ex.: só *Create*/*Get Many* de Contact e Deal), em vez de liberar tudo.
+- **Credencial dedicada** com permissões mínimas para o agente.
+- **n8n atualizado:** versões antigas tinham um bug em que a tool de community node retornava resposta vazia para o agente ([n8n#26202](https://github.com/n8n-io/n8n/issues/26202)); já corrigido.
+- O **Trigger** (`RD Station CRM Trigger`) **não** é uma tool — triggers não podem ser usados por agentes (por design do n8n).
+
+### Referências
+
+- [Tools Agent — n8n Docs](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/tools-agent)
+- [Let AI specify tool parameters (`$fromAI`) — n8n Docs](https://docs.n8n.io/advanced-ai/examples/using-the-fromai-function/)
+- [Variáveis de ambiente de nodes — n8n Docs](https://docs.n8n.io/hosting/configuration/environment-variables/nodes/)
+
 ## 🔀 v1 ou v2: qual usar?
 
 | | **API v1 (token)** | **API v2 (OAuth2)** |
@@ -216,6 +264,7 @@ n8n-nodes-rd-station-crm/
 
 ## 📈 Versões
 
+- **2.2.0** — **Otimização para uso como Tool de Agente de IA.** Descrições de todas as operações e campos reescritas para o LLM entender e preencher os parâmetros corretamente; descrição do node e dos recursos enriquecidas; categoria **AI → Tools** no codex; nova seção no README explicando o `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` e o `$fromAI()`. O node já expunha `usableAsTool: true` desde a 2.x.
 - **2.1.4** — Ícone passa a usar o **símbolo (marca) do RD Station** — quadrado e nítido em qualquer tamanho do nó (light preto, dark branco, chevron ciano nos dois temas).
 - **2.1.1–2.1.3** — README completo em pt-BR e screenshot da seleção de autenticação.
 - **2.1.0** — Publicação da API v2 (OAuth2) e ajustes de ícone. Publicação da **API v2 (OAuth2)**: credencial `RdStationCrmOAuth2Api`, seletor de Authentication (v1/v2), transporte v2 (Bearer, envelope `{ data }`, paginação `links.next`) e 6 recursos principais (Contact, Deal, Organization, Task, Note, Custom Field). O auth por **token (v1) continua** e é o padrão.

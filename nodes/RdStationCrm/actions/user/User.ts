@@ -18,19 +18,19 @@ export const userDescription: INodeProperties[] = [
 				name: 'Get',
 				value: 'get',
 				action: 'Get a user',
-				description: 'Get a single user by ID',
+				description: 'Retrieve a single CRM user by its ID from RD Station CRM',
 			},
 			{
 				name: 'Get Current',
 				value: 'getCurrent',
 				action: 'Get the current user',
-				description: 'Get the user that owns the API token',
+				description: 'Retrieve the CRM user that owns the API token used for authentication',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many users',
-				description: 'Get many users',
+				description: 'Retrieve a paginated list of CRM users, optionally filtered by role, status, or team',
 			},
 		],
 		default: 'get',
@@ -44,7 +44,7 @@ export const userDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForUsers, operation: ['get'] } },
-		description: 'The ID of the user',
+		description: 'ID of the CRM user to retrieve, obtained from a get many users operation',
 	},
 
 	// ----- Get Many controls -----
@@ -102,7 +102,7 @@ export const userDescription: INodeProperties[] = [
 				name: 'teamId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Only return users belonging to this team. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getTeams' },
 				default: '',
 			},

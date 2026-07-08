@@ -29,10 +29,10 @@ export const taskV2Description: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: showOnly },
 		options: [
-			{ name: 'Create', value: 'create', action: 'Create a task', description: 'Create a new task' },
-			{ name: 'Get', value: 'get', action: 'Get a task', description: 'Get a single task by ID' },
-			{ name: 'Get Many', value: 'getMany', action: 'Get many tasks', description: 'Get many tasks' },
-			{ name: 'Update', value: 'update', action: 'Update a task', description: 'Update an existing task' },
+			{ name: 'Create', value: 'create', action: 'Create a task', description: 'Create a new task (activity) in RD Station CRM (API v2) and return the created record' },
+			{ name: 'Get', value: 'get', action: 'Get a task', description: 'Retrieve a single task by its ID from RD Station CRM (API v2)' },
+			{ name: 'Get Many', value: 'getMany', action: 'Get many tasks', description: 'Retrieve a paginated list of tasks from RD Station CRM (API v2)' },
+			{ name: 'Update', value: 'update', action: 'Update a task', description: 'Update fields of an existing task in RD Station CRM (API v2)' },
 		],
 		default: 'create',
 	},
@@ -44,7 +44,7 @@ export const taskV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['get', 'update'] } },
-		description: 'The ID of the task',
+		description: 'Unique identifier of the task to operate on, taken from the ID returned by a create or get tasks operation',
 	},
 
 	{
@@ -54,7 +54,7 @@ export const taskV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Name of the task',
+		description: 'Title of the task to create, for example Call the client about the proposal',
 	},
 	{
 		displayName: 'Type',
@@ -63,7 +63,7 @@ export const taskV2Description: INodeProperties[] = [
 		default: 'task',
 		options: taskTypeOptions,
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Type of the task',
+		description: 'Kind of activity, such as call, email, meeting, visit, lunch, whatsapp or task',
 	},
 
 	{
@@ -82,7 +82,7 @@ export const taskV2Description: INodeProperties[] = [
 				name: 'owner_ids',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of owner (user) IDs',
+				description: 'Comma-separated list of user IDs to assign as owners of the task',
 			},
 		],
 	},
@@ -103,7 +103,7 @@ export const taskV2Description: INodeProperties[] = [
 				name: 'owner_ids',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of owner (user) IDs',
+				description: 'Comma-separated list of user IDs to assign as owners of the task',
 			},
 			{
 				displayName: 'Status',
@@ -158,7 +158,7 @@ export const taskV2Description: INodeProperties[] = [
 				default: '',
 				placeholder: 'e.g. name:~Follow up',
 				description:
-					'RDQL filter expression, e.g. <code>name:~Follow up</code>. See the RD Station CRM v2 docs.',
+					'RDQL filter expression to narrow the tasks returned, for example <code>name:~Follow up</code>, see the RD Station CRM v2 docs',
 			},
 		],
 	},

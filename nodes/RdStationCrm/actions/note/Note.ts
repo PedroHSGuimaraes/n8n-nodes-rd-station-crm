@@ -24,13 +24,13 @@ export const noteDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a note',
-				description: 'Create a new note',
+				description: 'Create a text note attached to a deal in RD Station CRM and return the created note',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many notes',
-				description: 'Get many notes',
+				description: 'Retrieve a paginated list of notes from RD Station CRM, optionally filtered by deal, user, or date range',
 			},
 		],
 		default: 'create',
@@ -44,7 +44,7 @@ export const noteDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['create'] } },
-		description: 'The ID of the deal the note belongs to',
+		description: 'ID of the deal that this note will be attached to, obtained from a deal create or get operation',
 	},
 	{
 		displayName: 'User Name or ID',
@@ -52,7 +52,7 @@ export const noteDescription: INodeProperties[] = [
 		type: 'options',
 		required: true,
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'CRM user recorded as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getUsers' },
 		default: '',
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['create'] } },
@@ -65,7 +65,7 @@ export const noteDescription: INodeProperties[] = [
 		default: '',
 		typeOptions: { rows: 4 },
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['create'] } },
-		description: 'The content of the note',
+		description: 'Text content of the note to record on the deal',
 	},
 
 	// ----- Get Many controls -----
@@ -96,15 +96,15 @@ export const noteDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['getMany'] } },
 		options: [
-			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '', description: 'Filter notes by deal ID' },
-			{ displayName: 'End Date', name: 'endDate', type: 'dateTime', default: '', description: 'Only return notes created up to this date' },
-			{ displayName: 'Start Date', name: 'startDate', type: 'dateTime', default: '', description: 'Only return notes created from this date' },
+			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '', description: 'Only return notes attached to this deal ID' },
+			{ displayName: 'End Date', name: 'endDate', type: 'dateTime', default: '', description: 'Only return notes created on or before this date and time' },
+			{ displayName: 'Start Date', name: 'startDate', type: 'dateTime', default: '', description: 'Only return notes created on or after this date and time' },
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Only return notes authored by this CRM user. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},

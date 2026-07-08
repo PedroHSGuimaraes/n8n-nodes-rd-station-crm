@@ -21,7 +21,7 @@ const dealProductLineFields: INodeProperties[] = [
 		name: 'product_id',
 		type: 'options',
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'Product to attach to the deal, referenced by its product ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getProducts' },
 		default: '',
 	},
@@ -30,21 +30,21 @@ const dealProductLineFields: INodeProperties[] = [
 		name: 'amount',
 		type: 'number',
 		default: 1,
-		description: 'Quantity of the product',
+		description: 'Quantity of this product on the deal, as a number, for example 2',
 	},
 	{
 		displayName: 'Price',
 		name: 'price',
 		type: 'number',
 		default: 0,
-		description: 'Unit price of the product',
+		description: 'Unit price of the product, as a number in the account currency, for example 199.90',
 	},
 	{
 		displayName: 'Discount',
 		name: 'discount',
 		type: 'number',
 		default: 0,
-		description: 'Discount applied to the product',
+		description: 'Discount applied to this product line, interpreted according to Discount Type',
 	},
 	{
 		displayName: 'Discount Type',
@@ -72,7 +72,7 @@ const dealProductLineFields: INodeProperties[] = [
 		name: 'total',
 		type: 'number',
 		default: 0,
-		description: 'Total value of the line item',
+		description: 'Total value of this product line item after applying quantity, price, and discount',
 	},
 ];
 
@@ -83,7 +83,7 @@ const dealProductUpdateLineFields: INodeProperties[] = [
 		name: 'id',
 		type: 'string',
 		default: '',
-		description: 'The ID of the existing deal product (line item) to update',
+		description: 'Unique ID of the existing deal product (line item) to update, as returned by a Get Many deal product operation',
 	},
 	...dealProductLineFields,
 ];
@@ -100,25 +100,25 @@ export const dealProductDescription: INodeProperties[] = [
 				name: 'Add',
 				value: 'add',
 				action: 'Add products to a deal',
-				description: 'Add one or more products to a deal',
+				description: 'Add one or more product line items (price, quantity, discount) to a deal in RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many deal products',
-				description: 'Get many products on a deal',
+				description: 'Retrieve a paginated list of product line items attached to a specific deal in RD Station CRM',
 			},
 			{
 				name: 'Remove',
 				value: 'remove',
 				action: 'Remove products from a deal',
-				description: 'Remove one or more products from a deal',
+				description: 'Remove one or more product line items from a deal in RD Station CRM, identified by their IDs',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update products on a deal',
-				description: 'Update one or more products on a deal',
+				description: 'Update one or more existing product line items on a deal in RD Station CRM',
 			},
 		],
 		default: 'add',
@@ -132,7 +132,7 @@ export const dealProductDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: showOnlyForDealProducts },
-		description: 'The ID of the deal',
+		description: 'Unique ID of the deal whose products to act on, as returned by a Create or Get Many deal operation',
 	},
 
 	// ----- Products (add) -----
@@ -144,7 +144,7 @@ export const dealProductDescription: INodeProperties[] = [
 		placeholder: 'Add Product',
 		default: {},
 		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['add'] } },
-		description: 'Products to add to the deal (up to 100 per request)',
+		description: 'Product line items to add to the deal, up to 100 per request',
 		options: [
 			{
 				name: 'product',
@@ -163,7 +163,7 @@ export const dealProductDescription: INodeProperties[] = [
 		placeholder: 'Add Product',
 		default: {},
 		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['update'] } },
-		description: 'Deal products to update (up to 100 per request)',
+		description: 'Deal product line items to update, up to 100 per request',
 		options: [
 			{
 				name: 'product',
@@ -182,7 +182,7 @@ export const dealProductDescription: INodeProperties[] = [
 		placeholder: 'Add Deal Product',
 		default: {},
 		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['remove'] } },
-		description: 'Deal products to remove from the deal (up to 100 per request)',
+		description: 'Deal product line items to remove from the deal, up to 100 per request',
 		options: [
 			{
 				name: 'id',
@@ -193,7 +193,7 @@ export const dealProductDescription: INodeProperties[] = [
 						name: 'id',
 						type: 'string',
 						default: '',
-						description: 'The ID of the deal product (line item) to remove',
+						description: 'Unique ID of the deal product (line item) to remove, as returned by a Get Many deal product operation',
 					},
 				],
 			},

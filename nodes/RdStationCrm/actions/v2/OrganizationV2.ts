@@ -19,10 +19,10 @@ export const organizationV2Description: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: showOnly },
 		options: [
-			{ name: 'Create', value: 'create', action: 'Create an organization', description: 'Create a new organization' },
-			{ name: 'Get', value: 'get', action: 'Get an organization', description: 'Get a single organization by ID' },
-			{ name: 'Get Many', value: 'getMany', action: 'Get many organizations', description: 'Get many organizations' },
-			{ name: 'Update', value: 'update', action: 'Update an organization', description: 'Update an existing organization' },
+			{ name: 'Create', value: 'create', action: 'Create an organization', description: 'Create a new organization (company) in RD Station CRM (API v2) and return the created record' },
+			{ name: 'Get', value: 'get', action: 'Get an organization', description: 'Retrieve a single organization by its ID from RD Station CRM (API v2)' },
+			{ name: 'Get Many', value: 'getMany', action: 'Get many organizations', description: 'Retrieve a paginated list of organizations from RD Station CRM (API v2)' },
+			{ name: 'Update', value: 'update', action: 'Update an organization', description: 'Update fields of an existing organization in RD Station CRM (API v2)' },
 		],
 		default: 'create',
 	},
@@ -34,7 +34,7 @@ export const organizationV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['get', 'update'] } },
-		description: 'The ID of the organization',
+		description: 'Unique identifier of the organization to operate on, taken from the ID returned by a create or get organizations operation',
 	},
 
 	{
@@ -44,7 +44,7 @@ export const organizationV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Name of the organization',
+		description: 'Name of the company to create, for example Acme Corporation',
 	},
 
 	{
@@ -65,7 +65,7 @@ export const organizationV2Description: INodeProperties[] = [
 						name: 'slug',
 						type: 'options',
 						description:
-							'Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+							'Custom field of the organization to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getOrganizationCustomFieldsV2' },
 						default: '',
 					},
@@ -89,7 +89,7 @@ export const organizationV2Description: INodeProperties[] = [
 				name: 'owner_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -98,7 +98,7 @@ export const organizationV2Description: INodeProperties[] = [
 				name: 'segment_ids',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of segment IDs',
+				description: 'Comma-separated list of segment IDs to assign to the organization',
 			},
 			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
 		],
@@ -118,7 +118,7 @@ export const organizationV2Description: INodeProperties[] = [
 				name: 'owner_id',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -127,7 +127,7 @@ export const organizationV2Description: INodeProperties[] = [
 				name: 'segment_ids',
 				type: 'string',
 				default: '',
-				description: 'Comma-separated list of segment IDs',
+				description: 'Comma-separated list of segment IDs to assign to the organization',
 			},
 			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
 		],
@@ -165,7 +165,7 @@ export const organizationV2Description: INodeProperties[] = [
 				default: '',
 				placeholder: 'e.g. name:~Acme',
 				description:
-					'RDQL filter expression, e.g. <code>name:~Acme</code>. See the RD Station CRM v2 docs.',
+					'RDQL filter expression to narrow the organizations returned, for example <code>name:~Acme</code>, see the RD Station CRM v2 docs',
 			},
 		],
 	},
@@ -183,7 +183,7 @@ export const organizationV2Description: INodeProperties[] = [
 				type: 'string',
 				default: '',
 				placeholder: 'e.g. name',
-				description: 'Sort expression, e.g. <code>name</code> or <code>-created_at</code>',
+				description: 'Field to sort organizations by, prefix with a hyphen for descending order, for example <code>name</code> or <code>-created_at</code>',
 			},
 		],
 	},

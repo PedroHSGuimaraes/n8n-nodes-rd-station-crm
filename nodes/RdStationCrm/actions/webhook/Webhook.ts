@@ -19,31 +19,31 @@ export const webhookDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a webhook',
-				description: 'Register a new webhook subscription',
+				description: 'Register a new webhook subscription in RD Station CRM that posts to your URL when the chosen event fires',
 			},
 			{
 				name: 'Delete',
 				value: 'delete',
 				action: 'Delete a webhook',
-				description: 'Delete a webhook subscription',
+				description: 'Delete a webhook subscription from RD Station CRM by its ID',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a webhook',
-				description: 'Get a single webhook by ID',
+				description: 'Retrieve a single webhook subscription by its ID from RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many webhooks',
-				description: 'Get many webhooks',
+				description: 'Retrieve a paginated list of webhook subscriptions from RD Station CRM',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a webhook',
-				description: 'Update an existing webhook',
+				description: 'Update the event or target URL of an existing webhook subscription in RD Station CRM',
 			},
 		],
 		default: 'create',
@@ -59,7 +59,7 @@ export const webhookDescription: INodeProperties[] = [
 		displayOptions: {
 			show: { ...showOnlyForWebhooks, operation: ['get', 'update', 'delete'] },
 		},
-		description: 'The UUID of the webhook',
+		description: 'UUID of the webhook subscription to operate on, obtained from a create or get many webhook operation',
 	},
 
 	// ----- Create fields -----
@@ -71,7 +71,7 @@ export const webhookDescription: INodeProperties[] = [
 		default: 'crm_deal_created',
 		displayOptions: { show: { ...showOnlyForWebhooks, operation: ['create'] } },
 		options: RD_CRM_WEBHOOK_EVENTS,
-		description: 'The event that triggers the webhook (one event per webhook)',
+		description: 'RD Station CRM event that triggers this webhook, only one event is allowed per subscription',
 	},
 	{
 		displayName: 'URL',
@@ -81,7 +81,7 @@ export const webhookDescription: INodeProperties[] = [
 		default: '',
 		placeholder: 'e.g. https://example.com/webhook',
 		displayOptions: { show: { ...showOnlyForWebhooks, operation: ['create'] } },
-		description: 'The HTTPS URL that will receive the event (must have a valid certificate)',
+		description: 'HTTPS endpoint that receives the event payload by POST, must have a valid TLS certificate',
 	},
 
 	// ----- Update fields -----

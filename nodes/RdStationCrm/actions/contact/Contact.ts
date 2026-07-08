@@ -26,25 +26,25 @@ export const contactDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a contact',
-				description: 'Create a new contact',
+				description: 'Create a new contact (person or lead) in RD Station CRM and return the created record including its ID',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a contact',
-				description: 'Get a single contact by ID',
+				description: 'Retrieve a single contact from RD Station CRM by its unique ID',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many contacts',
-				description: 'Get many contacts',
+				description: 'Retrieve a paginated list of contacts from RD Station CRM, with optional filters and sorting',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a contact',
-				description: 'Update an existing contact',
+				description: 'Update an existing RD Station CRM contact identified by its ID and return the updated record',
 			},
 		],
 		default: 'create',
@@ -58,7 +58,7 @@ export const contactDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForContacts, operation: ['get', 'update'] } },
-		description: 'The ID of the contact',
+		description: 'Unique ID of the contact to retrieve or update, as returned by a Create or Get Many contact operation',
 	},
 
 	// ----- name (create) -----
@@ -69,7 +69,7 @@ export const contactDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForContacts, operation: ['create'] } },
-		description: 'Name of the contact',
+		description: 'Full name of the contact (person or lead), for example Maria Silva',
 	},
 
 	// ----- Emails / Phones / Custom Fields (create + update) -----
@@ -150,7 +150,7 @@ export const contactDescription: INodeProperties[] = [
 						name: 'fieldId',
 						type: 'options',
 						description:
-							'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+							'Contact custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getContactCustomFields' },
 						default: '',
 					},
@@ -175,7 +175,7 @@ export const contactDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showOnlyForContacts, operation: ['create'] } },
 		options: [
 			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '' },
-			{ displayName: 'Deal IDs', name: 'dealIds', type: 'string', default: '', description: 'Comma-separated list of deal IDs to link' },
+			{ displayName: 'Deal IDs', name: 'dealIds', type: 'string', default: '', description: 'Comma-separated list of deal IDs to link to this contact, for example 123,456' },
 			{ displayName: 'Facebook', name: 'facebook', type: 'string', default: '' },
 			{ displayName: 'LinkedIn', name: 'linkedin', type: 'string', default: '' },
 			{
@@ -183,7 +183,7 @@ export const contactDescription: INodeProperties[] = [
 				name: 'organizationId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -208,7 +208,7 @@ export const contactDescription: INodeProperties[] = [
 				name: 'organizationId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -247,7 +247,7 @@ export const contactDescription: INodeProperties[] = [
 		options: [
 			{ displayName: 'Email', name: 'email', type: 'string', placeholder: 'e.g. name@example.com', default: '' },
 			{ displayName: 'Phone', name: 'phone', type: 'string', default: '' },
-			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Search by contact name' },
+			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Filter contacts by name, returning those whose name matches the given text' },
 			{ displayName: 'Title', name: 'title', type: 'string', default: '' },
 		],
 	},

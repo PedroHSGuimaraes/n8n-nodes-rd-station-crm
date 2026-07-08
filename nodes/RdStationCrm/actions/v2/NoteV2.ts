@@ -18,8 +18,8 @@ export const noteV2Description: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: showOnly },
 		options: [
-			{ name: 'Create', value: 'create', action: 'Create a note', description: 'Create a new note on a deal' },
-			{ name: 'Get Many', value: 'getMany', action: 'Get many notes', description: 'Get many notes from a deal' },
+			{ name: 'Create', value: 'create', action: 'Create a note', description: 'Create a new text note attached to a deal in RD Station CRM (API v2) and return the created record' },
+			{ name: 'Get Many', value: 'getMany', action: 'Get many notes', description: 'Retrieve a paginated list of notes attached to a deal in RD Station CRM (API v2)' },
 		],
 		default: 'create',
 	},
@@ -31,7 +31,7 @@ export const noteV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnly, operation: ['create', 'getMany'] } },
-		description: 'The ID of the deal the note belongs to',
+		description: 'Unique identifier of the deal whose notes to read or add to, taken from a create or get deals operation',
 	},
 
 	{
@@ -42,7 +42,7 @@ export const noteV2Description: INodeProperties[] = [
 		default: '',
 		typeOptions: { rows: 4 },
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'The content of the note',
+		description: 'Text content of the note to add to the deal',
 	},
 	{
 		displayName: 'User Name or ID',
@@ -51,7 +51,7 @@ export const noteV2Description: INodeProperties[] = [
 		required: true,
 		default: '',
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'User to record as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getUsersV2' },
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 	},

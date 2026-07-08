@@ -18,25 +18,25 @@ export const lossReasonDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a loss reason',
-				description: 'Create a new deal loss reason',
+				description: 'Create a new deal loss reason in RD Station CRM explaining why deals are lost, and return the created reason',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a loss reason',
-				description: 'Get a single deal loss reason by ID',
+				description: 'Retrieve a single deal loss reason from RD Station CRM by its ID',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many loss reasons',
-				description: 'Get many deal loss reasons',
+				description: 'Retrieve a paginated list of deal loss reasons from RD Station CRM, with an optional name search filter',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a loss reason',
-				description: 'Update an existing deal loss reason',
+				description: 'Update the name of an existing deal loss reason in RD Station CRM by its ID',
 			},
 		],
 		default: 'create',
@@ -50,7 +50,7 @@ export const lossReasonDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForLossReasons, operation: ['get', 'update'] } },
-		description: 'The ID of the deal loss reason',
+		description: 'ID of the deal loss reason to operate on, obtained from a create or get many loss reasons operation',
 	},
 
 	// ----- name (create) -----
@@ -61,7 +61,7 @@ export const lossReasonDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForLossReasons, operation: ['create'] } },
-		description: 'Name of the deal loss reason (2 to 40 characters)',
+		description: 'Text describing why a deal was lost, between 2 and 40 characters, for example Price too high',
 	},
 
 	// ----- Update fields -----
@@ -78,7 +78,7 @@ export const lossReasonDescription: INodeProperties[] = [
 				name: 'name',
 				type: 'string',
 				default: '',
-				description: 'Name of the deal loss reason (2 to 40 characters)',
+				description: 'Text describing why a deal was lost, between 2 and 40 characters, for example Price too high',
 			},
 		],
 	},
@@ -111,7 +111,7 @@ export const lossReasonDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForLossReasons, operation: ['getMany'] } },
 		options: [
-			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Search by deal loss reason name' },
+			{ displayName: 'Search', name: 'q', type: 'string', default: '', description: 'Return only deal loss reasons whose name matches this search text' },
 		],
 	},
 	{

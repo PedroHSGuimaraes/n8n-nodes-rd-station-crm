@@ -25,7 +25,8 @@ export class RdStationCrm implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Consume the RD Station CRM API (contacts, deals, tasks, pipelines and more)',
+		description:
+			'Read and write data in RD Station CRM. Create, get, update and list contacts (leads/people), deals (sales opportunities), organizations (companies), tasks, notes, and manage pipelines, stages, products, custom fields, sources, campaigns, loss reasons, users, teams and webhooks. Supports API v1 (private token) and API v2 (OAuth2). Usable as an AI Agent tool.',
 		defaults: {
 			name: 'RD Station CRM',
 		},

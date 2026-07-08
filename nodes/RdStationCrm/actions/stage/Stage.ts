@@ -23,25 +23,25 @@ export const stageDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a stage',
-				description: 'Create a new stage',
+				description: 'Create a new deal stage inside a pipeline in RD Station CRM and return the created stage',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a stage',
-				description: 'Get a single stage by ID',
+				description: 'Retrieve a single deal stage by its ID from RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many stages',
-				description: 'Get many stages',
+				description: 'Retrieve a paginated list of deal stages from RD Station CRM, optionally filtered by pipeline',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a stage',
-				description: 'Update an existing stage',
+				description: 'Update the name, nickname, or order of an existing deal stage in RD Station CRM',
 			},
 		],
 		default: 'create',
@@ -55,7 +55,7 @@ export const stageDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForStages, operation: ['get', 'update'] } },
-		description: 'The ID of the stage',
+		description: 'ID of the deal stage to operate on, obtained from a create or get many stage operation',
 	},
 
 	// ----- create fields -----
@@ -65,7 +65,7 @@ export const stageDescription: INodeProperties[] = [
 		type: 'options',
 		required: true,
 		description:
-			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			'Pipeline (sales funnel) that this deal stage belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		typeOptions: { loadOptionsMethod: 'getPipelines' },
 		default: '',
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
@@ -77,7 +77,7 @@ export const stageDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
-		description: 'Name of the stage',
+		description: 'Name of the new deal stage, for example Qualification or Proposal Sent',
 	},
 
 	// ----- Additional / Update fields -----
@@ -89,8 +89,8 @@ export const stageDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
 		options: [
-			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short label for the stage' },
-			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Position of the stage in the pipeline' },
+			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short alternative label shown for the deal stage' },
+			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the stage within the pipeline, lower numbers appear first' },
 		],
 	},
 	{
@@ -102,8 +102,8 @@ export const stageDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showOnlyForStages, operation: ['update'] } },
 		options: [
 			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
-			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short label for the stage' },
-			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Position of the stage in the pipeline' },
+			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short alternative label shown for the deal stage' },
+			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the stage within the pipeline, lower numbers appear first' },
 		],
 	},
 
@@ -140,7 +140,7 @@ export const stageDescription: INodeProperties[] = [
 				name: 'dealPipelineId',
 				type: 'options',
 				description:
-					'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+					'Only return deal stages that belong to this pipeline. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getPipelines' },
 				default: '',
 			},

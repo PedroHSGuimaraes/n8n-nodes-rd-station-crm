@@ -28,22 +28,22 @@ import { taskV2Description, executeTaskV2 } from './v2/TaskV2';
 
 // The Resource dropdown (alphabetically sorted by name).
 export const resourceOptions: INodePropertyOptions[] = [
-	{ name: 'Campaign', value: 'campaign' },
-	{ name: 'Contact', value: 'contact' },
-	{ name: 'Custom Field', value: 'customField' },
-	{ name: 'Deal', value: 'deal' },
-	{ name: 'Deal Product', value: 'dealProduct' },
-	{ name: 'Loss Reason', value: 'lossReason' },
-	{ name: 'Note', value: 'note' },
-	{ name: 'Organization', value: 'organization' },
-	{ name: 'Pipeline', value: 'pipeline' },
-	{ name: 'Product', value: 'product' },
-	{ name: 'Source', value: 'source' },
-	{ name: 'Stage', value: 'stage' },
-	{ name: 'Task', value: 'task' },
-	{ name: 'Team', value: 'team' },
-	{ name: 'User', value: 'user' },
-	{ name: 'Webhook', value: 'webhook' },
+	{ name: 'Campaign', value: 'campaign', description: 'A marketing campaign that deals can be linked to' },
+	{ name: 'Contact', value: 'contact', description: 'A person or lead, with name, emails and phones' },
+	{ name: 'Custom Field', value: 'customField', description: 'A custom field definition for contacts, deals or organizations' },
+	{ name: 'Deal', value: 'deal', description: 'A sales opportunity or negotiation moving through a pipeline' },
+	{ name: 'Deal Product', value: 'dealProduct', description: 'A product line item (price, quantity, discount) attached to a deal' },
+	{ name: 'Loss Reason', value: 'lossReason', description: 'A reason a deal was marked as lost' },
+	{ name: 'Note', value: 'note', description: 'A text note attached to a deal or contact' },
+	{ name: 'Organization', value: 'organization', description: 'A company or account that contacts and deals belong to' },
+	{ name: 'Pipeline', value: 'pipeline', description: 'A sales funnel made up of ordered stages' },
+	{ name: 'Product', value: 'product', description: 'A catalog product with a name and base price' },
+	{ name: 'Source', value: 'source', description: 'The origin (source) a deal came from' },
+	{ name: 'Stage', value: 'stage', description: 'A stage inside a pipeline funnel' },
+	{ name: 'Task', value: 'task', description: 'An activity or to-do linked to a deal or contact' },
+	{ name: 'Team', value: 'team', description: 'A group of CRM users' },
+	{ name: 'User', value: 'user', description: 'A CRM user or account member' },
+	{ name: 'Webhook', value: 'webhook', description: 'Manage RD Station CRM webhook subscriptions' },
 ];
 
 // Concatenated per-resource property definitions (operations + fields).
@@ -68,12 +68,12 @@ export const resourceProperties: INodeProperties[] = [
 
 // The v2 (OAuth2) Resource dropdown — shown when Authentication = OAuth2.
 export const resourceOptionsV2: INodePropertyOptions[] = [
-	{ name: 'Contact', value: 'contactV2' },
-	{ name: 'Custom Field', value: 'customFieldV2' },
-	{ name: 'Deal', value: 'dealV2' },
-	{ name: 'Note', value: 'noteV2' },
-	{ name: 'Organization', value: 'organizationV2' },
-	{ name: 'Task', value: 'taskV2' },
+	{ name: 'Contact', value: 'contactV2', description: 'A person or lead in RD Station CRM API v2' },
+	{ name: 'Custom Field', value: 'customFieldV2', description: 'A custom field definition in RD Station CRM API v2' },
+	{ name: 'Deal', value: 'dealV2', description: 'A sales opportunity in RD Station CRM API v2' },
+	{ name: 'Note', value: 'noteV2', description: 'A text note attached to a deal or contact in RD Station CRM API v2' },
+	{ name: 'Organization', value: 'organizationV2', description: 'A company or account in RD Station CRM API v2' },
+	{ name: 'Task', value: 'taskV2', description: 'An activity or to-do in RD Station CRM API v2' },
 ];
 
 // Concatenated v2 per-resource property definitions.

@@ -22,25 +22,25 @@ export const pipelineDescription: INodeProperties[] = [
 				name: 'Create',
 				value: 'create',
 				action: 'Create a pipeline',
-				description: 'Create a new pipeline',
+				description: 'Create a new deal pipeline (sales funnel) in RD Station CRM and return the created pipeline',
 			},
 			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a pipeline',
-				description: 'Get a single pipeline by ID',
+				description: 'Retrieve a single deal pipeline by its ID from RD Station CRM',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many pipelines',
-				description: 'Get many pipelines',
+				description: 'Retrieve a paginated list of deal pipelines (sales funnels) from RD Station CRM',
 			},
 			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a pipeline',
-				description: 'Update an existing pipeline',
+				description: 'Update the name or order of an existing deal pipeline in RD Station CRM',
 			},
 		],
 		default: 'create',
@@ -54,7 +54,7 @@ export const pipelineDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['get', 'update'] } },
-		description: 'The ID of the pipeline',
+		description: 'ID of the deal pipeline to operate on, obtained from a create or get many pipeline operation',
 	},
 
 	// ----- name (create) -----
@@ -65,7 +65,7 @@ export const pipelineDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['create'] } },
-		description: 'Name of the pipeline',
+		description: 'Name of the new deal pipeline, for example Inbound Sales',
 	},
 
 	// ----- Additional / Update fields -----
@@ -77,7 +77,7 @@ export const pipelineDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['create'] } },
 		options: [
-			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Position of the pipeline in the list' },
+			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the pipeline in the list, lower numbers appear first' },
 		],
 	},
 	{
@@ -89,7 +89,7 @@ export const pipelineDescription: INodeProperties[] = [
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['update'] } },
 		options: [
 			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
-			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Position of the pipeline in the list' },
+			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the pipeline in the list, lower numbers appear first' },
 		],
 	},
 
