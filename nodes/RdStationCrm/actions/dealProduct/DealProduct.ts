@@ -49,6 +49,7 @@ const dealProductLineFields: INodeProperties[] = [
 	{
 		displayName: 'Discount Type',
 		name: 'discount_type',
+		description: 'How the discount is interpreted. One of: percentage, value',
 		type: 'options',
 		options: [
 			{ name: 'Percentage', value: 'percentage' },
@@ -59,6 +60,7 @@ const dealProductLineFields: INodeProperties[] = [
 	{
 		displayName: 'Recurrence',
 		name: 'recurrence',
+		description: 'Billing recurrence of the product. One of: annual, monthly, spare',
 		type: 'options',
 		options: [
 			{ name: 'Annual', value: 'annual' },

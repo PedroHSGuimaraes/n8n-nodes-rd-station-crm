@@ -88,6 +88,7 @@ export const stageDescription: INodeProperties[] = [
 		placeholder: 'Add Field',
 		default: {},
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
+		description: 'Optional extra fields to set on the new deal stage',
 		options: [
 			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short alternative label shown for the deal stage' },
 			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the stage within the pipeline, lower numbers appear first' },
@@ -100,8 +101,9 @@ export const stageDescription: INodeProperties[] = [
 		placeholder: 'Add Field',
 		default: {},
 		displayOptions: { show: { ...showOnlyForStages, operation: ['update'] } },
+		description: 'Fields of the deal stage to change, only included fields are updated',
 		options: [
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New name for the deal stage' },
 			{ displayName: 'Nickname', name: 'nickname', type: 'string', default: '', description: 'Short alternative label shown for the deal stage' },
 			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the stage within the pipeline, lower numbers appear first' },
 		],
@@ -134,6 +136,7 @@ export const stageDescription: INodeProperties[] = [
 		placeholder: 'Add Filter',
 		default: {},
 		displayOptions: { show: { ...showOnlyForStages, operation: ['getMany'] } },
+		description: 'Optional filters to narrow the returned deal stages',
 		options: [
 			{
 				displayName: 'Pipeline Name or ID',

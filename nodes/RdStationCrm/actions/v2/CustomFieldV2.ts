@@ -59,7 +59,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Organization', value: 'organization' },
 			{ name: 'Product', value: 'product' },
 		],
-		description: 'Type of record this custom field is attached to, one of contact, deal, organization or product',
+		description: 'Type of record this custom field is attached to. One of: contact, deal, organization, product',
 	},
 	{
 		displayName: 'Type',
@@ -74,7 +74,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Option', value: 'option' },
 			{ name: 'Text', value: 'text' },
 		],
-		description: 'Data type of the custom field, such as text, number, date, option or multiple choice',
+		description: 'Data type of the custom field. One of: date, multiple_choice, number, option, text',
 	},
 
 	{
@@ -194,7 +194,7 @@ export const customFieldV2Description: INodeProperties[] = [
 					{ name: 'Organization', value: 'organization' },
 					{ name: 'Product', value: 'product' },
 				],
-				description: 'Return only custom fields belonging to this entity type, or all entities when left empty',
+				description: 'Return only custom fields of this entity type, one of contact, deal, organization or product, or leave empty for all',
 			},
 		],
 	},

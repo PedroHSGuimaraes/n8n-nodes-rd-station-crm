@@ -73,7 +73,7 @@ export const campaignDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForCampaigns, operation: ['create'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Description of the marketing campaign, e.g. Summer promotion for new leads' },
 		],
 	},
 	{
@@ -84,8 +84,8 @@ export const campaignDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForCampaigns, operation: ['update'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Description of the marketing campaign, e.g. Summer promotion for new leads' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'Name of the marketing campaign, e.g. Black Friday 2026' },
 		],
 	},
 

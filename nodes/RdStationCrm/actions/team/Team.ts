@@ -68,6 +68,7 @@ export const teamDescription: INodeProperties[] = [
 		placeholder: 'Add Option',
 		default: {},
 		displayOptions: { show: { ...showOnlyForTeams, operation: ['getMany'] } },
+		description: 'Additional options for how the teams are returned',
 		options: [
 			{
 				displayName: 'Sort By',
@@ -78,6 +79,7 @@ export const teamDescription: INodeProperties[] = [
 					{ name: 'Name', value: 'name' },
 				],
 				default: 'name',
+				description: 'Field to sort the returned teams by. One of: created_at, name',
 			},
 			{
 				displayName: 'Sort Direction',
@@ -88,6 +90,7 @@ export const teamDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'asc',
+				description: 'Sort order for the returned teams. One of: asc, desc',
 			},
 		],
 	},

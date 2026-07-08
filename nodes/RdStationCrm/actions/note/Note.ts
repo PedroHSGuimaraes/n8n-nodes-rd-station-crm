@@ -95,10 +95,11 @@ export const noteDescription: INodeProperties[] = [
 		placeholder: 'Add Filter',
 		default: {},
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['getMany'] } },
+		description: 'Optional filters to narrow the returned notes',
 		options: [
 			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '', description: 'Only return notes attached to this deal ID' },
-			{ displayName: 'End Date', name: 'endDate', type: 'dateTime', default: '', description: 'Only return notes created on or before this date and time' },
-			{ displayName: 'Start Date', name: 'startDate', type: 'dateTime', default: '', description: 'Only return notes created on or after this date and time' },
+			{ displayName: 'End Date', name: 'endDate', type: 'dateTime', default: '', description: 'Only return notes created on or before this date and time, in ISO 8601 format, e.g. 2026-07-08T14:30:00Z' },
+			{ displayName: 'Start Date', name: 'startDate', type: 'dateTime', default: '', description: 'Only return notes created on or after this date and time, in ISO 8601 format, e.g. 2026-07-08T14:30:00Z' },
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
@@ -117,6 +118,7 @@ export const noteDescription: INodeProperties[] = [
 		placeholder: 'Add Option',
 		default: {},
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['getMany'] } },
+		description: 'Additional options for how the notes are returned',
 		options: [
 			{
 				displayName: 'Sort Direction',
@@ -127,6 +129,7 @@ export const noteDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'desc',
+				description: 'Sort order for the returned notes by creation date. One of: asc, desc',
 			},
 		],
 	},

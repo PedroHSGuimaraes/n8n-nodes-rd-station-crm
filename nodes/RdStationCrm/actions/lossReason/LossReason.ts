@@ -130,6 +130,7 @@ export const lossReasonDescription: INodeProperties[] = [
 					{ name: 'Name', value: 'name' },
 				],
 				default: 'name',
+				description: 'Field to sort the returned deal loss reasons by. One of: name',
 			},
 		],
 	},

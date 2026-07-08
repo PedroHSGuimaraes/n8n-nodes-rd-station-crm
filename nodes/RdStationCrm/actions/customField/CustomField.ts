@@ -90,7 +90,7 @@ export const customFieldDescription: INodeProperties[] = [
 			{ name: 'Text', value: 'text' },
 		],
 		default: 'text',
-		description: 'Data type of the custom field values, one of text, date, single-choice option or multiple choice',
+		description: 'Data type of the custom field values. One of: date, multiple_choice, option, text',
 	},
 	{
 		displayName: 'Entity',
@@ -105,7 +105,7 @@ export const customFieldDescription: INodeProperties[] = [
 			{ name: 'Product', value: 'product' },
 		],
 		default: 'contact',
-		description: 'Record type this custom field applies to, one of contact, deal, organization or product',
+		description: 'Record type this custom field applies to. One of: contact, deal, organization, product',
 	},
 
 	// ----- Additional fields (create) -----
@@ -234,7 +234,7 @@ export const customFieldDescription: INodeProperties[] = [
 		name: 'filterEntity',
 		type: 'options',
 		default: 'all',
-		description: 'Return only custom fields that apply to this record type, or All to return every custom field',
+		description: 'Return only custom fields for this record type, or all for every field. One of: all, contact, deal, organization, product',
 		displayOptions: { show: { ...showOnlyForCustomFields, operation: ['getMany'] } },
 		options: [
 			{ name: 'All', value: 'all' },

@@ -71,7 +71,7 @@ export const webhookDescription: INodeProperties[] = [
 		default: 'crm_deal_created',
 		displayOptions: { show: { ...showOnlyForWebhooks, operation: ['create'] } },
 		options: RD_CRM_WEBHOOK_EVENTS,
-		description: 'RD Station CRM event that triggers this webhook, only one event is allowed per subscription',
+		description: 'RD Station CRM event that triggers this webhook, only one event is allowed per subscription, for example crm_deal_created or crm_contact_updated',
 	},
 	{
 		displayName: 'URL',
@@ -92,6 +92,7 @@ export const webhookDescription: INodeProperties[] = [
 		placeholder: 'Add Field',
 		default: {},
 		displayOptions: { show: { ...showOnlyForWebhooks, operation: ['update'] } },
+		description: 'Fields of the webhook subscription to change, only included fields are updated',
 		options: [
 			{
 				displayName: 'Event',
@@ -99,6 +100,7 @@ export const webhookDescription: INodeProperties[] = [
 				type: 'options',
 				options: RD_CRM_WEBHOOK_EVENTS,
 				default: 'crm_deal_created',
+				description: 'Event that replaces the current trigger for the webhook, for example crm_deal_created or crm_contact_updated',
 			},
 			{
 				displayName: 'URL',
@@ -106,6 +108,7 @@ export const webhookDescription: INodeProperties[] = [
 				type: 'string',
 				default: '',
 				placeholder: 'e.g. https://example.com/webhook',
+				description: 'HTTPS URL that RD Station CRM will POST events to, e.g. https://example.com/webhook',
 			},
 		],
 	},

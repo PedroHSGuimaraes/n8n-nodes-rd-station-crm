@@ -100,6 +100,7 @@ export const organizationDescription: INodeProperties[] = [
 						name: 'value',
 						type: 'string',
 						default: '',
+						description: 'Value to set for the selected custom field, as plain text, e.g. Enterprise',
 					},
 				],
 			},
@@ -123,7 +124,7 @@ export const organizationDescription: INodeProperties[] = [
 				default: '',
 				description: 'Comma-separated list of segment names to link to the organization, for example Enterprise,Priority',
 			},
-			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
+			{ displayName: 'URL', name: 'url', type: 'string', default: '', description: 'Full website URL including the https:// scheme, e.g. https://www.empresa.com' },
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
@@ -143,7 +144,7 @@ export const organizationDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForOrganizations, operation: ['update'] } },
 		options: [
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'Name of the organization (company or account), e.g. Acme Ltda' },
 			{ displayName: 'Resume', name: 'resume', type: 'string', default: '', description: 'Short text description or summary of the organization' },
 			{
 				displayName: 'Segments',
@@ -152,7 +153,7 @@ export const organizationDescription: INodeProperties[] = [
 				default: '',
 				description: 'Comma-separated list of segment names to link to the organization, for example Enterprise,Priority',
 			},
-			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
+			{ displayName: 'URL', name: 'url', type: 'string', default: '', description: 'Full website URL including the https:// scheme, e.g. https://www.empresa.com' },
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
@@ -227,6 +228,7 @@ export const organizationDescription: INodeProperties[] = [
 					{ name: 'Updated At', value: 'updated_at' },
 				],
 				default: 'name',
+				description: 'Field to sort the results by. One of: created_at, name, updated_at',
 			},
 			{
 				displayName: 'Sort Direction',
@@ -237,6 +239,7 @@ export const organizationDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'asc',
+				description: 'Sort direction. One of: asc, desc',
 			},
 		],
 	},

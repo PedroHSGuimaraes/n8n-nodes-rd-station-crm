@@ -76,6 +76,7 @@ export const pipelineDescription: INodeProperties[] = [
 		placeholder: 'Add Field',
 		default: {},
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['create'] } },
+		description: 'Optional extra fields to set on the new deal pipeline',
 		options: [
 			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the pipeline in the list, lower numbers appear first' },
 		],
@@ -87,8 +88,9 @@ export const pipelineDescription: INodeProperties[] = [
 		placeholder: 'Add Field',
 		default: {},
 		displayOptions: { show: { ...showOnlyForPipelines, operation: ['update'] } },
+		description: 'Fields of the deal pipeline to change, only included fields are updated',
 		options: [
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New name for the deal pipeline' },
 			{ displayName: 'Order', name: 'order', type: 'number', default: 0, description: 'Numeric position of the pipeline in the list, lower numbers appear first' },
 		],
 	},

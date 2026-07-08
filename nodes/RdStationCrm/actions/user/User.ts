@@ -74,6 +74,7 @@ export const userDescription: INodeProperties[] = [
 		placeholder: 'Add Filter',
 		default: {},
 		displayOptions: { show: { ...showOnlyForUsers, operation: ['getMany'] } },
+		description: 'Optional filters to narrow the returned users',
 		options: [
 			{
 				displayName: 'Role',
@@ -85,6 +86,7 @@ export const userDescription: INodeProperties[] = [
 					{ name: 'User', value: 'user' },
 				],
 				default: 'user',
+				description: 'Filter users by their access role. One of: admin, manager, user',
 			},
 			{
 				displayName: 'Status',
@@ -96,6 +98,7 @@ export const userDescription: INodeProperties[] = [
 					{ name: 'Inactive', value: 'inactive' },
 				],
 				default: 'active',
+				description: 'Filter users by their account status. One of: active, all, inactive',
 			},
 			{
 				displayName: 'Team Name or ID',

@@ -63,7 +63,7 @@ export const taskV2Description: INodeProperties[] = [
 		default: 'task',
 		options: taskTypeOptions,
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Kind of activity, such as call, email, meeting, visit, lunch, whatsapp or task',
+		description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp',
 	},
 
 	{
@@ -74,9 +74,9 @@ export const taskV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 		options: [
-			{ displayName: 'Deal ID', name: 'deal_id', type: 'string', default: '' },
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
-			{ displayName: 'Due Date', name: 'due_date', type: 'dateTime', default: '' },
+			{ displayName: 'Deal ID', name: 'deal_id', type: 'string', default: '', description: 'ID of the deal to link this task to, taken from a deal create or get operation' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text details of the task' },
+			{ displayName: 'Due Date', name: 'due_date', type: 'dateTime', default: '', description: 'Due date of the task in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
 			{
 				displayName: 'Owner IDs',
 				name: 'owner_ids',
@@ -94,10 +94,10 @@ export const taskV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['update'] } },
 		options: [
-			{ displayName: 'Deal ID', name: 'deal_id', type: 'string', default: '' },
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
-			{ displayName: 'Due Date', name: 'due_date', type: 'dateTime', default: '' },
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Deal ID', name: 'deal_id', type: 'string', default: '', description: 'ID of the deal to link this task to, taken from a deal create or get operation' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text details of the task' },
+			{ displayName: 'Due Date', name: 'due_date', type: 'dateTime', default: '', description: 'Due date of the task in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New title for the task, e.g. Call the client about the proposal' },
 			{
 				displayName: 'Owner IDs',
 				name: 'owner_ids',
@@ -115,6 +115,7 @@ export const taskV2Description: INodeProperties[] = [
 					{ name: 'Completed', value: 'completed' },
 					{ name: 'Open', value: 'open' },
 				],
+				description: 'Status of the task. One of: canceled, completed, open',
 			},
 			{
 				displayName: 'Type',
@@ -122,6 +123,7 @@ export const taskV2Description: INodeProperties[] = [
 				type: 'options',
 				default: 'task',
 				options: taskTypeOptions,
+				description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp',
 			},
 		],
 	},

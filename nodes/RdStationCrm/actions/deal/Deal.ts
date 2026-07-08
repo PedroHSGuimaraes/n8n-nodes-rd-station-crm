@@ -145,6 +145,7 @@ export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Custom Fields',
 		name: 'customFieldsUi',
+		description: 'Custom fields to set on the deal, each pairing a custom field with its value',
 		type: 'fixedCollection',
 		typeOptions: { multipleValues: true },
 		placeholder: 'Add Custom Field',
@@ -166,6 +167,7 @@ export const dealDescription: INodeProperties[] = [
 					{
 						displayName: 'Value',
 						name: 'value',
+						description: 'Value to set for the selected custom field, where the format depends on the field type, e.g. a text, number or date',
 						type: 'string',
 						default: '',
 					},
@@ -178,6 +180,7 @@ export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Products',
 		name: 'dealProductsUi',
+		description: 'Product line items to attach to the deal on creation, each with product, quantity and price',
 		type: 'fixedCollection',
 		typeOptions: { multipleValues: true },
 		placeholder: 'Add Product',
@@ -198,12 +201,14 @@ export const dealDescription: INodeProperties[] = [
 					{
 						displayName: 'Discount',
 						name: 'discount',
+						description: 'Discount applied to this product, where interpretation depends on the discount type, e.g. 10',
 						type: 'number',
 						default: 0,
 					},
 					{
 						displayName: 'Discount Type',
 						name: 'discount_type',
+						description: 'How the discount is interpreted. One of: amount, percent',
 						type: 'options',
 						options: [
 							{ name: 'Amount', value: 'amount' },
@@ -214,6 +219,7 @@ export const dealDescription: INodeProperties[] = [
 					{
 						displayName: 'Price',
 						name: 'price',
+						description: 'Unit price of the product in the account currency as a decimal number, e.g. 1500.00',
 						type: 'number',
 						default: 0,
 					},
@@ -228,12 +234,14 @@ export const dealDescription: INodeProperties[] = [
 					{
 						displayName: 'Recurrence',
 						name: 'recurrence',
+						description: 'Recurrence value of the product line as a number, e.g. 0',
 						type: 'number',
 						default: 0,
 					},
 					{
 						displayName: 'Total',
 						name: 'total',
+						description: 'Total value of the product line in the account currency as a decimal number, e.g. 3000.00',
 						type: 'number',
 						default: 0,
 					},
@@ -246,6 +254,7 @@ export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Additional Fields',
 		name: 'additionalFields',
+		description: 'Optional additional deal fields to set when creating the deal',
 		type: 'collection',
 		placeholder: 'Add Field',
 		default: {},
@@ -288,11 +297,12 @@ export const dealDescription: INodeProperties[] = [
 				name: 'predictionDate',
 				type: 'dateTime',
 				default: '',
-				description: 'Estimated date the deal is expected to close, as an ISO 8601 date such as 2026-12-31',
+				description: 'Estimated close date of the deal in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z',
 			},
 			{
 				displayName: 'Rating',
 				name: 'rating',
+				description: 'Deal rating as an integer score, e.g. 3',
 				type: 'number',
 				default: 0,
 			},
@@ -309,6 +319,7 @@ export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Update Fields',
 		name: 'updateFields',
+		description: 'Deal fields to update, where only the provided fields are changed',
 		type: 'collection',
 		placeholder: 'Add Field',
 		default: {},
@@ -322,7 +333,7 @@ export const dealDescription: INodeProperties[] = [
 				typeOptions: { loadOptionsMethod: 'getStages' },
 				default: '',
 			},
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'Updated name or title of the deal, e.g. Website redesign project' },
 			{
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
@@ -336,11 +347,12 @@ export const dealDescription: INodeProperties[] = [
 				name: 'predictionDate',
 				type: 'dateTime',
 				default: '',
-				description: 'Estimated date the deal is expected to close, as an ISO 8601 date such as 2026-12-31',
+				description: 'Estimated close date of the deal in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z',
 			},
 			{
 				displayName: 'Rating',
 				name: 'rating',
+				description: 'Deal rating as an integer score, e.g. 3',
 				type: 'number',
 				default: 0,
 			},
@@ -378,6 +390,7 @@ export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Filters',
 		name: 'filters',
+		description: 'Optional filters to narrow which deals are returned',
 		type: 'collection',
 		placeholder: 'Add Filter',
 		default: {},
@@ -477,13 +490,14 @@ export const dealDescription: INodeProperties[] = [
 					{ name: 'Won', value: 'true' },
 				],
 				default: 'all',
-				description: 'Filter deals by outcome, such as won, lost, open, or all',
+				description: 'Filter deals by outcome. One of: all (any), false (lost), null (open), true (won)',
 			},
 		],
 	},
 	{
 		displayName: 'Options',
 		name: 'options',
+		description: 'Additional options that control how the returned deals are sorted',
 		type: 'collection',
 		placeholder: 'Add Option',
 		default: {},
@@ -492,6 +506,7 @@ export const dealDescription: INodeProperties[] = [
 			{
 				displayName: 'Sort By',
 				name: 'order',
+				description: 'Field to sort the deals by. One of: created_at, name, prediction_date, rating, updated_at',
 				type: 'options',
 				options: [
 					{ name: 'Created At', value: 'created_at' },
@@ -505,6 +520,7 @@ export const dealDescription: INodeProperties[] = [
 			{
 				displayName: 'Sort Direction',
 				name: 'direction',
+				description: 'Direction to sort the deals. One of: asc, desc',
 				type: 'options',
 				options: [
 					{ name: 'Ascending', value: 'asc' },

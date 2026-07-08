@@ -73,7 +73,7 @@ export const sourceDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForSources, operation: ['create'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Description of the deal source, e.g. Leads from paid ads campaigns' },
 		],
 	},
 	{
@@ -84,8 +84,8 @@ export const sourceDescription: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnlyForSources, operation: ['update'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Description of the deal source, e.g. Leads from paid ads campaigns' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'Name of the deal source (where a deal originated), e.g. Website or Indication' },
 		],
 	},
 

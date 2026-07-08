@@ -61,7 +61,7 @@ export const contactV2Description: INodeProperties[] = [
 				name: 'email',
 				displayName: 'Email',
 				values: [
-					{ displayName: 'Email', name: 'email', type: 'string', placeholder: 'e.g. name@example.com', default: '' },
+					{ displayName: 'Email', name: 'email', type: 'string', placeholder: 'e.g. name@example.com', default: '', description: 'Email address of the contact, e.g. maria@empresa.com' },
 				],
 			},
 		],
@@ -79,7 +79,7 @@ export const contactV2Description: INodeProperties[] = [
 				name: 'phone',
 				displayName: 'Phone',
 				values: [
-					{ displayName: 'Phone', name: 'phone', type: 'string', default: '' },
+					{ displayName: 'Phone', name: 'phone', type: 'string', default: '', description: 'Phone number including country and area code, e.g. +55 11 99999-9999' },
 					{
 						displayName: 'Type',
 						name: 'type',
@@ -91,6 +91,7 @@ export const contactV2Description: INodeProperties[] = [
 							{ name: 'Work', value: 'work' },
 						],
 						default: 'work',
+						description: 'Category of the phone number. One of: fax, home, mobile, work',
 					},
 				],
 			},
@@ -118,7 +119,7 @@ export const contactV2Description: INodeProperties[] = [
 						typeOptions: { loadOptionsMethod: 'getContactCustomFieldsV2' },
 						default: '',
 					},
-					{ displayName: 'Value', name: 'value', type: 'string', default: '' },
+					{ displayName: 'Value', name: 'value', type: 'string', default: '', description: 'Value to store in the selected custom field, formatted to match that field type' },
 				],
 			},
 		],
@@ -132,8 +133,8 @@ export const contactV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 		options: [
-			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '' },
-			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '' },
+			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '', description: 'Birthday of the contact in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
+			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '', description: 'Job title of the contact, e.g. Marketing Manager' },
 			{
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
@@ -143,7 +144,7 @@ export const contactV2Description: INodeProperties[] = [
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
-			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '' },
+			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '', description: 'WhatsApp number or username of the contact, e.g. +55 11 99999-9999' },
 		],
 	},
 	{
@@ -154,9 +155,9 @@ export const contactV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['update'] } },
 		options: [
-			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '' },
-			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '' },
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '', description: 'Birthday of the contact in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
+			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '', description: 'Job title of the contact, e.g. Marketing Manager' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New full name for the contact, e.g. Maria Silva' },
 			{
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
@@ -166,7 +167,7 @@ export const contactV2Description: INodeProperties[] = [
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
-			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '' },
+			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '', description: 'WhatsApp number or username of the contact, e.g. +55 11 99999-9999' },
 		],
 	},
 

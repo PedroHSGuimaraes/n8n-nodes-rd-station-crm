@@ -69,7 +69,7 @@ export const organizationV2Description: INodeProperties[] = [
 						typeOptions: { loadOptionsMethod: 'getOrganizationCustomFieldsV2' },
 						default: '',
 					},
-					{ displayName: 'Value', name: 'value', type: 'string', default: '' },
+					{ displayName: 'Value', name: 'value', type: 'string', default: '', description: 'Value to store in the selected custom field, formatted to match that field type' },
 				],
 			},
 		],
@@ -83,7 +83,7 @@ export const organizationV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text description of the organization' },
 			{
 				displayName: 'Owner Name or ID',
 				name: 'owner_id',
@@ -100,7 +100,7 @@ export const organizationV2Description: INodeProperties[] = [
 				default: '',
 				description: 'Comma-separated list of segment IDs to assign to the organization',
 			},
-			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
+			{ displayName: 'URL', name: 'url', type: 'string', default: '', description: 'Website of the organization as a full URL including the https:// scheme, e.g. https://www.empresa.com' },
 		],
 	},
 	{
@@ -111,8 +111,8 @@ export const organizationV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['update'] } },
 		options: [
-			{ displayName: 'Description', name: 'description', type: 'string', default: '' },
-			{ displayName: 'Name', name: 'name', type: 'string', default: '' },
+			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text description of the organization' },
+			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New name for the company, e.g. Acme Corporation' },
 			{
 				displayName: 'Owner Name or ID',
 				name: 'owner_id',
@@ -129,7 +129,7 @@ export const organizationV2Description: INodeProperties[] = [
 				default: '',
 				description: 'Comma-separated list of segment IDs to assign to the organization',
 			},
-			{ displayName: 'URL', name: 'url', type: 'string', default: '' },
+			{ displayName: 'URL', name: 'url', type: 'string', default: '', description: 'Website of the organization as a full URL including the https:// scheme, e.g. https://www.empresa.com' },
 		],
 	},
 

@@ -90,7 +90,7 @@ export const taskDescription: INodeProperties[] = [
 		options: taskTypeOptions,
 		default: 'task',
 		displayOptions: { show: { ...showOnlyForTasks, operation: ['create'] } },
-		description: 'Category of the activity, one of call, email, meeting, task, lunch, visit or whatsapp',
+		description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp',
 	},
 	{
 		displayName: 'Date',
@@ -98,7 +98,7 @@ export const taskDescription: INodeProperties[] = [
 		type: 'dateTime',
 		default: '',
 		displayOptions: { show: { ...showOnlyForTasks, operation: ['create'] } },
-		description: 'Calendar date the task is scheduled for; only the date part is sent to RD Station CRM, the time of day is ignored',
+		description: 'Date the task is scheduled for, in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T09:00:00Z; only the date part is sent to RD Station CRM',
 	},
 	{
 		displayName: 'Hour',
@@ -126,7 +126,7 @@ export const taskDescription: INodeProperties[] = [
 				default: false,
 				description: 'Whether the task is already completed and should be marked as done',
 			},
-			{ displayName: 'Notes', name: 'notes', type: 'string', default: '' },
+			{ displayName: 'Notes', name: 'notes', type: 'string', default: '', description: 'Free-text notes or additional details about the task' },
 			{
 				displayName: 'User Names or IDs',
 				name: 'userIds',
@@ -151,7 +151,7 @@ export const taskDescription: INodeProperties[] = [
 				name: 'date',
 				type: 'dateTime',
 				default: '',
-				description: 'Calendar date the task is scheduled for; only the date part is sent to RD Station CRM, the time of day is ignored',
+				description: 'Date the task is scheduled for, in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T09:00:00Z; only the date part is sent to RD Station CRM',
 			},
 			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '', description: 'ID of the deal this task is linked to in RD Station CRM, obtained from a deal create or get operation' },
 			{
@@ -162,7 +162,7 @@ export const taskDescription: INodeProperties[] = [
 				description: 'Whether the task is already completed and should be marked as done',
 			},
 			{ displayName: 'Hour', name: 'hour', type: 'string', default: '', placeholder: 'e.g. 14:30', description: 'Time of day the task is scheduled for, in 24-hour HH:MM format, for example 14:30' },
-			{ displayName: 'Notes', name: 'notes', type: 'string', default: '' },
+			{ displayName: 'Notes', name: 'notes', type: 'string', default: '', description: 'Free-text notes or additional details about the task' },
 			{ displayName: 'Subject', name: 'subject', type: 'string', default: '', description: 'Title or subject describing the task, for example Call the client to confirm the proposal' },
 			{
 				displayName: 'Type',
@@ -170,7 +170,7 @@ export const taskDescription: INodeProperties[] = [
 				type: 'options',
 				options: taskTypeOptions,
 				default: 'task',
-				description: 'Category of the activity, one of call, email, meeting, task, lunch, visit or whatsapp',
+				description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp',
 			},
 			{
 				displayName: 'User Names or IDs',
@@ -217,16 +217,16 @@ export const taskDescription: INodeProperties[] = [
 				name: 'dateEnd',
 				type: 'dateTime',
 				default: '',
-				description: 'Return only tasks scheduled on or before this date; only the date part is sent to RD Station CRM',
+				description: 'Return only tasks scheduled on or before this date, in ISO 8601 format, e.g. 2026-07-08; only the date part is sent to RD Station CRM',
 			},
 			{
 				displayName: 'Date Start',
 				name: 'dateStart',
 				type: 'dateTime',
 				default: '',
-				description: 'Return only tasks scheduled on or after this date; only the date part is sent to RD Station CRM',
+				description: 'Return only tasks scheduled on or after this date, in ISO 8601 format, e.g. 2026-07-08; only the date part is sent to RD Station CRM',
 			},
-			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '' },
+			{ displayName: 'Deal ID', name: 'dealId', type: 'string', default: '', description: 'Return only tasks linked to this deal, using the deal ID from a deal create or get operation' },
 			{
 				displayName: 'Done',
 				name: 'done',
@@ -240,6 +240,7 @@ export const taskDescription: INodeProperties[] = [
 				type: 'options',
 				options: taskTypeOptions,
 				default: 'task',
+				description: 'Return only tasks of this activity type. One of: call, email, lunch, meeting, task, visit, whatsapp',
 			},
 			{
 				displayName: 'User Name or ID',
