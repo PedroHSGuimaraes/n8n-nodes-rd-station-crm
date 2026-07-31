@@ -49,8 +49,27 @@ export const loadOptionsV2 = {
 		return toOptionsV2(await rdCrmV2RequestAllItems.call(this, '/segments'));
 	},
 
-	// Stages are nested under pipelines; list every pipeline's stages as "Pipeline › Stage".
+	async getPipelinesV2(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+		return toOptionsV2(await rdCrmV2RequestAllItems.call(this, '/pipelines'));
+	},
+
+	// Stages are nested under pipelines. When a pipeline is selected upstream, list only its
+	// stages; otherwise list every pipeline's stages labeled "Pipeline › Stage".
 	async getStagesV2(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+		let pipelineId = '';
+		try {
+			pipelineId = this.getNodeParameter('pipeline_id', '') as string;
+		} catch {
+			pipelineId = '';
+		}
+
+		if (pipelineId) {
+			const stages = await rdCrmV2RequestAllItems.call(this, `/pipelines/${pipelineId}/stages`);
+			return stages
+				.filter(Boolean)
+				.map((stage) => ({ name: stage.name as string, value: stage.id as string }));
+		}
+
 		const pipelines = await rdCrmV2RequestAllItems.call(this, '/pipelines');
 		const out: INodePropertyOptions[] = [];
 		for (const pipeline of pipelines) {

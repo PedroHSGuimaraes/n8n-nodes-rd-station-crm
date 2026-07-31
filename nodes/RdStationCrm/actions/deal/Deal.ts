@@ -109,7 +109,32 @@ export const dealDescription: INodeProperties[] = [
 		description: 'Name or title of the deal (sales opportunity), for example Website redesign project',
 	},
 
-	// ----- Deal Stage (moveToStage, required) -----
+	// ----- Pipeline (create + moveToStage): scopes the Deal Stage list to one funnel -----
+	{
+		displayName: 'Pipeline Name or ID',
+		name: 'pipelineId',
+		type: 'options',
+		default: '',
+		description:
+			'Sales funnel (pipeline) whose stages the Deal Stage field lists. ' + loadOptionsDescription,
+		typeOptions: { loadOptionsMethod: 'getPipelines' },
+		displayOptions: { show: { ...showOnlyForDeals, operation: ['create', 'moveToStage'] } },
+	},
+
+	// ----- Deal Stage (create, optional): filtered by the selected Pipeline -----
+	{
+		displayName: 'Deal Stage Name or ID',
+		name: 'dealStageId',
+		type: 'options',
+		default: '',
+		description:
+			'Stage of the selected pipeline to place the new deal in; leave empty to use the account default. ' +
+			loadOptionsDescription,
+		typeOptions: { loadOptionsMethod: 'getStages', loadOptionsDependsOn: ['pipelineId'] },
+		displayOptions: { show: { ...showOnlyForDeals, operation: ['create'] } },
+	},
+
+	// ----- Deal Stage (moveToStage, required): filtered by the selected Pipeline -----
 	{
 		displayName: 'Deal Stage Name or ID',
 		name: 'dealStageId',
@@ -117,7 +142,7 @@ export const dealDescription: INodeProperties[] = [
 		required: true,
 		default: '',
 		description: loadOptionsDescription,
-		typeOptions: { loadOptionsMethod: 'getStages' },
+		typeOptions: { loadOptionsMethod: 'getStages', loadOptionsDependsOn: ['pipelineId'] },
 		displayOptions: { show: { ...showOnlyForDeals, operation: ['moveToStage'] } },
 	},
 
@@ -274,14 +299,6 @@ export const dealDescription: INodeProperties[] = [
 				type: 'options',
 				description: loadOptionsDescription,
 				typeOptions: { loadOptionsMethod: 'getSources' },
-				default: '',
-			},
-			{
-				displayName: 'Deal Stage Name or ID',
-				name: 'dealStageId',
-				type: 'options',
-				description: loadOptionsDescription,
-				typeOptions: { loadOptionsMethod: 'getStages' },
 				default: '',
 			},
 			{
@@ -550,10 +567,12 @@ export async function executeDeal(
 ): Promise<any> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
+		const dealStageId = this.getNodeParameter('dealStageId', i, '') as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
 
 		const deal: IDataObject = { name };
-		if (additionalFields.dealStageId) deal.deal_stage_id = additionalFields.dealStageId;
+		// pipelineId is a UI-only filter for the stage list; RD infers the pipeline from the stage.
+		if (dealStageId) deal.deal_stage_id = dealStageId;
 		if (additionalFields.userId) deal.user_id = additionalFields.userId;
 		if (additionalFields.rating !== undefined && additionalFields.rating !== '') {
 			deal.rating = additionalFields.rating;

@@ -65,6 +65,26 @@ export const dealV2Description: INodeProperties[] = [
 		typeOptions: { loadOptionsMethod: 'getLossReasonsV2' },
 	},
 	{
+		displayName: 'Pipeline Name or ID',
+		name: 'pipeline_id',
+		type: 'options',
+		default: '',
+		displayOptions: { show: { ...showOnly, operation: ['create', 'moveToStage'] } },
+		description:
+			'Sales funnel (pipeline) whose stages the Stage field lists. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		typeOptions: { loadOptionsMethod: 'getPipelinesV2' },
+	},
+	{
+		displayName: 'Stage Name or ID',
+		name: 'stage_id',
+		type: 'options',
+		default: '',
+		displayOptions: { show: { ...showOnly, operation: ['create'] } },
+		description:
+			'Stage of the selected pipeline to place the new deal in; leave empty to use the account default. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		typeOptions: { loadOptionsMethod: 'getStagesV2', loadOptionsDependsOn: ['pipeline_id'] },
+	},
+	{
 		displayName: 'Stage Name or ID',
 		name: 'stage_id',
 		type: 'options',
@@ -73,7 +93,7 @@ export const dealV2Description: INodeProperties[] = [
 		displayOptions: { show: { ...showOnly, operation: ['moveToStage'] } },
 		description:
 			'Pipeline stage to move the deal into. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: { loadOptionsMethod: 'getStagesV2' },
+		typeOptions: { loadOptionsMethod: 'getStagesV2', loadOptionsDependsOn: ['pipeline_id'] },
 	},
 
 	{
@@ -157,15 +177,6 @@ export const dealV2Description: INodeProperties[] = [
 				description:
 					'Origin or lead source of the deal. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getSourcesV2' },
-				default: '',
-			},
-			{
-				displayName: 'Stage Name or ID',
-				name: 'stage_id',
-				type: 'options',
-				description:
-					'Pipeline stage of the deal in the sales funnel. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-				typeOptions: { loadOptionsMethod: 'getStagesV2' },
 				default: '',
 			},
 		],
@@ -309,10 +320,12 @@ export async function executeDealV2(
 ): Promise<any> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
+		const stageId = this.getNodeParameter('stage_id', i, '') as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
+		// pipeline_id is a UI-only filter for the stage list; RD infers the pipeline from the stage.
 		// Do NOT send status on create — v2 only allows status=ongoing at creation.
-		const body = buildDealV2Body({ name, ...additionalFields }, customFieldsUi);
+		const body = buildDealV2Body({ name, stage_id: stageId, ...additionalFields }, customFieldsUi);
 		const response = await rdCrmV2Request.call(this, 'POST', '/deals', body);
 		return response.data ?? response;
 	}
