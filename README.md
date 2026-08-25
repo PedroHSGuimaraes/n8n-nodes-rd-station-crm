@@ -2,6 +2,8 @@
 
 Node community do [n8n](https://n8n.io/) para integrar seus fluxos com o **[RD Station CRM](https://www.rdstation.com/crm/)**.
 
+[![Apoie no Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-Apoie_o_projeto-FFDD00?logo=buy-me-a-coffee&logoColor=000000)](https://buymeacoffee.com/qTny0AzFXS)
+
 O RD Station CRM é o CRM de vendas usado para gerenciar contatos, negociações, funis e tarefas. Este pacote suporta **as duas versões da API**, selecionáveis no próprio node:
 
 - **API v1** — autenticação por **token** (privado, na query string).
@@ -9,7 +11,7 @@ O RD Station CRM é o CRM de vendas usado para gerenciar contatos, negociações
 
 [n8n](https://n8n.io/) é uma plataforma de automação de fluxos com [licença fair-code](https://docs.n8n.io/reference/license/).
 
-[Instalação](#-instalação) · [Credenciais](#-credenciais) · [Nós e Operações](#-nós-e-operações) · [Trigger](#-trigger) · [Tool de IA](#-usar-como-tool-de-agente-de-ia) · [v1 vs v2](#-v1-ou-v2-qual-usar) · [Desenvolvimento](#️-desenvolvimento) · [Versões](#-versões)
+[Instalação](#-instalação) · [Credenciais](#-credenciais) · [Nós e Operações](#-nós-e-operações) · [Trigger](#-trigger) · [Tool de IA](#-usar-como-tool-de-agente-de-ia) · [v1 vs v2](#-v1-ou-v2-qual-usar) · [Desenvolvimento](#️-desenvolvimento) · [Versões](#-versões) · [Apoie](#-apoie-o-projeto)
 
 ---
 
@@ -264,6 +266,8 @@ n8n-nodes-rd-station-crm/
 
 ## 📈 Versões
 
+- **2.3.2** — Link de apoio no `package.json` e na documentação do npm, com acesso direto ao Buy Me a Coffee.
+- **2.3.1** — Metadado `funding` adicionado ao pacote para integração com `npm fund`.
 - **2.2.1** — **Menos alucinação da IA.** Fechamento de lacunas nas descrições: ~147 campos que estavam **sem descrição** ganharam descrição com formato + exemplo (e-mail, telefone, URL, preços, valores de custom field, aniversário…); todos os campos de **data** (`dateTime`) passam a indicar o formato exato **ISO 8601** com exemplo; e os campos de **enum** (`type: 'options'`) listam os **valores válidos** na descrição (ex.: `One of: call, email, meeting, task, whatsapp`). Reduz o espaço para o modelo inventar formato/valor ao preencher via `$fromAI()`.
 - **2.2.0** — **Otimização para uso como Tool de Agente de IA.** Descrições de todas as operações e campos reescritas para o LLM entender e preencher os parâmetros corretamente; descrição do node e dos recursos enriquecidas; categoria **AI → Tools** no codex; nova seção no README explicando o `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` e o `$fromAI()`. O node já expunha `usableAsTool: true` desde a 2.x.
 - **2.1.4** — Ícone passa a usar o **símbolo (marca) do RD Station** — quadrado e nítido em qualquer tamanho do nó (light preto, dark branco, chevron ciano nos dois temas).
@@ -282,6 +286,10 @@ Se algo não funcionar:
 2. Verifique se a versão do n8n é compatível.
 3. Consulte os logs do n8n para detalhes do erro.
 4. Abra uma [issue no GitHub](https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm/issues).
+
+## ☕ Apoie o projeto
+
+Este node é mantido de forma independente. Se ele ajuda suas automações, você pode apoiar o desenvolvimento, a manutenção e as novas integrações pelo [Buy Me a Coffee](https://buymeacoffee.com/qTny0AzFXS).
 
 ## 📄 Licença
 
