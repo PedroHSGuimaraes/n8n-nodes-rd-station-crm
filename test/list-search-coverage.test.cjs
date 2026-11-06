@@ -91,6 +91,8 @@ describe('listSearch coverage', () => {
 			userId: ['searchUsers', 'searchUsersV2'],
 			webhookId: ['searchWebhooks', 'searchWebhooksV2'],
 			leadId: ['searchLeadsV2', 'searchLeadsV2'],
+			meetingId: ['searchMeetingsV2', 'searchMeetingsV2'],
+			proposalId: ['searchProposalsV2', 'searchProposalsV2'],
 			dealProductId: ['searchDealProductsV2', 'searchDealProductsV2'],
 		};
 		const guided = node.description.properties.filter((p) => p.type === 'resourceLocator');

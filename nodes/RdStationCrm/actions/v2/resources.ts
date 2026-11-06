@@ -90,7 +90,9 @@ export const pipelineSpec: V2Spec = {
 	summary: 'A sales funnel made up of ordered stages, in RD Station CRM API v2',
 	path: () => '/pipelines',
 	idName: 'pipelineId',
-	operations: standardOperations(['get', 'getMany'], 'pipeline', 'pipelines'),
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'pipeline', 'pipelines'),
+	topFields: [text('name', 'Name', 'Name of the pipeline, for example Sales')],
+	fields: [num('order', 'Order', 'Position of the pipeline in the pipeline list')],
 };
 
 /** Etapa: mora dentro de um funil, então toda rota leva o ID do funil. */
@@ -101,7 +103,13 @@ export const stageSpec: V2Spec = {
 	path: (pipelineId) => `/pipelines/${pipelineId}/stages`,
 	parent: 'pipelineId',
 	idName: 'stageId',
-	operations: standardOperations(['get', 'getMany'], 'stage', 'stages'),
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'stage', 'stages'),
+	topFields: [text('name', 'Name', 'Name of the stage, for example Proposal sent')],
+	fields: [
+		text('description', 'Description', 'Free-text description of the stage'),
+		text('objective', 'Objective', 'What the team must achieve to move a deal past this stage'),
+		num('order', 'Order', 'Position of the stage inside the pipeline'),
+	],
 };
 
 /** Fonte de origem do negócio ou lead. */
@@ -112,7 +120,9 @@ export const sourceSpec: V2Spec = {
 	path: () => '/sources',
 	idName: 'sourceId',
 	filter: true,
-	operations: standardOperations(['get', 'getMany'], 'source', 'sources'),
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'source', 'sources'),
+	topFields: [text('name', 'Name', 'Name of the source, for example Trade show')],
+	fields: [text('description', 'Description', 'Free-text description of the source')],
 };
 
 /** Motivo de perda de uma negociação. */
@@ -123,7 +133,8 @@ export const lostReasonSpec: V2Spec = {
 	path: () => '/lost_reasons',
 	idName: 'lossReasonId',
 	filter: true,
-	operations: standardOperations(['get', 'getMany'], 'loss reason', 'loss reasons'),
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'loss reason', 'loss reasons'),
+	topFields: [text('name', 'Name', 'Name of the loss reason, for example Price too high')],
 };
 
 /** Usuário da conta (somente leitura na v2). */
@@ -185,6 +196,134 @@ export const dealProductSpec: V2Spec = {
 	],
 };
 
+/** Produto do catálogo. */
+export const productSpec: V2Spec = {
+	resource: 'productV2',
+	label: 'Product',
+	summary: 'A catalog product with a name and base price, in RD Station CRM API v2',
+	path: () => '/products',
+	idName: 'productId',
+	filter: true,
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'product', 'products'),
+	topFields: [text('name', 'Name', 'Name of the product, for example Pro plan')],
+	fields: [
+		{
+			displayName: 'Custom Fields',
+			name: 'custom_fields',
+			type: 'json',
+			default: '',
+			expect: 'object',
+			description: 'Custom field values as a JSON object, keyed by custom field slug',
+		},
+		text('description', 'Description', 'Free-text description of the product'),
+		num('price', 'Price', 'Base price of the product'),
+		{
+			displayName: 'Visible',
+			name: 'visible',
+			type: 'boolean',
+			default: true,
+			description: 'Whether the product is visible in the catalog',
+		},
+	],
+};
+
+/** Campanha de marketing ligada a leads e negociações. */
+export const campaignSpec: V2Spec = {
+	resource: 'campaignV2',
+	label: 'Campaign',
+	summary: 'A marketing campaign that leads and deals can be linked to, in RD Station CRM API v2',
+	path: () => '/campaigns',
+	idName: 'campaignId',
+	filter: true,
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'campaign', 'campaigns'),
+	topFields: [text('name', 'Name', 'Name of the campaign, for example Black Friday')],
+	fields: [text('description', 'Description', 'Free-text description of the campaign')],
+};
+
+/** Reunião agendada com contatos. */
+export const meetingSpec: V2Spec = {
+	resource: 'meetingV2',
+	label: 'Meeting',
+	summary: 'A meeting scheduled with contacts, in RD Station CRM API v2',
+	path: () => '/meetings',
+	idName: 'meetingId',
+	filter: true,
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'meeting', 'meetings'),
+	topFields: [text('subject', 'Subject', 'Title of the meeting, for example Product demo')],
+	fields: [
+		{
+			displayName: 'Contact IDs',
+			name: 'contact_ids',
+			type: 'csv',
+			default: '',
+			description: 'Comma-separated list of contact IDs that take part in the meeting',
+		},
+		num('duration_minutes', 'Duration (Minutes)', 'Length of the meeting in minutes'),
+		text('notes', 'Notes', 'Free-text notes about the meeting'),
+		account('organizer_id', 'Organizer', 'getUsersV2', 'User who organizes the meeting'),
+		account('responsible_id', 'Responsible', 'getUsersV2', 'User responsible for the meeting'),
+		{
+			displayName: 'Starts At',
+			name: 'starts_at',
+			type: 'dateTime',
+			default: '',
+			description: 'Start of the meeting; sent to RD Station in ISO 8601 UTC',
+		},
+		{
+			displayName: 'Status',
+			name: 'status',
+			type: 'options',
+			default: 'scheduled',
+			options: choices(['Completed', 'completed'], ['No Show', 'no_show'], ['Scheduled', 'scheduled']),
+			description: 'Status of the meeting. One of: scheduled, completed, no_show.',
+		},
+	],
+};
+
+/** Proposta comercial de uma negociação (criar, ler e listar; a RD não permite editar). */
+export const proposalSpec: V2Spec = {
+	resource: 'proposalV2',
+	label: 'Proposal',
+	summary: 'A commercial proposal built on a deal, in RD Station CRM API v2',
+	path: (dealId) => `/deals/${dealId}/proposals`,
+	parent: 'dealId',
+	idName: 'proposalId',
+	filter: true,
+	operations: standardOperations(['create', 'get', 'getMany'], 'proposal', 'proposals'),
+	topFields: [
+		text('proposal_template_id', 'Proposal Template ID', 'ID of the proposal template the proposal is built from'),
+		{
+			displayName: 'Sections',
+			name: 'sections',
+			type: 'json',
+			default: '[]',
+			expect: 'array',
+			description:
+				'Proposal sections as a JSON list, each with slug, type (html or products_list), value and order',
+		},
+	],
+	fields: [
+		{
+			displayName: 'Status',
+			name: 'status',
+			type: 'options',
+			default: 'active',
+			options: choices(['Active', 'active'], ['Inactive', 'inactive']),
+			description: 'Status of the proposal. One of: active, inactive.',
+		},
+	],
+};
+
+/** Equipe de usuários (somente leitura na v2). */
+export const teamSpec: V2Spec = {
+	resource: 'teamV2',
+	label: 'Team',
+	summary: 'A group of CRM users, in RD Station CRM API v2',
+	path: () => '/teams',
+	idName: 'teamId',
+	operations: standardOperations(['get', 'getMany'], 'team', 'teams'),
+};
+
 /** Webhook da API v2: cada webhook assina um evento e entrega o corpo na URL informada. */
 export const webhookSpec: V2Spec = {
 	resource: 'webhookV2',
@@ -218,12 +357,17 @@ export const webhookSpec: V2Spec = {
 
 /** Todas as especificações, na ordem em que aparecem no menu Resource. */
 export const v2Specs: V2Spec[] = [
+	campaignSpec,
 	dealProductSpec,
 	leadSpec,
 	lostReasonSpec,
+	meetingSpec,
 	pipelineSpec,
+	productSpec,
+	proposalSpec,
 	sourceSpec,
 	stageSpec,
+	teamSpec,
 	userSpec,
 	webhookSpec,
 ];

@@ -46,6 +46,8 @@ export interface V2Field {
 	loadOptionsMethod?: string;
 	/** Valor padrão do campo; o lint do n8n exige `default` em toda definição de campo. */
 	default?: string | number | boolean;
+	/** Formato exigido do JSON digitado (ex.: `sections` das propostas é uma lista). */
+	expect?: 'array' | 'object';
 	/** Campo que só vale na criação (a RD não aceita trocar depois). */
 	createOnly?: boolean;
 }
@@ -337,16 +339,29 @@ function convert(
 			// A RD pede data-hora ISO 8601; o seletor do n8n entrega texto livre.
 			return new Date(value as string).toISOString();
 		case 'json': {
-			if (typeof value !== 'string') return value;
-			try {
-				return JSON.parse(value);
-			} catch {
+			// JSON pode chegar pronto (expressão do n8n) ou como texto digitado pela pessoa.
+			let parsed: unknown = value;
+			if (typeof value === 'string') {
+				try {
+					parsed = JSON.parse(value);
+				} catch {
+					throw new NodeOperationError(
+						this.getNode(),
+						`The '${field.displayName}' field is not valid JSON`,
+						{ description: 'Fix the JSON text and run the node again' },
+					);
+				}
+			}
+			// Formato errado (objeto no lugar da lista) falha aqui, antes de a RD responder 422.
+			const isArray = Array.isArray(parsed);
+			if (field.expect && (field.expect === 'array') !== isArray) {
 				throw new NodeOperationError(
 					this.getNode(),
-					`The '${field.displayName}' field is not valid JSON`,
-					{ description: 'Fix the JSON text and run the node again' },
+					`The '${field.displayName}' field must be a JSON ${field.expect}`,
+					{ description: 'Check the brackets of the JSON text and run the node again' },
 				);
 			}
+			return parsed;
 		}
 		default:
 			return value;

@@ -177,6 +177,8 @@ export const listSearch = {
 
 	// ---- API v2: recursos novos ----
 	searchLeadsV2: pagedV2('/leads', false),
+	searchMeetingsV2: pagedV2('/meetings', false, 'subject'),
+	searchProposalsV2: childrenV2('dealId', (dealId) => `/deals/${dealId}/proposals`, 'id'),
 	searchProductsV2: pagedV2('/products', false),
 	searchPipelinesV2: fromLoader(loadOptionsV2.getPipelinesV2),
 	searchSourcesV2: fromLoader(loadOptionsV2.getSourcesV2),

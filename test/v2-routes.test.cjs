@@ -247,3 +247,175 @@ describe('S1 leads, pipelines, stages, sources, lost reasons, users and deal pro
 		}
 	});
 });
+
+describe('S3 create and update routes, products, campaigns, meetings, proposals and teams', () => {
+	it('S3.1 pipeline create and update', async () => {
+		const [create] = await call({ resource: 'pipelineV2', operation: 'create', name: 'Vendas', additionalFields: { order: 1 } });
+		expectRequest(create, 'POST', '/pipelines', { body: { data: { name: 'Vendas', order: 1 } } });
+		const [update] = await call({
+			resource: 'pipelineV2',
+			operation: 'update',
+			pipelineId: locator('P1'),
+			updateFields: { name: 'Vendas B2B' },
+		});
+		expectRequest(update, 'PUT', '/pipelines/P1', { body: { data: { name: 'Vendas B2B' } } });
+	});
+
+	it('S3.2 stage create and update', async () => {
+		const [create] = await call({
+			resource: 'stageV2',
+			operation: 'create',
+			pipelineId: locator('P1'),
+			name: 'Proposta',
+			additionalFields: { description: 'd', objective: 'o', order: 2 },
+		});
+		expectRequest(create, 'POST', '/pipelines/P1/stages', {
+			body: { data: { name: 'Proposta', description: 'd', objective: 'o', order: 2 } },
+		});
+		const [update] = await call({
+			resource: 'stageV2',
+			operation: 'update',
+			pipelineId: locator('P1'),
+			stageId: locator('S2'),
+			updateFields: { order: 3 },
+		});
+		expectRequest(update, 'PUT', '/pipelines/P1/stages/S2', { body: { data: { order: 3 } } });
+	});
+
+	it('S3.3 source and lost reason create and update', async () => {
+		const [source] = await call({ resource: 'sourceV2', operation: 'create', name: 'Feira', additionalFields: { description: 'x' } });
+		expectRequest(source, 'POST', '/sources', { body: { data: { name: 'Feira', description: 'x' } } });
+		const [sourceUpdate] = await call({ resource: 'sourceV2', operation: 'update', sourceId: locator('S1'), updateFields: { description: 'y' } });
+		expectRequest(sourceUpdate, 'PUT', '/sources/S1', { body: { data: { description: 'y' } } });
+		const [reason] = await call({ resource: 'lostReasonV2', operation: 'create', name: 'Preço' });
+		expectRequest(reason, 'POST', '/lost_reasons', { body: { data: { name: 'Preço' } } });
+		const [reasonUpdate] = await call({ resource: 'lostReasonV2', operation: 'update', lossReasonId: locator('R1'), updateFields: { name: 'Prazo' } });
+		expectRequest(reasonUpdate, 'PUT', '/lost_reasons/R1', { body: { data: { name: 'Prazo' } } });
+	});
+
+	it('S3.4 product create get list and update', async () => {
+		const [create] = await call({
+			resource: 'productV2',
+			operation: 'create',
+			name: 'Plano Pro',
+			additionalFields: { description: 'd', price: 9.5, visible: true },
+		});
+		expectRequest(create, 'POST', '/products', {
+			body: { data: { name: 'Plano Pro', description: 'd', price: 9.5, visible: true } },
+		});
+		const [get] = await call({ resource: 'productV2', operation: 'get', productId: locator('PR1') });
+		expectRequest(get, 'GET', '/products/PR1');
+		const [many] = await call({ resource: 'productV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/products');
+		const [update] = await call({ resource: 'productV2', operation: 'update', productId: locator('PR1'), updateFields: { visible: false } });
+		expectRequest(update, 'PUT', '/products/PR1', { body: { data: { visible: false } } });
+	});
+
+	it('S3.5 campaign create get list and update', async () => {
+		const [create] = await call({ resource: 'campaignV2', operation: 'create', name: 'Black Friday', additionalFields: { description: 'd' } });
+		expectRequest(create, 'POST', '/campaigns', { body: { data: { name: 'Black Friday', description: 'd' } } });
+		const [get] = await call({ resource: 'campaignV2', operation: 'get', campaignId: locator('C1') });
+		expectRequest(get, 'GET', '/campaigns/C1');
+		const [many] = await call({ resource: 'campaignV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/campaigns');
+		const [update] = await call({ resource: 'campaignV2', operation: 'update', campaignId: locator('C1'), updateFields: { name: 'BF 2026' } });
+		expectRequest(update, 'PUT', '/campaigns/C1', { body: { data: { name: 'BF 2026' } } });
+	});
+
+	it('S3.6 meeting create normalizes date and contacts', async () => {
+		const [create] = await call({
+			resource: 'meetingV2',
+			operation: 'create',
+			subject: 'Demo',
+			additionalFields: {
+				starts_at: '2026-12-01T10:00:00Z',
+				duration_minutes: 30,
+				status: 'scheduled',
+				contact_ids: 'c1',
+			},
+		});
+		expectRequest(create, 'POST', '/meetings', {
+			body: {
+				data: {
+					subject: 'Demo',
+					starts_at: '2026-12-01T10:00:00.000Z',
+					duration_minutes: 30,
+					status: 'scheduled',
+					contact_ids: ['c1'],
+				},
+			},
+		});
+		const [get] = await call({ resource: 'meetingV2', operation: 'get', meetingId: locator('M1') });
+		expectRequest(get, 'GET', '/meetings/M1');
+		const [many] = await call({ resource: 'meetingV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/meetings');
+		const [update] = await call({ resource: 'meetingV2', operation: 'update', meetingId: locator('M1'), updateFields: { status: 'completed' } });
+		expectRequest(update, 'PUT', '/meetings/M1', { body: { data: { status: 'completed' } } });
+	});
+
+	it('S3.7 proposal create list and get', async () => {
+		const sections = '[{"slug":"a","type":"html","value":"x","order":1}]';
+		const [create] = await call({
+			resource: 'proposalV2',
+			operation: 'create',
+			dealId: locator('D1'),
+			proposal_template_id: 'T1',
+			sections,
+		});
+		expectRequest(create, 'POST', '/deals/D1/proposals', {
+			body: { data: { proposal_template_id: 'T1', sections: [{ slug: 'a', type: 'html', value: 'x', order: 1 }] } },
+		});
+		const [many] = await call({ resource: 'proposalV2', operation: 'getMany', dealId: locator('D1'), returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/deals/D1/proposals');
+		const [get] = await call({ resource: 'proposalV2', operation: 'get', dealId: locator('D1'), proposalId: locator('PP1') });
+		expectRequest(get, 'GET', '/deals/D1/proposals/PP1');
+	});
+
+	it('S3.8 proposal sections must be a JSON list', async () => {
+		for (const sections of ['{"a":1}', 'not json']) {
+			let sent = false;
+			await assert.rejects(
+				call(
+					{ resource: 'proposalV2', operation: 'create', dealId: locator('D1'), proposal_template_id: 'T1', sections },
+					() => {
+						sent = true;
+						return {};
+					},
+				),
+				(error) => {
+					assert.ok(error instanceof NodeOperationError);
+					assert.match(error.message, /Sections/);
+					return true;
+				},
+			);
+			assert.equal(sent, false, 'no request may leave before the JSON is validated');
+		}
+	});
+
+	it('S3.9 team get and getMany', async () => {
+		const [get] = await call({ resource: 'teamV2', operation: 'get', teamId: locator('T1') });
+		expectRequest(get, 'GET', '/teams/T1');
+		const [many] = await call({ resource: 'teamV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/teams');
+	});
+
+	it('S3.10 meeting campaign product and team locators', () => {
+		const wanted = {
+			meetingId: ['meetingV2', 'searchMeetingsV2'],
+			campaignId: ['campaignV2', 'searchCampaignsV2'],
+			productId: ['productV2', 'searchProductsV2'],
+			teamId: ['teamV2', 'searchTeamsV2'],
+			proposalId: ['proposalV2', 'searchProposalsV2'],
+		};
+		const searches = new RdStationCrm().methods.listSearch;
+		for (const [name, [resource, method]] of Object.entries(wanted)) {
+			const field = props(name, resource).find(
+				(p) => JSON.stringify(p.displayOptions.show['@version']) === '[{"_cnd":{"gte":2}}]',
+			);
+			assert.ok(field, `${resource}.${name} has no version 2 field`);
+			assert.equal(field.type, 'resourceLocator');
+			assert.equal(field.modes[0].typeOptions.searchListMethod, method);
+			assert.equal(typeof searches[method], 'function', method);
+		}
+	});
+});
