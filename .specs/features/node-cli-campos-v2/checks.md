@@ -93,6 +93,9 @@ Proof: run unit | ok listSearch pages tasks one page at a time
 **C25** - O `publish.yml` publica pelo `npm@12.2.2 stage publish --provenance` (token granular "stage only": a versão fica em espera até o dono aprovar na aba Staged Packages do npmjs.com), sem passo `npm publish`, na mesma versão de Node do `ci.yml` (S4, AC 2)
 Proof: run unit | ok publish workflow stages the package instead of publishing it
 
+**C26** - A devDependency `n8n-workflow` é `^2.46.5` (instalada 2.46.x ou mais nova no lock) e o `peerDependencies` segue `*`; o pacote publicado não muda (S4, AC 2)
+Proof: run unit | ok dev toolchain uses n8n-workflow 2.46.5 while the peer stays open
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
