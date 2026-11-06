@@ -1,9 +1,9 @@
 # rotas-novas-v2 proofs
 
-**HEAD**: 3d6143e
+**HEAD**: 271eebe
 **Tree**: clean
 **Shell**: /bin/sh
-**Result**: 44 pass, 0 fail
+**Result**: 51 pass, 0 fail
 
 | Check | Proof | Result |
 | --- | --- | --- |
@@ -49,6 +49,13 @@
 | C40 | `run unit / ok S5.1 changelog documents the new v2 routes` | pass |
 | C41 | `run unit / ok S5.2 readme documents the new resources and events` | pass |
 | C42 | `npm run lint && npx tsc --noEmit && npm run build 2>&1 / tail -1` | pass |
+| C43 | `run unit / ok F1 lead create requires the owner and only offers the ongoing status` | pass |
+| C44 | `run unit / ok F2 no description has a broken placeholder` | pass |
+| C45 | `run unit / ok F3 checkExists and create read every page of the webhook list` | pass |
+| C46 | `run unit / ok F5 invalid dates fail clearly and an empty list sends nothing` | pass |
+| C47 | `run unit / ok F6 the page size is capped at 200` | pass |
+| C48 | `run unit / ok F7 the webhook url is compared without trailing slash or host case` | pass |
+| C49 | `run unit / ok F10 deal product accepts custom fields as a JSON list` | pass |
 | Build | `npx tsc --noEmit` | pass |
 | Build | `npm run lint` | pass |
 
@@ -57,21 +64,21 @@
 `Run unit` - exit 0
 
 ```
-    1..10
-ok 14 - S2 webhooks v2 and the OAuth2 trigger
+    1..12
+ok 15 - S2 webhooks v2 and the OAuth2 trigger
   ---
-  duration_ms: 6.774458
+  duration_ms: 8.193338
   type: 'suite'
   ...
-1..14
-# tests 72
-# suites 14
-# pass 72
+1..15
+# tests 79
+# suites 15
+# pass 79
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 790.003293
+# duration_ms 984.113724
 ```
 
 `npm run lint && npx tsc --noEmit && npm run build 2>&1 / tail -1` - exit 0
