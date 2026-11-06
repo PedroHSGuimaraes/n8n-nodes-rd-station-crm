@@ -1,0 +1,2697 @@
+{
+ "node": [
+  {
+   "name": "authentication",
+   "type": "options",
+   "resource": null,
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "resource",
+   "type": "options",
+   "resource": null,
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "resource",
+   "type": "options",
+   "resource": null,
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "campaign"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "campaignId",
+   "type": "string",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "campaignId",
+   "type": "resourceLocator",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "campaign"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "contact"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "contactId",
+   "type": "string",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "contactId",
+   "type": "resourceLocator",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "emailsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "phonesUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "contact"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "customField"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "customFieldId",
+   "type": "string",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "delete"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "customFieldId",
+   "type": "resourceLocator",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "delete"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "label",
+   "type": "string",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "type",
+   "type": "options",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "entity",
+   "type": "options",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filterEntity",
+   "type": "options",
+   "resource": [
+    "customField"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "deal"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "get",
+    "getContacts",
+    "markAsLost",
+    "markAsWon",
+    "moveToStage",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "get",
+    "getContacts",
+    "markAsLost",
+    "markAsWon",
+    "moveToStage",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "pipelineId",
+   "type": "options",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create",
+    "moveToStage"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealStageId",
+   "type": "options",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealStageId",
+   "type": "options",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "moveToStage"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealLostReasonId",
+   "type": "options",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "markAsLost"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealLostNote",
+   "type": "string",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "markAsLost"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealProductsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "getMany",
+    "getContacts"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "getMany",
+    "getContacts"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "deal"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": null,
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": null,
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "productsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": [
+    "add"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateProductsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "idsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": [
+    "remove"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "dealProduct"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "lossReasonId",
+   "type": "string",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "lossReasonId",
+   "type": "resourceLocator",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "lossReason"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "note"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "userId",
+   "type": "options",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "text",
+   "type": "string",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "note"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "organization"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "organizationId",
+   "type": "string",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "getContacts"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "organizationId",
+   "type": "resourceLocator",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "getContacts"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "getMany",
+    "getContacts"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "getMany",
+    "getContacts"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "organization"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "pipelineId",
+   "type": "string",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "pipelineId",
+   "type": "resourceLocator",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "pipeline"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "product"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "productId",
+   "type": "string",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "productId",
+   "type": "resourceLocator",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "source"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "sourceId",
+   "type": "string",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "sourceId",
+   "type": "resourceLocator",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "source"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "stage"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "stageId",
+   "type": "string",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "stageId",
+   "type": "resourceLocator",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "dealPipelineId",
+   "type": "options",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "stage"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "task"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "taskId",
+   "type": "string",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "taskId",
+   "type": "resourceLocator",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "subject",
+   "type": "string",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "type",
+   "type": "options",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "date",
+   "type": "dateTime",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "hour",
+   "type": "string",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "task"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "team"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "teamId",
+   "type": "string",
+   "resource": [
+    "team"
+   ],
+   "operation": [
+    "get"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "teamId",
+   "type": "resourceLocator",
+   "resource": [
+    "team"
+   ],
+   "operation": [
+    "get"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "team"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "team"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "team"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "user"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "userId",
+   "type": "string",
+   "resource": [
+    "user"
+   ],
+   "operation": [
+    "get"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "userId",
+   "type": "resourceLocator",
+   "resource": [
+    "user"
+   ],
+   "operation": [
+    "get"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "user"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "user"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "user"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "webhook"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "webhookId",
+   "type": "string",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "delete"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "webhookId",
+   "type": "resourceLocator",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "delete"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "eventType",
+   "type": "options",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "url",
+   "type": "string",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "contactId",
+   "type": "string",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "contactId",
+   "type": "resourceLocator",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "emailsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "phonesUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "contactV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "customFieldId",
+   "type": "string",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "delete",
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "customFieldId",
+   "type": "resourceLocator",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "delete",
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "entity",
+   "type": "options",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "type",
+   "type": "options",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "customFieldV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "markWon",
+    "markLost",
+    "moveToStage"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "get",
+    "update",
+    "markWon",
+    "markLost",
+    "moveToStage"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "lost_reason_id",
+   "type": "options",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "markLost"
+   ],
+   "version": null
+  },
+  {
+   "name": "pipeline_id",
+   "type": "options",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "create",
+    "moveToStage"
+   ],
+   "version": null
+  },
+  {
+   "name": "stage_id",
+   "type": "options",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "stage_id",
+   "type": "options",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "moveToStage"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "dealV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "dealId",
+   "type": "string",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "create",
+    "getMany"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "dealId",
+   "type": "resourceLocator",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "create",
+    "getMany"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "description",
+   "type": "string",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "user_id",
+   "type": "options",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "noteV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "organizationId",
+   "type": "string",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "organizationId",
+   "type": "resourceLocator",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "customFieldsUi",
+   "type": "fixedCollection",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "create",
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "options",
+   "type": "collection",
+   "resource": [
+    "organizationV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "operation",
+   "type": "options",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": null,
+   "version": null
+  },
+  {
+   "name": "taskId",
+   "type": "string",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    1
+   ]
+  },
+  {
+   "name": "taskId",
+   "type": "resourceLocator",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "get",
+    "update"
+   ],
+   "version": [
+    {
+     "_cnd": {
+      "gte": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "type",
+   "type": "options",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "additionalFields",
+   "type": "collection",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "create"
+   ],
+   "version": null
+  },
+  {
+   "name": "updateFields",
+   "type": "collection",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "update"
+   ],
+   "version": null
+  },
+  {
+   "name": "returnAll",
+   "type": "boolean",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "limit",
+   "type": "number",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  },
+  {
+   "name": "filters",
+   "type": "collection",
+   "resource": [
+    "taskV2"
+   ],
+   "operation": [
+    "getMany"
+   ],
+   "version": null
+  }
+ ],
+ "trigger": [
+  {
+   "name": "events",
+   "type": "multiOptions",
+   "resource": null,
+   "operation": null,
+   "version": null
+  }
+ ]
+}

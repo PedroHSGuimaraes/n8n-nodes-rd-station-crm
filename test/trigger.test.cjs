@@ -15,6 +15,8 @@ describe('trigger', () => {
 		};
 		const context = {
 			getNode: () => ({ name: 'RD Station CRM Trigger', type: 'trigger', typeVersion: 1 }),
+			// O trigger agora pergunta a autenticação; sem o parâmetro vale o token da API v1 (padrão).
+			getNodeParameter: (_name, fallback) => fallback,
 			getWorkflowStaticData: () => staticData,
 			logger: { warn: (message) => warnings.push(String(message)) },
 			helpers: {

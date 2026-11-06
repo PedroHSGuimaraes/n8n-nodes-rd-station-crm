@@ -16,6 +16,7 @@ import type {
 	INodePropertyOptions,
 } from 'n8n-workflow';
 
+import { plainId } from '../helpers/resourceLocator';
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../transport';
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../transport/v2';
 import { loadOptions, toOptions } from './loadOptions';
@@ -116,6 +117,23 @@ function pagedV2(endpoint: string, filterable = true, labelKey = 'name') {
 	};
 }
 
+/**
+ * Lista de itens que moram dentro de outro registro (etapas de um funil, produtos de uma negociação):
+ * lê o ID do pai no formulário em edição e lista só os filhos dele. Sem pai escolhido, devolve lista vazia
+ * em vez de chamar a RD com rota quebrada.
+ */
+function childrenV2(parentParam: string, pathOf: (parentId: string) => string, labelKey = 'name') {
+	return async function (
+		this: ILoadOptionsFunctions,
+		filter?: string,
+		paginationToken?: unknown,
+	): Promise<INodeListSearchResult> {
+		const parentId = plainId(this.getCurrentNodeParameter(parentParam));
+		if (!parentId) return { results: [] };
+		return pagedV2(pathOf(parentId), false, labelKey).call(this, filter, paginationToken);
+	};
+}
+
 export const listSearch = {
 	// ---- API v1 (token): listas curtas que já tinham loadOptions ----
 	searchOrganizations: fromLoader(loadOptions.getOrganizations),
@@ -156,4 +174,28 @@ export const listSearch = {
 	searchCustomFieldsV2: fromItems(async (ctx) =>
 		toOptionsV2(await rdCrmV2RequestAllItems.call(ctx, '/custom_fields')),
 	),
+
+	// ---- API v2: recursos novos ----
+	searchLeadsV2: pagedV2('/leads', false),
+	searchSegmentsV2: fromLoader(loadOptionsV2.getSegmentsV2),
+	searchDialerCallsV2: pagedV2('/dialer_calls', false, 'id'),
+	searchFilesV2: childrenV2('dealId', (dealId) => `/deals/${dealId}/files`),
+	searchMeetingsV2: pagedV2('/meetings', false, 'subject'),
+	searchProposalsV2: childrenV2('dealId', (dealId) => `/deals/${dealId}/proposals`, 'id'),
+	searchProductsV2: pagedV2('/products', false),
+	searchPipelinesV2: fromLoader(loadOptionsV2.getPipelinesV2),
+	searchSourcesV2: fromLoader(loadOptionsV2.getSourcesV2),
+	searchLossReasonsV2: fromLoader(loadOptionsV2.getLossReasonsV2),
+	searchUsersV2: fromLoader(loadOptionsV2.getUsersV2),
+	searchTeamsV2: fromLoader(loadOptionsV2.getTeamsV2),
+	searchCampaignsV2: fromLoader(loadOptionsV2.getCampaignsV2),
+	// O webhook v2 é identificado por `id` e descrito pelo evento e pela URL.
+	searchWebhooksV2: fromItems(async (ctx) =>
+		(await rdCrmV2RequestAllItems.call(ctx, '/webhooks')).map((webhook) => ({
+			name: `${webhook.event_name ?? 'webhook'} (${webhook.url ?? webhook.id})`,
+			value: String(webhook.id),
+		})),
+	),
+	searchStagesV2: childrenV2('pipelineId', (pipelineId) => `/pipelines/${pipelineId}/stages`),
+	searchDealProductsV2: childrenV2('dealId', (dealId) => `/deals/${dealId}/products`, 'product_id'),
 };

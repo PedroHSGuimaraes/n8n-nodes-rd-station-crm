@@ -118,21 +118,39 @@ As operações disponíveis dependem da **Authentication** escolhida:
 
 ### OAuth2 (API V2)
 
-A API v2 cobre os recursos principais (envelope JSON:API `{ data }`, paginação por `links.next`):
+A API v2 cobre 22 recursos (envelope JSON:API `{ data }`, paginação por `links.next`). Os IDs aparecem como lista pesquisável da conta:
 
 | Recurso | Operações |
 | --- | --- |
+| **Campaign** (Campanha) | Create, Get, Get Many, Update |
 | **Contact** (Contato) | Create, Get, Get Many, Update |
-| **Deal** (Negócio) | Create, Get, Get Many, Update, Mark as Won, Mark as Lost, Move to Stage |
-| **Organization** (Organização) | Create, Get, Get Many, Update |
-| **Task** (Tarefa) | Create, Get, Get Many, Update |
-| **Note** (Nota) | Create, Get Many |
 | **Custom Field** (Campo Personalizado) | Create, Get, Get Many, Update, Delete |
+| **Deal** (Negócio) | Create, Get, Get Many, Update, Mark as Won, Mark as Lost, Move to Stage |
+| **Deal File** (Anexo da Negociação) | Get Many, Delete, Upload (arquivo binário do item) |
+| **Deal Product** (Produto da Negociação) | Create, Get Many, Update, Delete |
+| **Dialer Call** (Ligação do Webphone) | Get, Get Many |
+| **Lead** | Create, Get, Get Many, Update |
+| **Loss Reason** (Motivo de Perda) | Create, Get, Get Many, Update |
+| **Meeting** (Reunião) | Create, Get, Get Many, Update |
+| **Note** (Nota) | Create, Get Many |
+| **Organization** (Organização) | Create, Get, Get Many, Update |
+| **Pipeline** (Funil) | Create, Get, Get Many, Update |
+| **Product** (Produto) | Create, Get, Get Many, Update |
+| **Proposal** (Proposta) | Create, Get, Get Many |
+| **Segment** (Segmento) | Create, Get, Get Many, Update |
+| **Source** (Fonte) | Create, Get, Get Many, Update |
+| **Stage** (Etapa) | Create, Get, Get Many, Update |
+| **Task** (Tarefa) | Create, Get, Get Many, Update |
+| **Team** (Equipe) | Get, Get Many |
+| **User** (Usuário) | Get, Get Many, Get Meeting Availability, Get Many Meeting Availabilities |
+| **Webhook** | Create, Get, Get Many, Update, Delete |
 
 **Destaques:**
 
 - Campos escolhidos pelo nome aceitam também uma **expressão** como alternativa (padrão "Name or ID" do n8n).
 - *Get Many* com **Return All** pagina tudo, ou você define um **Limit**.
+- Etapas, produtos da negociação, propostas e anexos pedem primeiro o **funil** ou a **negociação** a que pertencem; a lista de IDs só mostra os itens desse pai.
+- *Delete* apaga um item por ID (produto da negociação, anexo, webhook, campo personalizado); a API v2 não tem *Delete* de lead, contato, negociação, empresa nem tarefa. Nos *Delete* de **Webhook**, **Deal Product** e **Deal File**, o campo **Confirm Delete** nasce desligado e o node para antes de chamar a RD; ligue-o para apagar de verdade.
 
 ### Exemplo — criar um negócio e movê-lo de etapa
 
@@ -143,9 +161,12 @@ A API v2 cobre os recursos principais (envelope JSON:API `{ data }`, paginação
 
 O node **RD Station CRM Trigger** inicia um fluxo quando eventos acontecem no RD Station CRM. Em **Trigger On**, selecione um ou mais eventos (um webhook é registrado por evento ao **ativar** o workflow e removido ao **desativar**).
 
-> O trigger usa a credencial de **token (API v1)** — os webhooks são um recurso da API v1.
+Em **Authentication**, escolha como o trigger fala com o RD Station CRM:
 
-Eventos suportados (23):
+- **Access Token (API V1)** (padrão): usa a credencial de token e registra os 23 eventos abaixo. Workflows salvos continuam assim.
+- **OAuth2 (API V2)**: usa a credencial OAuth2 e oferece os **38 eventos** da API v2. O trigger cria e apaga os webhooks pela API v2, procurando cada webhook pela URL do próprio workflow: nunca apaga webhook de outra URL (outro workflow, outro modo ou outra integração).
+
+Eventos da API v1 (23):
 
 | Entidade | Eventos |
 | --- | --- |
@@ -157,6 +178,18 @@ Eventos suportados (23):
 | **Source** (Fonte) | Created, Updated, Deleted |
 | **Loss Reason** (Motivo de Perda) | Created, Updated, Deleted |
 | **Task** (Tarefa) | Created, Updated |
+
+Eventos da API v2 (38), os 23 acima mais:
+
+| Entidade | Eventos novos |
+| --- | --- |
+| **Lead** | `crm_lead_created`, `crm_lead_updated`, `crm_lead_deleted`, `crm_lead_owner_changed`, `crm_lead_rating_changed`, `crm_lead_stage_changed`, `crm_lead_status_changed` |
+| **Meeting** (Reunião) | `crm_meeting_created`, `crm_meeting_updated`, `crm_meeting_status_changed`, `crm_meeting_participants_changed` |
+| **Proposal** (Proposta) | `crm_proposal_created` |
+| **Dialer Call** (Ligação) | `crm_dialer_call_status_changed`, `crm_dialer_call_transcription_completed` |
+| **Task** (Tarefa) | `crm_task_deleted` |
+
+> Na API v2, mudar etapa, status, rating ou responsável do lead também dispara `crm_lead_updated`; para a maioria dos fluxos esse evento basta.
 
 > **Dica:** o RD entrega cada evento **pelo menos uma vez** e tenta de novo em caso de falha. Se você precisa de processamento exatamente-uma-vez, deduplique a jusante pelo `transaction_uuid` do payload.
 
@@ -200,6 +233,7 @@ Em cada campo do node em modo tool aparece o botão **"Let the model define this
 - **Restrinja o escopo:** exponha só as operações que o agente precisa (ex.: só *Create*/*Get Many* de Contact e Deal), em vez de liberar tudo.
 - **Credencial dedicada** com permissões mínimas para o agente.
 - **n8n atualizado:** versões antigas tinham um bug em que a tool de community node retornava resposta vazia para o agente ([n8n#26202](https://github.com/n8n-io/n8n/issues/26202)); já corrigido.
+- Com **OAuth2 (API V2)**, as operações novas também servem ao agente: por exemplo *Lead → Create* e *Lead → Get Many* (qualificar prospects), *Stage → Get Many* (descobrir etapas do funil), *Deal Product → Create* (incluir produto na negociação) e *Meeting → Create* (agendar reunião). Operações de apagar (*Delete*) merecem uma tool própria e um prompt que peça confirmação; nos *Delete* novos da API v2, o agente só apaga se **Confirm Delete** estiver ligado.
 - O **Trigger** (`RD Station CRM Trigger`) **não** é uma tool — triggers não podem ser usados por agentes (por design do n8n).
 
 ### Referências
@@ -214,8 +248,8 @@ Em cada campo do node em modo tool aparece o botão **"Let the model define this
 | --- | --- | --- |
 | Autenticação | Token privado do usuário | OAuth2 (app no RD App Store) |
 | Configuração | Mais simples (cola o token) | Requer registrar app + redirect `https://` |
-| Cobertura neste node | Completa (16 recursos + trigger) | Recursos principais (6 recursos) |
-| Webhooks/Trigger | ✅ | Use o trigger v1 |
+| Cobertura neste node | Completa (16 recursos + trigger) | 22 recursos + trigger |
+| Webhooks/Trigger | ✅ (23 eventos) | ✅ (38 eventos, com credencial OAuth2) |
 | Indicado para | Uso interno, scripts, começar rápido | Integrações distribuídas para vários clientes |
 
 Se você só precisa automatizar a sua própria conta, o **token (v1)** é o caminho mais rápido — e continua funcionando exatamente como antes. Use **OAuth2 (v2)** quando for publicar uma integração que vários clientes RD vão conectar.

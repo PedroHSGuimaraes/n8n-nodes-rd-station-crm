@@ -46,6 +46,10 @@ export const loadOptionsV2 = {
 		return toOptionsV2(await rdCrmV2RequestAllItems.call(this, '/lost_reasons'));
 	},
 
+	async getTeamsV2(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+		return toOptionsV2(await rdCrmV2RequestAllItems.call(this, '/teams'));
+	},
+
 	async getSegmentsV2(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		return toOptionsV2(await rdCrmV2RequestAllItems.call(this, '/segments'));
 	},

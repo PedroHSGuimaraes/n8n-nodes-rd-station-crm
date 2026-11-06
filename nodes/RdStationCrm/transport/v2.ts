@@ -1,6 +1,9 @@
+import { randomBytes } from 'node:crypto';
+
 import type {
 	IDataObject,
 	IExecuteFunctions,
+	IHookFunctions,
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
@@ -12,7 +15,8 @@ import { REQUEST_TIMEOUT_MS } from './index';
 
 export const RD_CRM_V2_BASE_URL = 'https://api.rd.services/crm/v2';
 
-type RdV2Context = IExecuteFunctions | ILoadOptionsFunctions;
+// O contexto de hook entra para o trigger OAuth2 criar e apagar webhooks pela API v2.
+type RdV2Context = IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions;
 
 /**
  * Make a single authenticated request to the RD Station CRM v2 API (OAuth2).
@@ -84,4 +88,61 @@ export async function rdCrmV2RequestAllItems(
 	}
 
 	return returnData;
+}
+
+/**
+ * Monta um corpo `multipart/form-data` com um único arquivo.
+ * O boundary é aleatório para nunca coincidir com o conteúdo do arquivo; aspas e quebras de linha no
+ * nome do arquivo são trocadas porque fechariam o cabeçalho `Content-Disposition` antes da hora.
+ */
+export function buildMultipart(
+	field: string,
+	fileName: string,
+	mimeType: string,
+	content: Buffer,
+): { body: Buffer; contentType: string } {
+	const boundary = `----n8nrdcrm${randomBytes(12).toString('hex')}`;
+	const safeName = fileName.replace(/"/g, '%22').replace(/[\r\n]/g, ' ');
+	const head = Buffer.from(
+		`--${boundary}\r\nContent-Disposition: form-data; name="${field}"; filename="${safeName}"\r\n` +
+			`Content-Type: ${mimeType}\r\n\r\n`,
+		'utf8',
+	);
+	const tail = Buffer.from(`\r\n--${boundary}--\r\n`, 'utf8');
+	return {
+		body: Buffer.concat([head, content, tail]),
+		contentType: `multipart/form-data; boundary=${boundary}`,
+	};
+}
+
+/**
+ * Envia um arquivo à API v2 em `multipart/form-data` (anexos da negociação).
+ * Fica separado do `rdCrmV2Request` porque este embrulha o corpo em `{ data }` JSON; aqui o corpo já vem
+ * pronto em Buffer e o `Content-Type` com o boundary segue no cabeçalho.
+ */
+export async function rdCrmV2Multipart(
+	this: RdV2Context,
+	endpoint: string,
+	body: Buffer,
+	contentType: string,
+): Promise<IDataObject> {
+	const options: IHttpRequestOptions = {
+		method: 'POST',
+		baseURL: RD_CRM_V2_BASE_URL,
+		url: endpoint,
+		body,
+		headers: { 'Content-Type': contentType },
+		// Mesmo teto de 30 s das outras rotas: um arquivo grande não deve prender o workflow para sempre.
+		timeout: REQUEST_TIMEOUT_MS,
+	};
+
+	try {
+		return await this.helpers.httpRequestWithAuthentication.call(
+			this,
+			'rdStationCrmOAuth2Api',
+			options,
+		);
+	} catch (error) {
+		throw new NodeApiError(this.getNode(), error as JsonObject);
+	}
 }

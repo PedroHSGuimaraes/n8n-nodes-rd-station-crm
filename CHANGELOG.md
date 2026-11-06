@@ -11,6 +11,11 @@
 - **Campos novos na API v1.** Contato: `legal_bases` (Create e Update). Negociação: `distribution_settings.owner` (Create).
 - **Campos novos na API v2.** Contato: `social_profiles` e `legal_bases`. Campo personalizado: `application_scope`, `product_ids`, `calculation_action`, `editable_on_deal`, `display_rules` e `required_rules`. Negociação: `distribution_settings`. Empresa: `address` e `follower_ids`. Todos opcionais; sem preencher, o corpo é o da 2.4.0.
 - **Fora desta versão.** `GET /token/check` como operação: a credencial já valida o token nessa rota.
+- **Rotas novas da API v2 (OAuth2).** O node passa a cobrir 22 recursos da API v2: Lead (novo), Pipeline, Stage, Source, Loss Reason, User, Team, Product, Campaign, Meeting, Proposal, Segment, Deal Product, Deal File, Dialer Call e Webhook, além dos 6 que já existiam. As operações seguem a OpenAPI oficial; os IDs aparecem como lista pesquisável da conta.
+- **Trigger com OAuth2.** O trigger ganha o campo Authentication (padrão Access Token, igual a antes) e, com OAuth2, os 38 eventos da API v2 (leads, reuniões, propostas, ligações e `crm_task_deleted`). Ele cria e apaga os webhooks pela API v2 e só mexe nos webhooks da URL do próprio workflow.
+- **Workflows salvos não mudam.** Nenhum parâmetro existente muda de nome ou tipo, nas versões 1 e 2 do node e no trigger.
+- **Envio de arquivo.** A operação Upload de Deal File envia o arquivo binário do item em `multipart/form-data`.
+- **Confirmação nos Delete novos (API v2).** Webhook, Deal Product e Deal File ganham o campo `Confirm Delete`, desligado por padrão: sem ele ligado, o node falha antes de chamar a RD. O ID do Deal Product da API v2 se chama `dealProductLineId`, para não colidir com o `dealProductId` do Deal Product da API v1.
 
 ## 2.4.0
 
