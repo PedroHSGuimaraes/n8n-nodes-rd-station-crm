@@ -1,0 +1,311 @@
+[
+ {
+  "resource": "contact",
+  "operation": "get",
+  "idParam": "contactId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/contacts/ID1"
+  }
+ },
+ {
+  "resource": "deal",
+  "operation": "get",
+  "idParam": "dealId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deals/ID1"
+  }
+ },
+ {
+  "resource": "organization",
+  "operation": "get",
+  "idParam": "organizationId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/organizations/ID1"
+  }
+ },
+ {
+  "resource": "task",
+  "operation": "get",
+  "idParam": "taskId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/tasks/ID1"
+  }
+ },
+ {
+  "resource": "pipeline",
+  "operation": "get",
+  "idParam": "pipelineId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deal_pipelines/ID1"
+  }
+ },
+ {
+  "resource": "stage",
+  "operation": "get",
+  "idParam": "stageId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deal_stages/ID1"
+  }
+ },
+ {
+  "resource": "product",
+  "operation": "get",
+  "idParam": "productId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/products/ID1"
+  }
+ },
+ {
+  "resource": "source",
+  "operation": "get",
+  "idParam": "sourceId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deal_sources/ID1"
+  }
+ },
+ {
+  "resource": "campaign",
+  "operation": "get",
+  "idParam": "campaignId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/campaigns/ID1"
+  }
+ },
+ {
+  "resource": "lossReason",
+  "operation": "get",
+  "idParam": "lossReasonId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deal_lost_reasons/ID1"
+  }
+ },
+ {
+  "resource": "customField",
+  "operation": "get",
+  "idParam": "customFieldId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/custom_fields/ID1"
+  }
+ },
+ {
+  "resource": "team",
+  "operation": "get",
+  "idParam": "teamId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/teams/ID1"
+  }
+ },
+ {
+  "resource": "user",
+  "operation": "get",
+  "idParam": "userId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/users/ID1"
+  }
+ },
+ {
+  "resource": "webhook",
+  "operation": "get",
+  "idParam": "webhookId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/webhooks/ID1"
+  }
+ },
+ {
+  "resource": "note",
+  "operation": "create",
+  "idParam": "dealId",
+  "extra": {
+   "userId": "U9",
+   "text": "oi"
+  },
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "POST",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/activities",
+   "body": {
+    "activity": {
+     "deal_id": "ID1",
+     "user_id": "U9",
+     "text": "oi",
+     "type": "note"
+    }
+   }
+  }
+ },
+ {
+  "resource": "task",
+  "operation": "create",
+  "idParam": "dealId",
+  "extra": {
+   "subject": "Ligar",
+   "type": "call"
+  },
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "POST",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/tasks",
+   "body": {
+    "task": {
+     "subject": "Ligar",
+     "type": "call",
+     "deal_id": "ID1"
+    }
+   }
+  }
+ },
+ {
+  "resource": "dealProduct",
+  "operation": "getMany",
+  "idParam": "dealId",
+  "extra": {
+   "returnAll": false,
+   "limit": 5
+  },
+  "expected": {
+   "cred": "rdStationCrmApi",
+   "method": "GET",
+   "baseURL": "https://crm.rdstation.com/api/v1",
+   "url": "/deals/ID1/deal_products",
+   "qs": {
+    "limit": 5
+   }
+  }
+ },
+ {
+  "resource": "contactV2",
+  "operation": "get",
+  "idParam": "contactId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/contacts/ID1"
+  }
+ },
+ {
+  "resource": "customFieldV2",
+  "operation": "get",
+  "idParam": "customFieldId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/custom_fields/ID1"
+  }
+ },
+ {
+  "resource": "dealV2",
+  "operation": "get",
+  "idParam": "dealId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/deals/ID1"
+  }
+ },
+ {
+  "resource": "noteV2",
+  "operation": "getMany",
+  "idParam": "dealId",
+  "extra": {
+   "returnAll": false,
+   "limit": 5
+  },
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/deals/ID1/notes",
+   "qs": {
+    "page[size]": 5
+   }
+  }
+ },
+ {
+  "resource": "organizationV2",
+  "operation": "get",
+  "idParam": "organizationId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/organizations/ID1"
+  }
+ },
+ {
+  "resource": "taskV2",
+  "operation": "get",
+  "idParam": "taskId",
+  "extra": {},
+  "expected": {
+   "cred": "rdStationCrmOAuth2Api",
+   "method": "GET",
+   "baseURL": "https://api.rd.services/crm/v2",
+   "url": "/tasks/ID1"
+  }
+ }
+]

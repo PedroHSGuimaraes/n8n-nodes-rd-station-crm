@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // TEMPLATE RESOURCE — every other resource mirrors this file's structure:
@@ -129,7 +130,7 @@ export const contactDescription: INodeProperties[] = [
 							{ name: 'Work', value: 'work' },
 						],
 						default: 'work',
-						description: 'Category of the phone number. One of: cellphone, fax, home, work',
+						description: 'Category of the phone number. One of: cellphone, fax, home, work.',
 					},
 				],
 			},
@@ -152,8 +153,7 @@ export const contactDescription: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'fieldId',
 						type: 'options',
-						description:
-							'Contact custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: 'Contact custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: { loadOptionsMethod: 'getContactCustomFields' },
 						default: '',
 					},
@@ -186,8 +186,7 @@ export const contactDescription: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
 				type: 'options',
-				description:
-					'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -211,8 +210,7 @@ export const contactDescription: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
 				type: 'options',
-				description:
-					'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) this contact belongs to, referenced by its ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -273,7 +271,7 @@ export const contactDescription: INodeProperties[] = [
 					{ name: 'Updated At', value: 'updated_at' },
 				],
 				default: 'name',
-				description: 'Field to sort the results by. One of: created_at, name, updated_at',
+				description: 'Field to sort the results by. One of: created_at, name, updated_at.',
 			},
 			{
 				displayName: 'Sort Direction',
@@ -284,7 +282,7 @@ export const contactDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'asc',
-				description: 'Sort direction. One of: asc, desc',
+				description: 'Sort direction. One of: asc, desc.',
 			},
 		],
 	},
@@ -339,7 +337,7 @@ export async function executeContact(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
@@ -348,7 +346,7 @@ export async function executeContact(
 	}
 
 	if (operation === 'get') {
-		const contactId = this.getNodeParameter('contactId', i) as string;
+		const contactId = getIdParameter.call(this, 'contactId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/contacts/${contactId}`);
 	}
 
@@ -367,7 +365,7 @@ export async function executeContact(
 	}
 
 	if (operation === 'update') {
-		const contactId = this.getNodeParameter('contactId', i) as string;
+		const contactId = getIdParameter.call(this, 'contactId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const contact = buildContactBody.call(this, i, updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/contacts/${contactId}`, { contact });

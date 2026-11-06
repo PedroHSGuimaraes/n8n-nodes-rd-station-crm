@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForTasks = {
 	resource: ['task'],
@@ -90,7 +91,7 @@ export const taskDescription: INodeProperties[] = [
 		options: taskTypeOptions,
 		default: 'task',
 		displayOptions: { show: { ...showOnlyForTasks, operation: ['create'] } },
-		description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp',
+		description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp.',
 	},
 	{
 		displayName: 'Date',
@@ -131,8 +132,7 @@ export const taskDescription: INodeProperties[] = [
 				displayName: 'User Names or IDs',
 				name: 'userIds',
 				type: 'multiOptions',
-				description:
-					'IDs of the RD Station CRM users assigned as owners of the task. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'IDs of the RD Station CRM users assigned as owners of the task. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: [],
 			},
@@ -170,14 +170,13 @@ export const taskDescription: INodeProperties[] = [
 				type: 'options',
 				options: taskTypeOptions,
 				default: 'task',
-				description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp',
+				description: 'Category of the activity. One of: call, email, lunch, meeting, task, visit, whatsapp.',
 			},
 			{
 				displayName: 'User Names or IDs',
 				name: 'userIds',
 				type: 'multiOptions',
-				description:
-					'IDs of the RD Station CRM users assigned as owners of the task. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'IDs of the RD Station CRM users assigned as owners of the task. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: [],
 			},
@@ -240,14 +239,13 @@ export const taskDescription: INodeProperties[] = [
 				type: 'options',
 				options: taskTypeOptions,
 				default: 'task',
-				description: 'Return only tasks of this activity type. One of: call, email, lunch, meeting, task, visit, whatsapp',
+				description: 'Return only tasks of this activity type. One of: call, email, lunch, meeting, task, visit, whatsapp.',
 			},
 			{
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description:
-					'Filter tasks by the RD Station CRM user assigned as owner. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Filter tasks by the RD Station CRM user assigned as owner. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -285,10 +283,10 @@ export async function executeTask(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const subject = this.getNodeParameter('subject', i) as string;
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const type = this.getNodeParameter('type', i) as string;
 		const date = this.getNodeParameter('date', i, '') as string;
 		const hour = this.getNodeParameter('hour', i, '') as string;
@@ -298,7 +296,7 @@ export async function executeTask(
 	}
 
 	if (operation === 'get') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/tasks/${taskId}`);
 	}
 
@@ -322,7 +320,7 @@ export async function executeTask(
 	}
 
 	if (operation === 'update') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const task = buildTaskBody(updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/tasks/${taskId}`, { task });

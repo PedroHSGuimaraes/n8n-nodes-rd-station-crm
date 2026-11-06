@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // STAGE resource — RD Station "deal stages" (etapas do funil de vendas).
@@ -64,8 +65,7 @@ export const stageDescription: INodeProperties[] = [
 		name: 'dealPipelineId',
 		type: 'options',
 		required: true,
-		description:
-			'Pipeline (sales funnel) that this deal stage belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'Pipeline (sales funnel) that this deal stage belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getPipelines' },
 		default: '',
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
@@ -122,7 +122,7 @@ export const stageDescription: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
-		default: 12,
+		default: 50,
 		typeOptions: { minValue: 1, maxValue: 12 },
 		description: 'Max number of results to return',
 		displayOptions: {
@@ -142,8 +142,7 @@ export const stageDescription: INodeProperties[] = [
 				displayName: 'Pipeline Name or ID',
 				name: 'dealPipelineId',
 				type: 'options',
-				description:
-					'Only return deal stages that belong to this pipeline. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Only return deal stages that belong to this pipeline. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getPipelines' },
 				default: '',
 			},
@@ -155,7 +154,7 @@ export async function executeStage(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const dealPipelineId = this.getNodeParameter('dealPipelineId', i) as string;
 		const name = this.getNodeParameter('name', i) as string;
@@ -171,7 +170,7 @@ export async function executeStage(
 	}
 
 	if (operation === 'get') {
-		const stageId = this.getNodeParameter('stageId', i) as string;
+		const stageId = getIdParameter.call(this, 'stageId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/deal_stages/${stageId}`);
 	}
 
@@ -193,7 +192,7 @@ export async function executeStage(
 	}
 
 	if (operation === 'update') {
-		const stageId = this.getNodeParameter('stageId', i) as string;
+		const stageId = getIdParameter.call(this, 'stageId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		// Top-level body per docs (no `deal_stage` wrapper).

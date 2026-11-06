@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -59,7 +60,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Organization', value: 'organization' },
 			{ name: 'Product', value: 'product' },
 		],
-		description: 'Type of record this custom field is attached to. One of: contact, deal, organization, product',
+		description: 'Type of record this custom field is attached to. One of: contact, deal, organization, product.',
 	},
 	{
 		displayName: 'Type',
@@ -74,7 +75,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Option', value: 'option' },
 			{ name: 'Text', value: 'text' },
 		],
-		description: 'Data type of the custom field. One of: date, multiple_choice, number, option, text',
+		description: 'Data type of the custom field. One of: date, multiple_choice, number, option, text.',
 	},
 
 	{
@@ -220,7 +221,7 @@ export async function executeCustomFieldV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const entity = this.getNodeParameter('entity', i) as string;
@@ -232,13 +233,13 @@ export async function executeCustomFieldV2(
 	}
 
 	if (operation === 'delete') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		await rdCrmV2Request.call(this, 'DELETE', `/custom_fields/${customFieldId}`);
 		return { deleted: true };
 	}
 
 	if (operation === 'get') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/custom_fields/${customFieldId}`);
 		return response.data ?? response;
 	}
@@ -258,7 +259,7 @@ export async function executeCustomFieldV2(
 	}
 
 	if (operation === 'update') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const body = buildCustomFieldV2Body({ ...updateFields });
 		const response = await rdCrmV2Request.call(this, 'PUT', `/custom_fields/${customFieldId}`, body);

@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) Organization resource — mirrors the ContactV2 template:
@@ -64,8 +65,7 @@ export const organizationV2Description: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'slug',
 						type: 'options',
-						description:
-							'Custom field of the organization to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: 'Custom field of the organization to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: { loadOptionsMethod: 'getOrganizationCustomFieldsV2' },
 						default: '',
 					},
@@ -88,8 +88,7 @@ export const organizationV2Description: INodeProperties[] = [
 				displayName: 'Owner Name or ID',
 				name: 'owner_id',
 				type: 'options',
-				description:
-					'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -117,8 +116,7 @@ export const organizationV2Description: INodeProperties[] = [
 				displayName: 'Owner Name or ID',
 				name: 'owner_id',
 				type: 'options',
-				description:
-					'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'User who owns and is responsible for the organization. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsersV2' },
 				default: '',
 			},
@@ -216,7 +214,7 @@ export async function executeOrganizationV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
@@ -227,7 +225,7 @@ export async function executeOrganizationV2(
 	}
 
 	if (operation === 'get') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/organizations/${organizationId}`);
 		return response.data ?? response;
 	}
@@ -249,7 +247,7 @@ export async function executeOrganizationV2(
 	}
 
 	if (operation === 'update') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildOrganizationV2Body({ ...updateFields }, customFieldsUi);

@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // CUSTOM FIELD RESOURCE — mirrors the structure of the Contact template:
@@ -90,7 +91,7 @@ export const customFieldDescription: INodeProperties[] = [
 			{ name: 'Text', value: 'text' },
 		],
 		default: 'text',
-		description: 'Data type of the custom field values. One of: date, multiple_choice, option, text',
+		description: 'Data type of the custom field values. One of: date, multiple_choice, option, text.',
 	},
 	{
 		displayName: 'Entity',
@@ -105,7 +106,7 @@ export const customFieldDescription: INodeProperties[] = [
 			{ name: 'Product', value: 'product' },
 		],
 		default: 'contact',
-		description: 'Record type this custom field applies to. One of: contact, deal, organization, product',
+		description: 'Record type this custom field applies to. One of: contact, deal, organization, product.',
 	},
 
 	// ----- Additional fields (create) -----
@@ -234,7 +235,7 @@ export const customFieldDescription: INodeProperties[] = [
 		name: 'filterEntity',
 		type: 'options',
 		default: 'all',
-		description: 'Return only custom fields for this record type, or all for every field. One of: all, contact, deal, organization, product',
+		description: 'Return only custom fields for this record type, or all for every field. One of: all, contact, deal, organization, product.',
 		displayOptions: { show: { ...showOnlyForCustomFields, operation: ['getMany'] } },
 		options: [
 			{ name: 'All', value: 'all' },
@@ -269,7 +270,7 @@ export async function executeCustomField(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const label = this.getNodeParameter('label', i) as string;
 		const type = this.getNodeParameter('type', i) as string;
@@ -286,7 +287,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'get') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/custom_fields/${customFieldId}`);
 	}
 
@@ -314,7 +315,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'update') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		// NOTE: Body is sent TOP-LEVEL (not wrapped in a `custom_field` object) — see create note.
@@ -325,7 +326,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'delete') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		await rdCrmApiRequest.call(this, 'DELETE', `/custom_fields/${customFieldId}`);
 		return { deleted: true };
 	}

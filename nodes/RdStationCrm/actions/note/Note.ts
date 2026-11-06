@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // NOTE resource — notes are RD Station "activities" of type "note".
@@ -51,8 +52,7 @@ export const noteDescription: INodeProperties[] = [
 		name: 'userId',
 		type: 'options',
 		required: true,
-		description:
-			'CRM user recorded as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'CRM user recorded as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getUsers' },
 		default: '',
 		displayOptions: { show: { ...showOnlyForNotes, operation: ['create'] } },
@@ -104,8 +104,7 @@ export const noteDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description:
-					'Only return notes authored by this CRM user. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Only return notes authored by this CRM user. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -129,7 +128,7 @@ export const noteDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'desc',
-				description: 'Sort order for the returned notes by creation date. One of: asc, desc',
+				description: 'Sort order for the returned notes by creation date. One of: asc, desc.',
 			},
 		],
 	},
@@ -139,10 +138,10 @@ export async function executeNote(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
-		const userId = this.getNodeParameter('userId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
+		const userId = getIdParameter.call(this, 'userId', i);
 		const text = this.getNodeParameter('text', i) as string;
 
 		// Notes are activities of type "note"; the docs wrap the payload in an

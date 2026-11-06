@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-rd-station-crm",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "n8n community node for RD Station CRM: API v1 (private token) and API v2 (OAuth2) — contacts, deals, organizations, tasks, notes, pipelines, stages, products, custom fields, sources, campaigns, loss reasons, users, teams and a real webhook trigger.",
   "keywords": [
     "n8n-community-node-package",
@@ -27,11 +27,13 @@
   },
   "main": "dist/nodes/RdStationCrm/RdStationCrm.node.js",
   "scripts": {
-    "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
-    "format": "prettier nodes credentials --write",
-    "lint": "eslint nodes credentials package.json",
-    "lintfix": "eslint nodes credentials package.json --fix",
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix",
+    "test": "npm run build --silent && node --test --test-reporter=tap test/*.test.cjs",
+    "release": "n8n-node release",
     "prepublishOnly": "npm run build"
   },
   "files": [
@@ -46,20 +48,20 @@
     "nodes": [
       "dist/nodes/RdStationCrm/RdStationCrm.node.js",
       "dist/nodes/RdStationCrmTrigger/RdStationCrmTrigger.node.js"
-    ]
+    ],
+    "strict": true
   },
   "peerDependencies": {
     "n8n-workflow": "*"
   },
   "devDependencies": {
-    "@n8n/eslint-plugin-community-nodes": "^0.23.0",
+    "@n8n/node-cli": "0.55.5",
     "@types/node": "^18.19.0",
-    "eslint": "^9.29.0",
-    "gulp": "^4.0.2",
+    "eslint": "9.32.0",
     "n8n-workflow": "^2.16.0",
-    "prettier": "^3.3.0",
-    "typescript": "^5.5.0",
-    "typescript-eslint": "^8.63.0"
+    "prettier": "3.6.2",
+    "release-it": "^21.1.0",
+    "typescript": "5.9.2"
   },
   "funding": {
     "type": "individual",

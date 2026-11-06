@@ -92,7 +92,7 @@ export async function executeResource(
 	resource: string,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	switch (resource) {
 		case 'campaign':
 			return executeCampaign.call(this, operation, i);

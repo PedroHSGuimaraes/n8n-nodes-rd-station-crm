@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForOrganizations = {
 	resource: ['organization'],
@@ -90,8 +91,7 @@ export const organizationDescription: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'fieldId',
 						type: 'options',
-						description:
-							'Organization custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: 'Organization custom field to set, referenced by its custom field ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: { loadOptionsMethod: 'getOrganizationCustomFields' },
 						default: '',
 					},
@@ -129,8 +129,7 @@ export const organizationDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description:
-					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -158,8 +157,7 @@ export const organizationDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description:
-					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -203,8 +201,7 @@ export const organizationDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description:
-					'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'CRM user who owns the organization, referenced by user ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -228,7 +225,7 @@ export const organizationDescription: INodeProperties[] = [
 					{ name: 'Updated At', value: 'updated_at' },
 				],
 				default: 'name',
-				description: 'Field to sort the results by. One of: created_at, name, updated_at',
+				description: 'Field to sort the results by. One of: created_at, name, updated_at.',
 			},
 			{
 				displayName: 'Sort Direction',
@@ -239,7 +236,7 @@ export const organizationDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'asc',
-				description: 'Sort direction. One of: asc, desc',
+				description: 'Sort direction. One of: asc, desc.',
 			},
 		],
 	},
@@ -274,7 +271,7 @@ export async function executeOrganization(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
@@ -283,7 +280,7 @@ export async function executeOrganization(
 	}
 
 	if (operation === 'get') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/organizations/${organizationId}`);
 	}
 
@@ -304,14 +301,14 @@ export async function executeOrganization(
 	}
 
 	if (operation === 'update') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const organization = buildOrganizationBody.call(this, i, updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/organizations/${organizationId}`, { organization });
 	}
 
 	if (operation === 'getContacts') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 		const endpoint = `/organizations/${organizationId}/contacts`;
 

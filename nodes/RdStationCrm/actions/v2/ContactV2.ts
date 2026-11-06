@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // TEMPLATE for v2 (OAuth2) resources — every other v2 resource mirrors this:
@@ -91,7 +92,7 @@ export const contactV2Description: INodeProperties[] = [
 							{ name: 'Work', value: 'work' },
 						],
 						default: 'work',
-						description: 'Category of the phone number. One of: fax, home, mobile, work',
+						description: 'Category of the phone number. One of: fax, home, mobile, work.',
 					},
 				],
 			},
@@ -114,8 +115,7 @@ export const contactV2Description: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'slug',
 						type: 'options',
-						description:
-							'Custom field of the contact to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: 'Custom field of the contact to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: { loadOptionsMethod: 'getContactCustomFieldsV2' },
 						default: '',
 					},
@@ -139,8 +139,7 @@ export const contactV2Description: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
 				type: 'options',
-				description:
-					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -162,8 +161,7 @@ export const contactV2Description: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
 				type: 'options',
-				description:
-					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -244,7 +242,7 @@ export async function executeContactV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
@@ -257,7 +255,7 @@ export async function executeContactV2(
 	}
 
 	if (operation === 'get') {
-		const contactId = this.getNodeParameter('contactId', i) as string;
+		const contactId = getIdParameter.call(this, 'contactId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/contacts/${contactId}`);
 		return response.data ?? response;
 	}
@@ -277,7 +275,7 @@ export async function executeContactV2(
 	}
 
 	if (operation === 'update') {
-		const contactId = this.getNodeParameter('contactId', i) as string;
+		const contactId = getIdParameter.call(this, 'contactId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const emailsUi = this.getNodeParameter('emailsUi', i, {}) as IDataObject;
 		const phonesUi = this.getNodeParameter('phonesUi', i, {}) as IDataObject;

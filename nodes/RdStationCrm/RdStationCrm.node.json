@@ -2,10 +2,9 @@
 	"node": "n8n-nodes-rd-station-crm.rdStationCrm",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
-	"categories": ["Sales", "AI"],
-	"subcategories": {
-		"AI": ["Tools"]
-	},
+	"categories": [
+		"Sales"
+	],
 	"resources": {
 		"credentialDocumentation": [
 			{

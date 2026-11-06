@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForTeams = {
 	resource: ['team'],
@@ -79,7 +80,7 @@ export const teamDescription: INodeProperties[] = [
 					{ name: 'Name', value: 'name' },
 				],
 				default: 'name',
-				description: 'Field to sort the returned teams by. One of: created_at, name',
+				description: 'Field to sort the returned teams by. One of: created_at, name.',
 			},
 			{
 				displayName: 'Sort Direction',
@@ -90,7 +91,7 @@ export const teamDescription: INodeProperties[] = [
 					{ name: 'Descending', value: 'desc' },
 				],
 				default: 'asc',
-				description: 'Sort order for the returned teams. One of: asc, desc',
+				description: 'Sort order for the returned teams. One of: asc, desc.',
 			},
 		],
 	},
@@ -100,9 +101,9 @@ export async function executeTeam(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'get') {
-		const teamId = this.getNodeParameter('teamId', i) as string;
+		const teamId = getIdParameter.call(this, 'teamId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/teams/${teamId}`);
 	}
 

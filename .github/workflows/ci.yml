@@ -1,0 +1,41 @@
+name: CI
+
+# Roda lint, testes e build em todo Pull Request e em push na master.
+# Assim o que o n8n exige para verificar o node (lint do node-cli) é conferido antes do merge.
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+# Cancela a rodada anterior da mesma branch para não gastar minutos de CI à toa.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - name: Install dependencies
+        # --ignore-scripts pula builds nativos do n8n-workflow, que o node não usa.
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

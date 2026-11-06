@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -50,8 +51,7 @@ export const noteV2Description: INodeProperties[] = [
 		type: 'options',
 		required: true,
 		default: '',
-		description:
-			'User to record as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'User to record as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getUsersV2' },
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 	},
@@ -79,9 +79,9 @@ export async function executeNoteV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const description = this.getNodeParameter('description', i) as string;
 		const userId = this.getNodeParameter('user_id', i) as string;
 		const body: IDataObject = { description, user_id: userId };
@@ -90,7 +90,7 @@ export async function executeNoteV2(
 	}
 
 	if (operation === 'getMany') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 		const qs: IDataObject = {};
 
