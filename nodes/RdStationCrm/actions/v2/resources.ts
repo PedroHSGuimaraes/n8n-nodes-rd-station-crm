@@ -10,7 +10,7 @@ import type { IExecuteFunctions, INodeProperties, INodePropertyOptions } from 'n
 import type { V2Field, V2Spec } from './resourceFactory';
 import { buildDescription, makeExecutor, standardOperations } from './resourceFactory';
 import { RD_CRM_WEBHOOK_EVENTS_V2 } from '../../helpers/constants';
-import { rdCrmV2Multipart } from '../../transport/v2';
+import { buildMultipart, rdCrmV2Multipart } from '../../transport/v2';
 
 /** Atalho para um campo de texto simples. */
 const text = (name: string, displayName: string, description: string): V2Field => ({
@@ -58,7 +58,11 @@ export const leadSpec: V2Spec = {
 	idName: 'leadId',
 	filter: true,
 	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'lead', 'leads'),
-	topFields: [text('name', 'Name', 'Name of the lead, for example Ana Souza')],
+	// A doc crm-v2-create-lead exige `name` e `owner_id` na criação (sem eles a RD responde 422).
+	topFields: [
+		text('name', 'Name', 'Name of the lead, for example Ana Souza'),
+		account('owner_id', 'Owner', 'getUsersV2', 'User responsible for the lead'),
+	],
 	fields: [
 		account('campaign_id', 'Campaign', 'getCampaignsV2', 'Campaign that brought the lead in'),
 		{
@@ -69,7 +73,6 @@ export const leadSpec: V2Spec = {
 			description: 'Comma-separated list of contact IDs linked to the lead',
 		},
 		account('organization_id', 'Organization', 'getOrganizationsV2', 'Organization the lead belongs to'),
-		account('owner_id', 'Owner', 'getUsersV2', 'User responsible for the lead'),
 		num('rating', 'Rating', 'Rating given to the lead'),
 		account('source_id', 'Source', 'getSourcesV2', 'Source the lead came from'),
 		account('stage_id', 'Stage', 'getStagesV2', 'Pipeline stage the lead is in'),
@@ -78,13 +81,15 @@ export const leadSpec: V2Spec = {
 			name: 'status',
 			type: 'options',
 			default: 'ongoing',
+			// Na criação a RD só aceita `ongoing`; os outros valores valem na atualização.
+			updateOnly: true,
 			options: choices(['Converted', 'converted'], ['Discarded', 'discarded'], ['Ongoing', 'ongoing']),
 			description: 'Status of the lead. One of: ongoing, converted, discarded.',
 		},
 	],
 };
 
-/** Funil de vendas: nesta fatia só leitura. */
+/** Funil de vendas. */
 export const pipelineSpec: V2Spec = {
 	resource: 'pipelineV2',
 	label: 'Pipeline',
@@ -202,6 +207,15 @@ export const dealProductSpec: V2Spec = {
 			default: 'one-time',
 			options: choices(['Annually', 'annually'], ['Monthly', 'monthly'], ['One-Time', 'one-time']),
 			description: 'How often the product is billed. One of: one-time, monthly, annually.',
+		},
+		{
+			displayName: 'Custom Fields',
+			name: 'deal_product_custom_fields',
+			type: 'json',
+			default: '[]',
+			expect: 'array',
+			description:
+				'Custom field values as a JSON list of objects with custom_field_id and value',
 		},
 		num('discount', 'Discount', 'Discount value; its unit comes from Discount Type'),
 		{
@@ -383,13 +397,15 @@ async function uploadDealFile(
 	// Lança erro claro se o item não traz o binário, antes de qualquer chamada à RD.
 	const binary = this.helpers.assertBinaryData(i, propertyName);
 	const buffer = await this.helpers.getBinaryDataBuffer(i, propertyName);
-	const form = new FormData();
-	form.append(
+	// O n8n-core só reconhece o FormData do pacote `form-data` (dependência que este pacote não pode ter),
+	// então o multipart é montado à mão num Buffer, com o boundary no cabeçalho Content-Type.
+	const { body, contentType } = buildMultipart(
 		'data[file]',
-		new Blob([buffer], { type: binary.mimeType }),
 		binary.fileName ?? 'file',
+		binary.mimeType ?? 'application/octet-stream',
+		buffer,
 	);
-	const response = await rdCrmV2Multipart.call(this, `/deals/${ids.parentId}/files`, form);
+	const response = await rdCrmV2Multipart.call(this, `/deals/${ids.parentId}/files`, body, contentType);
 	return response.data ?? response;
 }
 

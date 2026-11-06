@@ -6,13 +6,13 @@ Plan: `.specs/features/rotas-novas-v2/plan.md`
 
 ## Intent
 
-42 checks in 5 slices · 3 one-way doors · 0 open
+49 checks in 6 slices · 3 one-way doors · 0 open
 
 ## Checks
 
 ### S1 - leads, funis, etapas, fontes, motivos, usuários e produtos da negociação
 
-**C1** - `leadV2` `create` chama `POST /leads` na base da API v2 com a credencial OAuth2, `timeout` 30000 e corpo `{ data: { name: 'Ana', status: 'ongoing', rating: 3, contact_ids: ['c1','c2'] } }` (S1, AC 1)
+**C1** - `leadV2` `create` chama `POST /leads` na base da API v2 com a credencial OAuth2, `timeout` 30000 e corpo `{ data: { name: 'Ana', owner_id: 'u1', rating: 3, contact_ids: ['c1','c2'] } }` (S1, AC 1)
 Proof: run unit | ok S1.1 lead create posts /leads with the data envelope
 
 **C2** - `leadV2` `get` com `leadId` `{ mode: 'id', value: ' L9 ' }` chama `GET /leads/L9` (S1, AC 2)
@@ -123,7 +123,7 @@ Proof: run unit | ok S4.1 segment create get list and update
 **C35** - `dealFileV2` `getMany` e `delete` chamam `/deals/D1/files` e `/deals/D1/files/F1` (S4, AC 2)
 Proof: run unit | ok S4.2 deal file list and delete
 
-**C36** - `dealFileV2` `upload` envia `multipart/form-data` com o arquivo em `data[file]` e `timeout` 30000 (S4, AC 3)
+**C36** - `dealFileV2` `upload` envia `multipart/form-data` (Buffer com boundary no cabeçalho) com o arquivo em `data[file]` e `timeout` 30000 (S4, AC 3)
 Proof: run unit | ok S4.3 deal file upload sends multipart data
 
 **C37** - `upload` sem binário falha antes de qualquer requisição (S4, AC 4)
@@ -145,6 +145,29 @@ Proof: run unit | ok S5.2 readme documents the new resources and events
 
 **C42** - Lint, typecheck e build saem com código 0 (S5, AC 3)
 Proof: `npm run lint && npx tsc --noEmit && npm run build 2>&1 | tail -1`
+
+### S6 - achados do Verifier
+
+**C43** - `leadV2` `create` exige `owner_id` e só oferece o status `ongoing`; a atualização oferece os três (S1, AC 1)
+Proof: run unit | ok F1 lead create requires the owner and only offers the ongoing status
+
+**C44** - Nenhuma descrição de campo tem o texto quebrado `the ,,` (S1, AC 11)
+Proof: run unit | ok F2 no description has a broken placeholder
+
+**C45** - `checkExists` lê todas as páginas da lista de webhooks e só apaga o velho da própria URL (S2, AC 6)
+Proof: run unit | ok F3 checkExists and create read every page of the webhook list
+
+**C46** - Data inválida falha com `The 'Starts At' field is not a valid date`, e lista só de vírgulas não vai no corpo (S3, AC 6)
+Proof: run unit | ok F5 invalid dates fail clearly and an empty list sends nothing
+
+**C47** - O `limit` das listagens novas tem teto de 200 (S1, AC 4)
+Proof: run unit | ok F6 the page size is capped at 200
+
+**C48** - O trigger compara a URL do webhook sem barra final e com o host em minúsculas (S2, AC 5)
+Proof: run unit | ok F7 the webhook url is compared without trailing slash or host case
+
+**C49** - `dealProductV2` `create` aceita `deal_product_custom_fields` em JSON lista (S1, AC 9)
+Proof: run unit | ok F10 deal product accepts custom fields as a JSON list
 
 ## Coverage
 

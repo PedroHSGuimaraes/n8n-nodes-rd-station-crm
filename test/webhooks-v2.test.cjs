@@ -133,7 +133,16 @@ describe('S2 webhooks v2 and the OAuth2 trigger', () => {
 		assert.deepEqual(credential('rdStationCrmOAuth2Api').displayOptions.show.authentication, ['oauth2']);
 		const events = description.properties.find((p) => p.name === 'events');
 		assert.equal(events.type, 'multiOptions');
-		assert.equal(events.options.length, 23);
+		assert.deepEqual(events.options.map((o) => o.value).sort(), [
+			'crm_campaign_created', 'crm_campaign_deleted', 'crm_campaign_updated',
+			'crm_contact_created', 'crm_contact_deleted', 'crm_contact_updated',
+			'crm_deal_created', 'crm_deal_deleted', 'crm_deal_updated',
+			'crm_lost_reason_created', 'crm_lost_reason_deleted', 'crm_lost_reason_updated',
+			'crm_organization_created', 'crm_organization_deleted', 'crm_organization_updated',
+			'crm_product_created', 'crm_product_deleted', 'crm_product_updated',
+			'crm_source_created', 'crm_source_deleted', 'crm_source_updated',
+			'crm_task_created', 'crm_task_updated',
+		]);
 		assert.equal(description.version, 1);
 	});
 
@@ -228,6 +237,19 @@ describe('S2 webhooks v2 and the OAuth2 trigger', () => {
 		assert.equal(calls[0].cred, 'rdStationCrmApi');
 		assert.equal(calls[1].method, 'POST');
 		assert.deepEqual(calls[1].body, { event_type: 'crm_deal_created', url: 'https://n8n.test/webhook/U', http_method: 'POST' });
+		// checkExists lista pela v1 e delete apaga pela v1 os ids guardados em `staticData.webhooks`.
+		const exists = hookContext({
+			params: { events: ['crm_deal_created'] },
+			remote: [{ uuid: 'w1', url: 'https://n8n.test/webhook/U', event_type: 'crm_deal_created' }],
+		});
+		assert.equal(await hooks.checkExists.call(exists.context), true);
+		assert.equal(exists.calls[0].base, 'https://crm.rdstation.com/api/v1');
+		assert.deepEqual(exists.staticData.webhooks, [{ id: 'w1', event: 'crm_deal_created' }]);
+		const removal = hookContext({ params: {}, staticData: { webhooks: [{ id: 'w1', event: 'crm_deal_created' }] } });
+		assert.equal(await hooks.delete.call(removal.context), true);
+		assert.equal(removal.calls[0].method, 'DELETE');
+		assert.equal(removal.calls[0].url, '/webhooks/w1');
+		assert.equal(removal.calls[0].base, 'https://crm.rdstation.com/api/v1');
 	});
 
 	it('S2.10 trigger emits the delivered body', async () => {
@@ -243,5 +265,32 @@ describe('S2 webhooks v2 and the OAuth2 trigger', () => {
 		};
 		const result = await trigger.webhook.call(context);
 		assert.deepEqual(result.workflowData[0][0].json, body);
+	});
+
+	it('F3 checkExists and create read every page of the webhook list', async () => {
+		const U = 'https://n8n.test/webhook/U';
+		// Página 1 só tem webhook de outra URL; o velho da própria URL está na página 2.
+		const pages = {
+			undefined: { data: [{ id: 'Z', event_name: 'crm_lead_created', url: 'https://other.test/x' }], links: { next: 'https://api.rd.services/crm/v2/webhooks?page=2' } },
+			2: { data: [{ id: 'A', event_name: 'crm_lead_created', url: U }, { id: 'S', event_name: 'crm_deal_created', url: U }], links: {} },
+		};
+		const calls = [];
+		const context = hookContext({ params: oauth(['crm_lead_created']) }).context;
+		context.helpers.httpRequestWithAuthentication = async (_cred, options) => {
+			calls.push(`${options.method} ${options.url}`);
+			if (options.method === 'GET') return pages[options.qs?.page];
+			return '';
+		};
+		assert.equal(await hooks.checkExists.call(context), true);
+		assert.deepEqual(calls.filter((c) => c.startsWith('DELETE')), ['DELETE /webhooks/S']);
+	});
+
+	it('F7 the webhook url is compared without trailing slash or host case', async () => {
+		const { context, calls } = hookContext({
+			params: oauth(['crm_lead_created']),
+			remote: [{ id: 'A', event_name: 'crm_lead_created', url: 'https://N8N.test/webhook/U/' }],
+		});
+		assert.equal(await hooks.checkExists.call(context), true);
+		assert.deepEqual(calls.filter((c) => c.method !== 'GET'), []);
 	});
 });

@@ -15,7 +15,11 @@ describe('S5 documentation of the new v2 routes', () => {
 			.split(/^## /m)
 			.find((part) => part.startsWith('2.5.0'));
 		assert.ok(section, 'CHANGELOG.md needs a "## 2.5.0" section');
-		for (const word of ['API v2', 'Lead', 'Trigger', 'OAuth2', '38']) {
+		for (const word of [
+			'API v2', 'Lead', 'Trigger', 'OAuth2', '38', 'Pipeline', 'Stage', 'Source', 'Loss Reason', 'User',
+			'Team', 'Product', 'Campaign', 'Meeting', 'Proposal', 'Segment', 'Deal Product', 'Deal File',
+			'Dialer Call', 'Webhook',
+		]) {
 			assert.ok(section.includes(word), `the 2.5.0 section must mention ${word}`);
 		}
 	});
@@ -29,6 +33,12 @@ describe('S5 documentation of the new v2 routes', () => {
 		]) {
 			assert.ok(v2.includes(`**${resource}**`), `README v2 table is missing ${resource}`);
 		}
+		// Cada linha traz as operações certas (ex.: Proposal não tem Update; Deal File tem Upload).
+		const row = (name) => v2.split('\n').find((line) => line.includes(`**${name}**`));
+		assert.ok(row('Deal File').includes('Upload'));
+		assert.ok(row('Proposal').includes('Create, Get, Get Many') && !row('Proposal').includes('Update'));
+		assert.ok(row('User').includes('Get Meeting Availability'));
+		assert.ok(row('Webhook').includes('Delete'));
 		const trigger = readme.slice(readme.indexOf('## 🔔 Trigger'), readme.indexOf('## 🤖'));
 		assert.ok(trigger.includes('38'), 'README Trigger must state the 38 v2 events');
 		for (const event of ['crm_lead_created', 'crm_meeting_status_changed', 'crm_proposal_created', 'crm_task_deleted']) {

@@ -25,11 +25,27 @@ function selectedEvents(ctx: IHookFunctions): string[] {
 	return ctx.getNodeParameter('eventsV2', []) as string[];
 }
 
+/**
+ * Normaliza uma URL para comparar: o host vem em minúsculas e a barra final do caminho some.
+ * A RD pode devolver a URL cadastrada com essa forma; comparar com `===` faria o trigger não achar o seu
+ * webhook e criar um novo a cada ativação.
+ */
+function normalizeUrl(value: unknown): string {
+	try {
+		const parsed = new URL(String(value));
+		return `${parsed.protocol}//${parsed.host}${parsed.pathname.replace(/\/+$/, '')}${parsed.search}`;
+	} catch {
+		// Texto que não é URL só casa com ele mesmo.
+		return String(value);
+	}
+}
+
 /** Lista os webhooks da conta que apontam para a URL deste modo. Os de outras URLs ficam de fora. */
 async function ownWebhooks(ctx: IHookFunctions, url: string): Promise<IDataObject[]> {
 	const all = await rdCrmV2RequestAllItems.call(ctx, '/webhooks');
 	// Entrada sem `id` não dá para guardar nem apagar, então é ignorada.
-	return all.filter((webhook) => webhook.url === url && webhook.id !== undefined);
+	const wanted = normalizeUrl(url);
+	return all.filter((webhook) => normalizeUrl(webhook.url) === wanted && webhook.id !== undefined);
 }
 
 /** Guarda a lista de webhooks desta URL no static data do nó. */

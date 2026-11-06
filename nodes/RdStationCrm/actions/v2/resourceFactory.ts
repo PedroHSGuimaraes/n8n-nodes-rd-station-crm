@@ -48,6 +48,8 @@ export interface V2Field {
 	default?: string | number | boolean;
 	/** Formato exigido do JSON digitado (ex.: `sections` das propostas é uma lista). */
 	expect?: 'array' | 'object';
+	/** Campo que só vale na atualização (ex.: o lead só nasce `ongoing`, e o status muda depois). */
+	updateOnly?: boolean;
 	/** Campo que só vale na criação (a RD não aceita trocar depois). */
 	createOnly?: boolean;
 }
@@ -232,7 +234,7 @@ export function buildDescription(spec: V2Spec): INodeProperties[] {
 			required: true,
 			default: '',
 			displayOptions: { show: { ...showResource, operation: withId } },
-			description: 'Unique identifier of the ,, taken from a create or list operation',
+			description: `Unique identifier of the ${spec.label.toLowerCase()}, taken from a create or list operation`,
 		});
 	}
 
@@ -247,7 +249,7 @@ export function buildDescription(spec: V2Spec): INodeProperties[] {
 	}
 
 	// Campos opcionais da criação e da atualização.
-	const optional = sortFields(spec.fields ?? []);
+	const optional = sortFields((spec.fields ?? []).filter((f) => !f.updateOnly));
 	if (create && optional.length) {
 		props.push({
 			displayName: 'Additional Fields',
@@ -291,7 +293,8 @@ export function buildDescription(spec: V2Spec): INodeProperties[] {
 				name: 'limit',
 				type: 'number',
 				default: 50,
-				typeOptions: { minValue: 1 },
+				// A RD aceita no máximo 200 itens por página (doc crm-v2-list-leads); acima disso responde 400.
+				typeOptions: { minValue: 1, maxValue: 200 },
 				description: 'Max number of results to return',
 				displayOptions: { show: { ...showResource, operation: manyValues, returnAll: [false] } },
 			},
@@ -335,15 +338,28 @@ function convert(
 	// Vazio não vai no corpo: assim a atualização muda só o que a pessoa preencheu.
 	if (value === undefined || value === null || value === '') return undefined;
 	switch (field.type) {
-		case 'csv':
+		case 'csv': {
 			// Lista digitada com vírgulas ("c1, c2") vira lista de IDs sem espaços nas pontas.
-			return String(value)
+			const list = String(value)
 				.split(',')
 				.map((part) => part.trim())
 				.filter(Boolean);
-		case 'dateTime':
+			// Só vírgulas e espaços não é lista: mandar `[]` na atualização apagaria os vínculos existentes.
+			return list.length ? list : undefined;
+		}
+		case 'dateTime': {
 			// A RD pede data-hora ISO 8601; o seletor do n8n entrega texto livre.
-			return new Date(value as string).toISOString();
+			const date = new Date(value as string);
+			// Texto que não é data (ex.: "amanha") falha aqui com mensagem clara, não com "Invalid time value".
+			if (Number.isNaN(date.getTime())) {
+				throw new NodeOperationError(
+					this.getNode(),
+					`The '${field.displayName}' field is not a valid date`,
+					{ description: 'Use a date such as 2026-12-01 or 2026-12-01T10:00:00Z' },
+				);
+			}
+			return date.toISOString();
+		}
 		case 'json': {
 			// JSON pode chegar pronto (expressão do n8n) ou como texto digitado pela pessoa.
 			let parsed: unknown = value;

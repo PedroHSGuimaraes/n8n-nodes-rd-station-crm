@@ -80,7 +80,7 @@ Com OAuth2 o node cria, lê e atualiza leads, lê funis, etapas, fontes, motivos
 
 **Acceptance Criteria**
 
-1. WHEN `resource` `leadV2`, `operation` `create`, `name` `'Ana'` e `additionalFields` `{ status: 'ongoing', rating: 3, contact_ids: 'c1, c2' }` THEN o sistema SHALL chamar `POST /leads` na base da API v2 (`api.rd.services/crm/v2`) com a credencial `rdStationCrmOAuth2Api`, `timeout` 30000 e corpo `{ data: { name: 'Ana', status: 'ongoing', rating: 3, contact_ids: ['c1', 'c2'] } }`
+1. WHEN `resource` `leadV2`, `operation` `create`, `name` `'Ana'` e `owner_id` `'u1'` e `additionalFields` `{ rating: 3, contact_ids: 'c1, c2' }` THEN o sistema SHALL chamar `POST /leads` na base da API v2 (`api.rd.services/crm/v2`) com a credencial `rdStationCrmOAuth2Api`, `timeout` 30000 e corpo `{ data: { name: 'Ana', owner_id: 'u1', rating: 3, contact_ids: ['c1', 'c2'] } }`
 2. WHEN `leadV2` `get` com `leadId` `{ mode: 'id', value: ' L9 ' }` THEN o sistema SHALL chamar `GET /leads/L9`
 3. WHEN `leadV2` `update` com `leadId` `L9` e `updateFields` `{ status: 'converted' }` THEN o sistema SHALL chamar `PUT /leads/L9` com corpo `{ data: { status: 'converted' } }`
 4. WHEN `leadV2` `getMany` com `returnAll` falso, `limit` 20 e filtro `status:ongoing` THEN o sistema SHALL chamar `GET /leads` com `qs` `{ filter: 'status:ongoing', 'page[size]': 20 }`
@@ -132,7 +132,7 @@ O trigger aceita OAuth2 com os 38 eventos da v2 e cria e apaga o webhook pela AP
 
 1. WHEN `segmentV2` roda `create` (`name`), `get`, `getMany` e `update` THEN o sistema SHALL chamar `POST /segments`, `GET /segments/{id}`, `GET /segments` e `PUT /segments/{id}`
 2. WHEN `dealFileV2` `getMany` com `dealId` `D1` e `delete` com `fileId` `F1` THEN o sistema SHALL chamar `GET /deals/D1/files` e `DELETE /deals/D1/files/F1`
-3. WHEN `dealFileV2` `upload` com `dealId` `D1` e um campo binário com arquivo THEN o sistema SHALL chamar `POST /deals/D1/files` com `multipart/form-data`, o arquivo no campo `data[file]`, e `timeout` 30000
+3. WHEN `dealFileV2` `upload` com `dealId` `D1` e um campo binário com arquivo THEN o sistema SHALL chamar `POST /deals/D1/files` com `multipart/form-data` montado em Buffer (cabeçalho com `boundary`), o arquivo no campo `data[file]`, e `timeout` 30000
 4. IF `dealFileV2` `upload` não encontra o campo binário no item THEN o sistema SHALL lançar `NodeOperationError` antes de qualquer requisição
 5. WHEN `userV2` roda `getMeetingAvailability` com `userId` `U1` e `getManyMeetingAvailabilities` THEN o sistema SHALL chamar `GET /users/U1/meeting_availability` e `GET /users/meeting_availability`
 6. WHEN `dialerCallV2` roda `get` com `dialerCallId` `C1` e `getMany` THEN o sistema SHALL chamar `GET /dialer_calls/C1` e `GET /dialer_calls`
@@ -163,7 +163,9 @@ O trigger aceita OAuth2 com os 38 eventos da v2 e cria e apaga o webhook pela AP
 | Apagar um item (produto da negociação, anexo, webhook) | Sem campo de confirmação: é uma remoção unitária de um ID escolhido, não em massa | O brief pede confirmação para apagar em massa, projeto ou integração em lote | n |
 | Trigger OAuth2 e versão do trigger | Sem versão nova: `authentication` é parâmetro novo com padrão `accessToken` e nenhum parâmetro existente muda | AD-003 só pede versão leve quando o formato de um parâmetro muda | n |
 | Corpo de `POST /deals/{id}/proposals` | `sections` é JSON digitado pela pessoa | A OpenAPI traz seções com `properties.layout` e `columns` aninhados; um campo JSON evita inventar a estrutura | n |
-| `deal_product_custom_fields` e `custom_fields` de produto | Campo JSON | A doc traz `custom_field_id`/`value` sem enum | n |
+| `deal_product_custom_fields` e `custom_fields` de produto | Campo JSON (lista e objeto, validados antes da requisição) | A doc traz `custom_field_id`/`value` sem enum | n |
+| Criação de lead | `owner_id` obrigatório e só `status` `ongoing` (a atualização aceita os três) | A doc crm-v2-create-lead responde 422 sem `owner_id` e com outro status | n |
+| URL do webhook no trigger | Compara sem barra final e com o host em minúsculas | A RD pode devolver a URL normalizada; sem isso o trigger duplicaria webhook a cada ativação | n |
 | Mensagens e rótulos do node | Em inglês | UX guideline do n8n | n |
 
 **Open questions:** none - all resolved or logged above.

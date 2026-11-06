@@ -49,10 +49,11 @@ describe('S1 leads, pipelines, stages, sources, lost reasons, users and deal pro
 			resource: 'leadV2',
 			operation: 'create',
 			name: 'Ana',
-			additionalFields: { status: 'ongoing', rating: 3, contact_ids: 'c1, c2' },
+			owner_id: 'u1',
+			additionalFields: { rating: 3, contact_ids: 'c1, c2' },
 		});
 		expectRequest(request, 'POST', '/leads', {
-			body: { data: { name: 'Ana', status: 'ongoing', rating: 3, contact_ids: ['c1', 'c2'] } },
+			body: { data: { name: 'Ana', owner_id: 'u1', rating: 3, contact_ids: ['c1', 'c2'] } },
 		});
 	});
 
@@ -450,12 +451,17 @@ describe('S4 segments, deal files, availability and dialer calls', () => {
 		assert.equal(request.baseURL, BASE);
 		assert.equal(request.cred, 'rdStationCrmOAuth2Api');
 		assert.equal(request.timeout, 30000);
-		// O corpo é um multipart (FormData) e não o envelope JSON `{ data }` das outras rotas.
-		assert.ok(request.body instanceof FormData);
-		const file = request.body.get('data[file]');
-		assert.equal(file.name, 'proposta.pdf');
-		assert.equal(file.type, 'application/pdf');
-		assert.equal(await file.text(), 'PDF-1');
+		// O n8n-core real só reconhece o FormData do pacote `form-data`; por isso o corpo é um Buffer multipart
+		// montado à mão, com o Content-Type e o boundary no cabeçalho.
+		assert.ok(Buffer.isBuffer(request.body));
+		const type = request.headers['Content-Type'];
+		const boundary = /^multipart\/form-data; boundary=(.+)$/.exec(type)?.[1];
+		assert.ok(boundary, `bad content type: ${type}`);
+		const text = request.body.toString('utf8');
+		assert.ok(text.startsWith(`--${boundary}\r\n`));
+		assert.ok(text.includes('Content-Disposition: form-data; name="data[file]"; filename="proposta.pdf"\r\n'));
+		assert.ok(text.includes('Content-Type: application/pdf\r\n\r\nPDF-1\r\n'));
+		assert.ok(text.endsWith(`--${boundary}--\r\n`));
 	});
 
 	it('S4.4 deal file upload without binary fails first', async () => {
@@ -489,5 +495,68 @@ describe('S4 segments, deal files, availability and dialer calls', () => {
 		expectRequest(get, 'GET', '/dialer_calls/C1');
 		const [many] = await call({ resource: 'dialerCallV2', operation: 'getMany', returnAll: false, limit: 5 });
 		expectRequest(many, 'GET', '/dialer_calls');
+	});
+});
+
+describe('Verifier findings', () => {
+	it('F1 lead create requires the owner and only offers the ongoing status', () => {
+		const create = props('owner_id', 'leadV2').find((p) => p.displayOptions.show.operation?.includes('create'));
+		assert.ok(create, 'owner_id must be a top-level create field');
+		assert.equal(create.required, true);
+		const additional = props('additionalFields', 'leadV2')[0];
+		assert.equal(additional.options.some((o) => o.name === 'status'), false);
+		const update = props('updateFields', 'leadV2')[0];
+		const status = update.options.find((o) => o.name === 'status');
+		assert.deepEqual(status.options.map((o) => o.value), ['converted', 'discarded', 'ongoing']);
+	});
+
+	it('F2 no description has a broken placeholder', () => {
+		const broken = [];
+		const walk = (list, where) => {
+			for (const p of list) {
+				if (/,,|the ,|of the ,/.test(p.description ?? '')) broken.push(`${where}.${p.name}: ${p.description}`);
+				if (p.options && p.type === 'collection') walk(p.options, `${where}.${p.name}`);
+			}
+		};
+		walk(description.properties, 'node');
+		assert.deepEqual(broken, []);
+	});
+
+	it('F5 invalid dates fail clearly and an empty list sends nothing', async () => {
+		await assert.rejects(
+			call({ resource: 'meetingV2', operation: 'create', subject: 'Demo', additionalFields: { starts_at: 'amanha' } }),
+			(error) => {
+				assert.ok(error instanceof NodeOperationError);
+				assert.match(error.message, /'Starts At' field is not a valid date/);
+				return true;
+			},
+		);
+		const [update] = await call({
+			resource: 'meetingV2',
+			operation: 'update',
+			meetingId: locator('M1'),
+			updateFields: { contact_ids: ' , ', notes: 'n' },
+		});
+		assert.deepEqual(update.body, { data: { notes: 'n' } });
+	});
+
+	it('F6 the page size is capped at 200', () => {
+		const limits = description.properties.filter(
+			(p) => p.name === 'limit' && p.displayOptions?.show?.resource?.some((r) => ['leadV2', 'meetingV2', 'stageV2'].includes(r)),
+		);
+		assert.equal(limits.length, 3);
+		for (const limit of limits) assert.equal(limit.typeOptions.maxValue, 200);
+	});
+
+	it('F10 deal product accepts custom fields as a JSON list', async () => {
+		const custom = '[{"custom_field_id":"cf1","value":"x"}]';
+		const [request] = await call({
+			resource: 'dealProductV2',
+			operation: 'create',
+			dealId: locator('D1'),
+			productId: locator('PR1'),
+			additionalFields: { deal_product_custom_fields: custom },
+		});
+		assert.deepEqual(request.body.data.deal_product_custom_fields, [{ custom_field_id: 'cf1', value: 'x' }]);
 	});
 });
