@@ -59,4 +59,26 @@ describe('toolchain', () => {
 		// O lock só é instalável pelo mesmo npm que o gerou; por isso a versão precisa ser igual.
 		assert.equal(nodeVersion('publish.yml'), nodeVersion('ci.yml'));
 	});
+
+	// Token do npm "Read and write (stage only)" (06/11/2026): com ele `npm publish` falha com
+	// E_STAGE_REQUIRED. A versão precisa ir para a fila do `npm stage publish`, que só existe no
+	// npm 12 (o Node LTS do runner traz o npm 11). O dono aprova a versão na aba Staged Packages.
+	// Este teste falha se o workflow voltar a chamar `npm publish` direto.
+	it('publish workflow stages the package instead of publishing it', () => {
+		const publish = fs.readFileSync(path.join(root, '.github/workflows/publish.yml'), 'utf8');
+		// Só conta passo `run:` de verdade; comentário que cita o comando não vale.
+		const runs = publish.split('\n').filter((line) => /^\s*(-\s+)?run:/.test(line));
+		assert.ok(
+			runs.some((line) => line.includes('npm@12.2.2 stage publish') && line.includes('--provenance')),
+			'publish.yml must run "npm@12.2.2 stage publish --provenance"',
+		);
+		assert.equal(
+			runs.some((line) => /\bnpm publish\b/.test(line)),
+			false,
+			'publish.yml must not run "npm publish" with a stage-only token',
+		);
+		// O token chega pelo setup-node (registry-url) e pelo NODE_AUTH_TOKEN do passo.
+		assert.match(publish, /NODE_AUTH_TOKEN:\s*\$\{\{\s*secrets\.NPM_TOKEN\s*\}\}/);
+		assert.match(publish, /id-token:\s*write/);
+	});
 });

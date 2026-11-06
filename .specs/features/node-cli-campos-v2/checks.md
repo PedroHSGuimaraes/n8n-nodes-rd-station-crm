@@ -6,7 +6,7 @@ Plan: `.specs/features/node-cli-campos-v2/plan.md`
 
 ## Intent
 
-24 checks in 4 slices · 3 one-way doors · 0 open
+25 checks in 4 slices · 3 one-way doors · 0 open
 
 ## Checks
 
@@ -89,6 +89,9 @@ Proof: run unit | ok listSearch quotes RDQL text that has spaces
 
 **C24** - A busca de tarefas (v1 e v2) pede uma página por vez com `paginationToken`, sem baixar todas as páginas (S3, AC 6)
 Proof: run unit | ok listSearch pages tasks one page at a time
+
+**C25** - O `publish.yml` publica pelo `npm@12.2.2 stage publish --provenance` (token granular "stage only": a versão fica em espera até o dono aprovar na aba Staged Packages do npmjs.com), sem passo `npm publish`, na mesma versão de Node do `ci.yml` (S4, AC 2)
+Proof: run unit | ok publish workflow stages the package instead of publishing it
 
 ## Coverage
 
