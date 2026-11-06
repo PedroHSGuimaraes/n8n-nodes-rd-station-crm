@@ -174,7 +174,7 @@ Proof: `npm run lint && npx tsc --noEmit && npm run build 2>&1 | tail -1`
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** none yet
-- **Boundary:** nenhum commit de código ainda
+- **Dispatched:** Verifier (sonnet) enviado em HEAD 1a8cfd0
+- **Boundary:** C1-C42 construídos e provados em HEAD
 - **Abandoned:** nenhum
 - **Walked:** sem tela; a conferência no editor do n8n fica para o dono
