@@ -30,6 +30,8 @@
 | C20 | `release.test.cjs` `release 2.4.0 is documented in the changelog` | yes |
 | C21 | `release.test.cjs` `publish workflow keeps the v tag trigger and provenance` | yes |
 | C22 | `npm run lint` | yes |
+| C23 | `list-search.test.cjs` `listSearch quotes RDQL text that has spaces` | yes - exact equality on `name:~"Ana Lima"` fails if `~` or the quotes go; inner quotes stripped; no-space form `name:~ana` covered by C18; see F6 for blank-text edge |
+| C24 | `list-search.test.cjs` `listSearch pages tasks one page at a time` | yes - one request per call, `page`/`limit`, token `2` and page 2 on the next call (v1), `links.next` token and no filter (v2); a loop over all pages would fail on `requests.length` |
 
 ## Findings
 
@@ -40,5 +42,6 @@
 | F3 (baixa) Paginação do `listSearch` sem teste: `paginationToken`, regra `has_more` ou `items.length === 50`, e `links.next` da v2 | C18 afirma só o `qs` da primeira requisição; sonda: página cheia de 50 sem `has_more` devolve token `2`, e o token `3` vira `page: 3` | teste com página cheia, página parcial e token recebido nos dois transportes | 76cb85f (teste de paginação) |
 | F4 (baixa) Asserções mais frouxas que o critério em C1, C4 e C8 | C1 `toolchain.test.cjs` só `existsSync` em `dist`; C4 `ci.includes(step)` aceita o texto em comentário; C8 compara um conjunto de pares pares nome e tipo sem resource e operation | C1 rodar o build antes de olhar `dist` (ou provar por `npm run build`); C4 ler o YAML e achar os passos em `run:`; C8 amarrar o par ao resource e à operation | 76cb85f (C4 e C1 apertados; C8 fica como guarda de pares, risco aceito) |
 | F5 (baixa) Nenhum teste prende cada campo à lista certa (v1 ou v2) | C10 só exige `typeof searchListMethod === 'string'` e C15 só a existência; sonda manual: os 6 campos de recurso `V2` apontam para `*V2` e os demais para a lista v1, mas uma troca passaria verde | table-driven: resource -> `searchListMethod` esperado | 76cb85f (teste da lista certa por campo) |
+| F6 (baixa) `rdqlContains` com texto só de espaços ou só de aspas manda filtro vazio `name:~` | sonda sobre `dist`: `searchContactsV2.call(ctx, '   ')`, `'""'` e `'"'` enviam `qs.filter = "name:~"`; o guarda `if (filter && filterable)` deixa passar `'   '` (truthy) e a RDQL fica sem valor, provável 400 da RD | em `pagedV2` aparar `filter` antes do teste (ou não enviar `filter` quando `rdqlContains` ficar sem valor) e provar com teste de `'   '` e `'""'` | 7f6863b (teste de texto em branco) |
 
 Sondas fora do plano, rodadas sobre `dist` (descartáveis, em `/tmp/probe.cjs`): locator só com espaços lança o erro guiado; `value` numérico (`12345`) e `0` viram `/contacts/12345` e `/contacts/0`; `dealV2` no modo `id` com `' d9 '` chama `/deals/d9`; `noteV2` `getMany` vazio lança o erro guiado; filtro sem resultado devolve `{ results: [] }` e filtro `.*` não é tratado como regex; `value` `a/../b?x=1` no modo `id` vai cru para a rota (igual à 2.3.2 em texto, sem regressão).
