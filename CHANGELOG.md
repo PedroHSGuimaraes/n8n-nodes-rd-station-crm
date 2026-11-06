@@ -15,6 +15,7 @@
 - **Trigger com OAuth2.** O trigger ganha o campo Authentication (padrão Access Token, igual a antes) e, com OAuth2, os 38 eventos da API v2 (leads, reuniões, propostas, ligações e `crm_task_deleted`). Ele cria e apaga os webhooks pela API v2 e só mexe nos webhooks da URL do próprio workflow.
 - **Workflows salvos não mudam.** Nenhum parâmetro existente muda de nome ou tipo, nas versões 1 e 2 do node e no trigger.
 - **Envio de arquivo.** A operação Upload de Deal File envia o arquivo binário do item em `multipart/form-data`.
+- **Confirmação nos Delete novos (API v2).** Webhook, Deal Product e Deal File ganham o campo `Confirm Delete`, desligado por padrão: sem ele ligado, o node falha antes de chamar a RD. O ID do Deal Product da API v2 se chama `dealProductLineId`, para não colidir com o `dealProductId` do Deal Product da API v1.
 
 ## 2.4.0
 

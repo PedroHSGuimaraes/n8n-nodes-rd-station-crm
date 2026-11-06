@@ -180,15 +180,16 @@ describe('S1 leads, pipelines, stages, sources, lost reasons, users and deal pro
 			resource: 'dealProductV2',
 			operation: 'update',
 			dealId: locator('D1'),
-			dealProductId: locator('X1'),
+			dealProductLineId: locator('X1'),
 			updateFields: { quantity: 3 },
 		});
 		expectRequest(update, 'PUT', '/deals/D1/products/X1', { body: { data: { quantity: 3 } } });
 		const [del] = await call({
 			resource: 'dealProductV2',
 			operation: 'delete',
+			confirmDelete: true,
 			dealId: locator('D1'),
-			dealProductId: locator('X1'),
+			dealProductLineId: locator('X1'),
 		});
 		expectRequest(del, 'DELETE', '/deals/D1/products/X1');
 	});
@@ -201,7 +202,7 @@ describe('S1 leads, pipelines, stages, sources, lost reasons, users and deal pro
 			sourceId: ['sourceV2', 'searchSourcesV2'],
 			lossReasonId: ['lostReasonV2', 'searchLossReasonsV2'],
 			userId: ['userV2', 'searchUsersV2'],
-			dealProductId: ['dealProductV2', 'searchDealProductsV2'],
+			dealProductLineId: ['dealProductV2', 'searchDealProductsV2'],
 		};
 		const searches = new RdStationCrm().methods.listSearch;
 		for (const [name, [resource, method]] of Object.entries(wanted)) {
@@ -436,7 +437,7 @@ describe('S4 segments, deal files, availability and dialer calls', () => {
 	it('S4.2 deal file list and delete', async () => {
 		const [many] = await call({ resource: 'dealFileV2', operation: 'getMany', dealId: locator('D1'), returnAll: false, limit: 5 });
 		expectRequest(many, 'GET', '/deals/D1/files');
-		const [del] = await call({ resource: 'dealFileV2', operation: 'delete', dealId: locator('D1'), fileId: locator('F1') });
+		const [del] = await call({ resource: 'dealFileV2', operation: 'delete', confirmDelete: true, dealId: locator('D1'), fileId: locator('F1') });
 		expectRequest(del, 'DELETE', '/deals/D1/files/F1');
 	});
 
@@ -558,5 +559,79 @@ describe('Verifier findings', () => {
 			additionalFields: { deal_product_custom_fields: custom },
 		});
 		assert.deepEqual(request.body.data.deal_product_custom_fields, [{ custom_field_id: 'cf1', value: 'x' }]);
+	});
+});
+
+// Regra protegida (achado F1 do revisor): `dealProductId` já existe no recurso `dealProduct` da API v1
+// (Update One e Remove One, da 2.5.0 do PR #5). O recurso novo `dealProductV2` usa o nome `dealProductLineId`
+// para não colidir: a tabela de IDs guiados é por nome, e a colisão transformava o campo da API v1 em Resource
+// Locator, com lista que chama a API v2 com a credencial do token e rota lida como "[object Object]".
+describe('S6 o campo dealProductId da API v1 não vira lista guiada', () => {
+	it('S6.1 dealProduct keeps dealProductId as text in every node version', () => {
+		const copies = props('dealProductId', 'dealProduct');
+		assert.deepEqual(
+			copies.map((p) => p.type),
+			['string'],
+			'o recurso da API v1 deve ter uma cópia só, em texto, sem @version',
+		);
+		assert.equal(copies[0].displayOptions.show['@version'], undefined);
+		// O recurso novo da API v2 usa outro nome e continua com a lista guiada na versão 2 do node.
+		assert.deepEqual(props('dealProductId', 'dealProductV2'), []);
+		const v2 = props('dealProductLineId', 'dealProductV2').map((p) => p.type).sort();
+		assert.deepEqual(v2, ['resourceLocator', 'string']);
+	});
+
+	it('S6.2 version 2 node with token reads a plain deal product id on the v1 routes', async () => {
+		const requests = await runExecute({
+			version: 2,
+			params: { authentication: 'accessToken', resource: 'dealProduct', operation: 'removeOne', dealId: locator('d1'), dealProductId: 'DP9' },
+		});
+		assert.equal(requests[0].url, '/deals/d1/deal_products/DP9');
+	});
+});
+
+// Regra protegida (achado F2 do revisor): os três Delete novos da API v2 seguem o padrão dos outros nodes do
+// lote (Digisac e Nuvem Shop): `Confirm Delete` nasce desligado e a operação falha antes de qualquer HTTP.
+describe('S7 delete da API v2 pede confirmação', () => {
+	const deletes = [
+		['webhookV2', { webhookId: locator('W1') }, 'DELETE', '/webhooks/W1'],
+		['dealProductV2', { dealId: locator('D1'), dealProductLineId: locator('X1') }, 'DELETE', '/deals/D1/products/X1'],
+		['dealFileV2', { dealId: locator('D1'), fileId: locator('F1') }, 'DELETE', '/deals/D1/files/F1'],
+	];
+
+	it('S7.1 the Confirm Delete field starts off and shows only on delete', () => {
+		for (const [resource] of deletes) {
+			const [field] = props('confirmDelete', resource);
+			assert.equal(field.type, 'boolean', resource);
+			assert.equal(field.default, false, resource);
+			assert.deepEqual(field.displayOptions.show.operation, ['delete'], resource);
+			assert.match(field.description, /^Whether /, resource);
+		}
+	});
+
+	it('S7.2 without confirmation the delete fails before any request', async () => {
+		for (const [resource, ids] of deletes) {
+			for (const confirmDelete of [undefined, false]) {
+				const requests = [];
+				await assert.rejects(
+					async () => {
+						requests.push(...(await call({ resource, operation: 'delete', confirmDelete, ...ids })));
+					},
+					(error) => {
+						assert.ok(error instanceof NodeOperationError, `${resource}: ${error.constructor.name}`);
+						assert.match(error.message, /Confirm Delete/);
+						return true;
+					},
+				);
+				assert.equal(requests.length, 0, resource);
+			}
+		}
+	});
+
+	it('S7.3 with confirmation the delete sends the request', async () => {
+		for (const [resource, ids, method, url] of deletes) {
+			const [request] = await call({ resource, operation: 'delete', confirmDelete: true, ...ids });
+			expectRequest(request, method, url);
+		}
 	});
 });

@@ -238,6 +238,19 @@ export function buildDescription(spec: V2Spec): INodeProperties[] {
 		});
 	}
 
+	// Confirmação do Delete: nasce desligada e a execução falha antes do HTTP, como nos outros nodes do lote.
+	const remove = ops.find((op) => op.kind === 'delete');
+	if (remove) {
+		props.push({
+			displayName: 'Confirm Delete',
+			name: 'confirmDelete',
+			type: 'boolean',
+			default: false,
+			displayOptions: { show: { ...showResource, operation: [remove.value] } },
+			description: `Whether to confirm that this ${spec.label.toLowerCase()} is deleted for good; the operation stops before calling RD Station CRM while this is off`,
+		});
+	}
+
 	// Campos de topo da criação (os obrigatórios).
 	if (create) {
 		for (const field of sortFields(spec.topFields ?? [])) {
@@ -465,6 +478,14 @@ export function makeExecutor(spec: V2Spec) {
 		}
 
 		if (def.kind === 'delete') {
+			// Sem a confirmação ligada nada é enviado: apagar na RD não tem desfazer.
+			if (this.getNodeParameter('confirmDelete', i, false) !== true) {
+				throw new NodeOperationError(
+					this.getNode(),
+					`Turn on Confirm Delete to delete this ${spec.label.toLowerCase()} [item ${i}]`,
+					{ itemIndex: i, description: 'The deletion is permanent, so the node waits for the confirmation' },
+				);
+			}
 			await rdCrmV2Request.call(this, 'DELETE', itemPath);
 			// A RD responde 204 sem corpo; devolver `success` dá ao workflow um item para seguir.
 			return { success: true };

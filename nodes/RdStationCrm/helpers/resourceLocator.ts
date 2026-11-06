@@ -50,7 +50,8 @@ export const ID_FIELDS: Record<string, IdFieldSpec> = {
 	teamId: { noun: 'Team', search: 'searchTeams', searchV2: 'searchTeamsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	userId: { noun: 'User', search: 'searchUsers', searchV2: 'searchUsersV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	// Campos que só existem na API v2 (OAuth2): a lista v1 e a v2 são a mesma, pois o recurso só aparece na v2.
-	dealProductId: { noun: 'Deal Product', search: 'searchDealProductsV2', searchV2: 'searchDealProductsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	// `dealProductLineId` e não `dealProductId`: este nome já é texto no recurso `dealProduct` da API v1.
+	dealProductLineId: { noun: 'Deal Product', search: 'searchDealProductsV2', searchV2: 'searchDealProductsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	meetingId: { noun: 'Meeting', search: 'searchMeetingsV2', searchV2: 'searchMeetingsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	proposalId: { noun: 'Proposal', search: 'searchProposalsV2', searchV2: 'searchProposalsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	segmentId: { noun: 'Segment', search: 'searchSegmentsV2', searchV2: 'searchSegmentsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },

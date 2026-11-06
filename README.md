@@ -150,7 +150,7 @@ A API v2 cobre 22 recursos (envelope JSON:API `{ data }`, paginação por `links
 - Campos escolhidos pelo nome aceitam também uma **expressão** como alternativa (padrão "Name or ID" do n8n).
 - *Get Many* com **Return All** pagina tudo, ou você define um **Limit**.
 - Etapas, produtos da negociação, propostas e anexos pedem primeiro o **funil** ou a **negociação** a que pertencem; a lista de IDs só mostra os itens desse pai.
-- *Delete* apaga um item por ID (produto da negociação, anexo, webhook, campo personalizado); a API v2 não tem *Delete* de lead, contato, negociação, empresa nem tarefa.
+- *Delete* apaga um item por ID (produto da negociação, anexo, webhook, campo personalizado); a API v2 não tem *Delete* de lead, contato, negociação, empresa nem tarefa. Nos *Delete* de **Webhook**, **Deal Product** e **Deal File**, o campo **Confirm Delete** nasce desligado e o node para antes de chamar a RD; ligue-o para apagar de verdade.
 
 ### Exemplo — criar um negócio e movê-lo de etapa
 
@@ -233,7 +233,7 @@ Em cada campo do node em modo tool aparece o botão **"Let the model define this
 - **Restrinja o escopo:** exponha só as operações que o agente precisa (ex.: só *Create*/*Get Many* de Contact e Deal), em vez de liberar tudo.
 - **Credencial dedicada** com permissões mínimas para o agente.
 - **n8n atualizado:** versões antigas tinham um bug em que a tool de community node retornava resposta vazia para o agente ([n8n#26202](https://github.com/n8n-io/n8n/issues/26202)); já corrigido.
-- Com **OAuth2 (API V2)**, as operações novas também servem ao agente: por exemplo *Lead → Create* e *Lead → Get Many* (qualificar prospects), *Stage → Get Many* (descobrir etapas do funil), *Deal Product → Create* (incluir produto na negociação) e *Meeting → Create* (agendar reunião). Operações de apagar (*Delete*) merecem uma tool própria e um prompt que peça confirmação.
+- Com **OAuth2 (API V2)**, as operações novas também servem ao agente: por exemplo *Lead → Create* e *Lead → Get Many* (qualificar prospects), *Stage → Get Many* (descobrir etapas do funil), *Deal Product → Create* (incluir produto na negociação) e *Meeting → Create* (agendar reunião). Operações de apagar (*Delete*) merecem uma tool própria e um prompt que peça confirmação; nos *Delete* novos da API v2, o agente só apaga se **Confirm Delete** estiver ligado.
 - O **Trigger** (`RD Station CRM Trigger`) **não** é uma tool — triggers não podem ser usados por agentes (por design do n8n).
 
 ### Referências

@@ -111,7 +111,7 @@ describe('S2 webhooks v2 and the OAuth2 trigger', () => {
 		});
 		assert.equal(`${update.method} ${update.url}`, 'PUT /webhooks/W1');
 		assert.deepEqual(update.body, { data: { url: 'https://y.test/h' } });
-		const [del] = await runExecute({ version: 2, params: { ...base, operation: 'delete', webhookId: locator('W1') } });
+		const [del] = await runExecute({ version: 2, params: { ...base, operation: 'delete', confirmDelete: true, webhookId: locator('W1') } });
 		assert.equal(`${del.method} ${del.url}`, 'DELETE /webhooks/W1');
 	});
 

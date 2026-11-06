@@ -48,4 +48,16 @@ describe('S5 documentation of the new v2 routes', () => {
 		const tool = readme.slice(readme.indexOf('## 🤖'), readme.indexOf('## 🔀'));
 		assert.ok(tool.includes('Lead'), 'README AI tool section must cite the new v2 resources');
 	});
+
+	// Regra protegida (achado F2 do revisor): o README diz que os Delete novos da API v2 pedem `Confirm Delete`
+	// (desligado por padrão) e que a tool de IA precisa dessa confirmação ligada para apagar.
+	it('S5.3 readme documents Confirm Delete on the new v2 deletes', () => {
+		const readme = read('README.md');
+		const v2 = readme.slice(readme.indexOf('### OAuth2 (API V2)'), readme.indexOf('### Exemplo'));
+		assert.match(v2, /Confirm Delete/);
+		const tool = readme.slice(readme.indexOf('## 🤖'), readme.indexOf('## 🔀'));
+		assert.match(tool, /Confirm Delete/);
+		const section = read('CHANGELOG.md').split(/^## /m).find((part) => part.startsWith('2.5.0'));
+		assert.match(section, /Confirm Delete/);
+	});
 });

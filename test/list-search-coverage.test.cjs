@@ -96,7 +96,7 @@ describe('listSearch coverage', () => {
 			dialerCallId: ['searchDialerCallsV2', 'searchDialerCallsV2'],
 			fileId: ['searchFilesV2', 'searchFilesV2'],
 			proposalId: ['searchProposalsV2', 'searchProposalsV2'],
-			dealProductId: ['searchDealProductsV2', 'searchDealProductsV2'],
+			dealProductLineId: ['searchDealProductsV2', 'searchDealProductsV2'],
 		};
 		const guided = node.description.properties.filter((p) => p.type === 'resourceLocator');
 		for (const field of guided) {

@@ -181,7 +181,8 @@ export const dealProductSpec: V2Spec = {
 	summary: 'A product line item attached to a deal, in RD Station CRM API v2',
 	path: (dealId) => `/deals/${dealId}/products`,
 	parent: 'dealId',
-	idName: 'dealProductId',
+	// Não use `dealProductId`: o recurso `dealProduct` da API v1 já tem esse nome e a tabela de IDs guiados é por nome.
+	idName: 'dealProductLineId',
 	filter: true,
 	operations: standardOperations(
 		['create', 'delete', 'getMany', 'update'],
