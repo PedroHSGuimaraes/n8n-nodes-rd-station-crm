@@ -182,6 +182,15 @@ export const listSearch = {
 	searchSourcesV2: fromLoader(loadOptionsV2.getSourcesV2),
 	searchLossReasonsV2: fromLoader(loadOptionsV2.getLossReasonsV2),
 	searchUsersV2: fromLoader(loadOptionsV2.getUsersV2),
+	searchTeamsV2: fromLoader(loadOptionsV2.getTeamsV2),
+	searchCampaignsV2: fromLoader(loadOptionsV2.getCampaignsV2),
+	// O webhook v2 é identificado por `id` e descrito pelo evento e pela URL.
+	searchWebhooksV2: fromItems(async (ctx) =>
+		(await rdCrmV2RequestAllItems.call(ctx, '/webhooks')).map((webhook) => ({
+			name: `${webhook.event_name ?? 'webhook'} (${webhook.url ?? webhook.id})`,
+			value: String(webhook.id),
+		})),
+	),
 	searchStagesV2: childrenV2('pipelineId', (pipelineId) => `/pipelines/${pipelineId}/stages`),
 	searchDealProductsV2: childrenV2('dealId', (dealId) => `/deals/${dealId}/products`, 'product_id'),
 };

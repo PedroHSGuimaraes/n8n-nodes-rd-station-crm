@@ -9,6 +9,7 @@ import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
 import type { V2Field, V2Spec } from './resourceFactory';
 import { buildDescription, makeExecutor, standardOperations } from './resourceFactory';
+import { RD_CRM_WEBHOOK_EVENTS_V2 } from '../../helpers/constants';
 
 /** Atalho para um campo de texto simples. */
 const text = (name: string, displayName: string, description: string): V2Field => ({
@@ -184,6 +185,37 @@ export const dealProductSpec: V2Spec = {
 	],
 };
 
+/** Webhook da API v2: cada webhook assina um evento e entrega o corpo na URL informada. */
+export const webhookSpec: V2Spec = {
+	resource: 'webhookV2',
+	label: 'Webhook',
+	summary: 'A webhook subscription that sends an event to a URL, in RD Station CRM API v2',
+	path: () => '/webhooks',
+	idName: 'webhookId',
+	operations: standardOperations(
+		['create', 'delete', 'get', 'getMany', 'update'],
+		'webhook',
+		'webhooks',
+	),
+	// A OpenAPI aceita só `POST` em `http_method`, então o node o manda sempre na criação.
+	fixedCreateBody: { http_method: 'POST' },
+	topFields: [
+		{
+			displayName: 'Event',
+			name: 'event_name',
+			type: 'options',
+			default: 'crm_deal_created',
+			options: RD_CRM_WEBHOOK_EVENTS_V2,
+			description: 'Event that triggers the webhook',
+		},
+		text('url', 'URL', 'Public HTTPS URL that receives the event body'),
+	],
+	fields: [
+		text('auth_header', 'Auth Header', 'Name of the HTTP header RD Station sends to prove the call is genuine'),
+		text('auth_key', 'Auth Key', 'Value RD Station puts in the auth header'),
+	],
+};
+
 /** Todas as especificações, na ordem em que aparecem no menu Resource. */
 export const v2Specs: V2Spec[] = [
 	dealProductSpec,
@@ -193,6 +225,7 @@ export const v2Specs: V2Spec[] = [
 	sourceSpec,
 	stageSpec,
 	userSpec,
+	webhookSpec,
 ];
 
 /** Opções do menu Resource geradas das especificações. */

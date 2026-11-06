@@ -8,8 +8,14 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionTypes } from 'n8n-workflow';
 
-import { RD_CRM_WEBHOOK_EVENTS } from '../RdStationCrm/helpers/constants';
+import { RD_CRM_WEBHOOK_EVENTS, RD_CRM_WEBHOOK_EVENTS_V2 } from '../RdStationCrm/helpers/constants';
 import { rdCrmApiRequest } from '../RdStationCrm/transport';
+import { checkExistsV2, createV2, deleteV2 } from './webhooksV2';
+
+// Com OAuth2 o trigger usa a API v2; sem o parâmetro (workflows salvos) vale o token da API v1.
+function usesOAuth2(ctx: IHookFunctions): boolean {
+	return ctx.getNodeParameter('authentication', 'accessToken') === 'oauth2';
+}
 
 interface IRegisteredWebhook {
 	id: string;
@@ -23,7 +29,8 @@ export class RdStationCrmTrigger implements INodeType {
 		icon: { light: 'file:rdStationCrm.svg', dark: 'file:rdStationCrm.dark.svg' },
 		group: ['trigger'],
 		version: 1,
-		subtitle: '=Events: {{$parameter["events"].join(", ")}}',
+		subtitle:
+			'=Events: {{($parameter["authentication"] === "oauth2" ? $parameter["eventsV2"] : $parameter["events"]).join(", ")}}',
 		description: 'Starts the workflow when RD Station CRM events happen',
 		defaults: {
 			name: 'RD Station CRM Trigger',
@@ -34,6 +41,12 @@ export class RdStationCrmTrigger implements INodeType {
 			{
 				name: 'rdStationCrmApi',
 				required: true,
+				displayOptions: { show: { authentication: ['accessToken'] } },
+			},
+			{
+				name: 'rdStationCrmOAuth2Api',
+				required: true,
+				displayOptions: { show: { authentication: ['oauth2'] } },
 			},
 		],
 		webhooks: [
@@ -46,13 +59,37 @@ export class RdStationCrmTrigger implements INodeType {
 		],
 		properties: [
 			{
+				// Parâmetro novo com padrão `accessToken`: workflows salvos não o têm e seguem pela API v1.
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{ name: 'Access Token (API V1)', value: 'accessToken' },
+					{ name: 'OAuth2 (API V2)', value: 'oauth2' },
+				],
+				default: 'accessToken',
+				description: 'API v1 uses a private token; API v2 uses OAuth2 and has more events',
+			},
+			{
 				displayName: 'Trigger On',
 				name: 'events',
 				type: 'multiOptions',
 				required: true,
 				default: [],
+				displayOptions: { show: { authentication: ['accessToken'] } },
 				description: 'The RD Station CRM events to subscribe to (one webhook is registered per event)',
 				options: RD_CRM_WEBHOOK_EVENTS,
+			},
+			{
+				displayName: 'Trigger On',
+				name: 'eventsV2',
+				type: 'multiOptions',
+				required: true,
+				default: [],
+				displayOptions: { show: { authentication: ['oauth2'] } },
+				description: 'The RD Station CRM API v2 events to subscribe to (one webhook is registered per event)',
+				options: RD_CRM_WEBHOOK_EVENTS_V2,
 			},
 		],
 	};
@@ -60,6 +97,7 @@ export class RdStationCrmTrigger implements INodeType {
 	webhookMethods = {
 		default: {
 			async checkExists(this: IHookFunctions): Promise<boolean> {
+				if (usesOAuth2(this)) return checkExistsV2.call(this);
 				const webhookUrl = this.getNodeWebhookUrl('default');
 				const events = this.getNodeParameter('events') as string[];
 				const staticData = this.getWorkflowStaticData('node');
@@ -83,6 +121,7 @@ export class RdStationCrmTrigger implements INodeType {
 			},
 
 			async create(this: IHookFunctions): Promise<boolean> {
+				if (usesOAuth2(this)) return createV2.call(this);
 				const webhookUrl = this.getNodeWebhookUrl('default');
 				const events = this.getNodeParameter('events') as string[];
 				const staticData = this.getWorkflowStaticData('node');
@@ -116,6 +155,7 @@ export class RdStationCrmTrigger implements INodeType {
 			},
 
 			async delete(this: IHookFunctions): Promise<boolean> {
+				if (usesOAuth2(this)) return deleteV2.call(this);
 				const staticData = this.getWorkflowStaticData('node');
 				const registered = (staticData.webhooks as IRegisteredWebhook[]) ?? [];
 

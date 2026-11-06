@@ -1,6 +1,7 @@
 import type {
 	IDataObject,
 	IExecuteFunctions,
+	IHookFunctions,
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
@@ -12,7 +13,8 @@ import { REQUEST_TIMEOUT_MS } from './index';
 
 export const RD_CRM_V2_BASE_URL = 'https://api.rd.services/crm/v2';
 
-type RdV2Context = IExecuteFunctions | ILoadOptionsFunctions;
+// O contexto de hook entra para o trigger OAuth2 criar e apagar webhooks pela API v2.
+type RdV2Context = IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions;
 
 /**
  * Make a single authenticated request to the RD Station CRM v2 API (OAuth2).
