@@ -1,6 +1,6 @@
 # rotas-novas-v1 proofs
 
-**HEAD**: e612937
+**HEAD**: a7d7b42
 **Tree**: clean
 **Shell**: /bin/sh
 **Result**: 21 pass, 0 fail
@@ -37,7 +37,7 @@
     1..4
 ok 12 - version 1
   ---
-  duration_ms: 9.661502
+  duration_ms: 8.681248
   type: 'suite'
   ...
 1..12
@@ -48,7 +48,7 @@ ok 12 - version 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1012.671757
+# duration_ms 919.560574
 ```
 
 `npm run lint && npm test --silent / grep -q '^# fail 0' && npx tsc --noEmit && npm run build` - exit 0
@@ -64,7 +64,7 @@ ok 12 - version 1
 
 ┌   n8n-node build  v0.55.5
 │
-◒  Building TypeScript files◐  Building TypeScript files◓  Building TypeScript files◑  Building TypeScript files◒  Building TypeScript files◐  Building TypeScript files◓  Building TypeScript files◑  Building TypeScript files◒  Building TypeScript files.◐  Building TypeScript files.◓  Building TypeScript files.◑  Building TypeScript files.◒  Building TypeScript files.◐  Building TypeScript files.◓  Building TypeScript files.◑  Building TypeScript files.◒  Building TypeScript files..◇  TypeScript build successful
+◒  Building TypeScript files◐  Building TypeScript files◓  Building TypeScript files◑  Building TypeScript files◒  Building TypeScript files◐  Building TypeScript files◓  Building TypeScript files◑  Building TypeScript files◒  Building TypeScript files.◐  Building TypeScript files.◓  Building TypeScript files.◑  Building TypeScript files.◒  Building TypeScript files.◐  Building TypeScript files.◓  Building TypeScript files.◑  Building TypeScript files.◒  Building TypeScript files..◐  Building TypeScript files..◓  Building TypeScript files..◇  TypeScript build successful
 │
 ◇  Copied static files
 │
