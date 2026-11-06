@@ -80,15 +80,18 @@ describe('listSearch coverage', () => {
 			organizationId: ['searchOrganizations', 'searchOrganizationsV2'],
 			taskId: ['searchTasks', 'searchTasksV2'],
 			customFieldId: ['searchCustomFields', 'searchCustomFieldsV2'],
-			pipelineId: ['searchPipelines'],
-			stageId: ['searchStages'],
-			productId: ['searchProducts'],
-			sourceId: ['searchSources'],
-			campaignId: ['searchCampaigns'],
-			lossReasonId: ['searchLossReasons'],
-			teamId: ['searchTeams'],
-			userId: ['searchUsers'],
-			webhookId: ['searchWebhooks'],
+			// Os recursos novos da v2 (rotas-novas-v2) trazem a lista própria da API v2; os da v1 seguem iguais.
+			pipelineId: ['searchPipelines', 'searchPipelinesV2'],
+			stageId: ['searchStages', 'searchStagesV2'],
+			productId: ['searchProducts', 'searchProductsV2'],
+			sourceId: ['searchSources', 'searchSourcesV2'],
+			campaignId: ['searchCampaigns', 'searchCampaignsV2'],
+			lossReasonId: ['searchLossReasons', 'searchLossReasonsV2'],
+			teamId: ['searchTeams', 'searchTeamsV2'],
+			userId: ['searchUsers', 'searchUsersV2'],
+			webhookId: ['searchWebhooks', 'searchWebhooksV2'],
+			leadId: ['searchLeadsV2', 'searchLeadsV2'],
+			dealProductId: ['searchDealProductsV2', 'searchDealProductsV2'],
 		};
 		const guided = node.description.properties.filter((p) => p.type === 'resourceLocator');
 		for (const field of guided) {

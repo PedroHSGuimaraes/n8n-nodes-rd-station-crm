@@ -25,6 +25,8 @@ import { dealV2Description, executeDealV2 } from './v2/DealV2';
 import { noteV2Description, executeNoteV2 } from './v2/NoteV2';
 import { organizationV2Description, executeOrganizationV2 } from './v2/OrganizationV2';
 import { taskV2Description, executeTaskV2 } from './v2/TaskV2';
+// Recursos novos da v2 gerados pela fábrica a partir de especificações declarativas.
+import { newExecutorsV2, newResourceOptionsV2, newResourcePropertiesV2 } from './v2/resources';
 
 // The Resource dropdown (alphabetically sorted by name).
 export const resourceOptions: INodePropertyOptions[] = [
@@ -68,13 +70,15 @@ export const resourceProperties: INodeProperties[] = [
 
 // The v2 (OAuth2) Resource dropdown — shown when Authentication = OAuth2.
 export const resourceOptionsV2: INodePropertyOptions[] = [
+	// Os recursos novos entram misturados e o menu inteiro é reordenado pelo nome, como o lint do n8n exige.
+	...newResourceOptionsV2,
 	{ name: 'Contact', value: 'contactV2', description: 'A person or lead in RD Station CRM API v2' },
 	{ name: 'Custom Field', value: 'customFieldV2', description: 'A custom field definition in RD Station CRM API v2' },
 	{ name: 'Deal', value: 'dealV2', description: 'A sales opportunity in RD Station CRM API v2' },
 	{ name: 'Note', value: 'noteV2', description: 'A text note attached to a deal or contact in RD Station CRM API v2' },
 	{ name: 'Organization', value: 'organizationV2', description: 'A company or account in RD Station CRM API v2' },
 	{ name: 'Task', value: 'taskV2', description: 'An activity or to-do in RD Station CRM API v2' },
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 // Concatenated v2 per-resource property definitions.
 export const resourcePropertiesV2: INodeProperties[] = [
@@ -84,6 +88,7 @@ export const resourcePropertiesV2: INodeProperties[] = [
 	...noteV2Description,
 	...organizationV2Description,
 	...taskV2Description,
+	...newResourcePropertiesV2,
 ];
 
 // Dispatch to the right resource implementation.
@@ -139,10 +144,14 @@ export async function executeResource(
 			return executeOrganizationV2.call(this, operation, i);
 		case 'taskV2':
 			return executeTaskV2.call(this, operation, i);
-		default:
+		default: {
+			// Recurso novo da v2: a fábrica já montou a função de execução dele.
+			const generated = newExecutorsV2[resource];
+			if (generated) return generated.call(this, operation, i);
 			throw new NodeOperationError(
 				this.getNode(),
 				`The resource "${resource}" is not supported`,
 			);
+		}
 	}
 }

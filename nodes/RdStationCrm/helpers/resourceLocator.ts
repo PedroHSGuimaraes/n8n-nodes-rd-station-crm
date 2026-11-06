@@ -36,20 +36,23 @@ interface IdFieldSpec {
  * (`options` com `loadOptionsMethod`) ficam como estão, porque já são guiados.
  */
 export const ID_FIELDS: Record<string, IdFieldSpec> = {
-	campaignId: { noun: 'Campaign', search: 'searchCampaigns', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	campaignId: { noun: 'Campaign', search: 'searchCampaigns', searchV2: 'searchCampaignsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	contactId: { noun: 'Contact', search: 'searchContacts', searchV2: 'searchContactsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	customFieldId: { noun: 'Custom Field', search: 'searchCustomFields', searchV2: 'searchCustomFieldsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	dealId: { noun: 'Deal', search: 'searchDeals', searchV2: 'searchDealsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	lossReasonId: { noun: 'Loss Reason', search: 'searchLossReasons', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	lossReasonId: { noun: 'Loss Reason', search: 'searchLossReasons', searchV2: 'searchLossReasonsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	organizationId: { noun: 'Organization', search: 'searchOrganizations', searchV2: 'searchOrganizationsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	pipelineId: { noun: 'Pipeline', search: 'searchPipelines', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	productId: { noun: 'Product', search: 'searchProducts', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	sourceId: { noun: 'Source', search: 'searchSources', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	stageId: { noun: 'Stage', search: 'searchStages', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	pipelineId: { noun: 'Pipeline', search: 'searchPipelines', searchV2: 'searchPipelinesV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	productId: { noun: 'Product', search: 'searchProducts', searchV2: 'searchProductsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	sourceId: { noun: 'Source', search: 'searchSources', searchV2: 'searchSourcesV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	stageId: { noun: 'Stage', search: 'searchStages', searchV2: 'searchStagesV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	taskId: { noun: 'Task', search: 'searchTasks', searchV2: 'searchTasksV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	teamId: { noun: 'Team', search: 'searchTeams', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	userId: { noun: 'User', search: 'searchUsers', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
-	webhookId: { noun: 'Webhook', search: 'searchWebhooks', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	teamId: { noun: 'Team', search: 'searchTeams', searchV2: 'searchTeamsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	userId: { noun: 'User', search: 'searchUsers', searchV2: 'searchUsersV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	// Campos que só existem na API v2 (OAuth2): a lista v1 e a v2 são a mesma, pois o recurso só aparece na v2.
+	dealProductId: { noun: 'Deal Product', search: 'searchDealProductsV2', searchV2: 'searchDealProductsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	leadId: { noun: 'Lead', search: 'searchLeadsV2', searchV2: 'searchLeadsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	webhookId: { noun: 'Webhook', search: 'searchWebhooks', searchV2: 'searchWebhooksV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 };
 
 /** Faixa de `@version` aceita pelo n8n: números exatos ou condições como `{ _cnd: { gte: 2 } }`. */
