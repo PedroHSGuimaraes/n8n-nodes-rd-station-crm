@@ -79,6 +79,16 @@ function pagedV1(propertyName: string, endpoint: string, filterParam: string) {
 	};
 }
 
+/**
+ * Monta o filtro RDQL "contém" (`campo:~valor`, sem diferenciar maiúscula; doc crm-v2-rdql-filtering).
+ * `campo:valor` sem o `~` seria igualdade e só acharia o nome inteiro. Valor com espaço precisa de
+ * aspas, e aspas dentro do texto são removidas porque fechariam o valor antes da hora.
+ */
+function rdqlContains(field: string, text: string): string {
+	const clean = text.replace(/"/g, '').trim();
+	return `${field}:~${/\s/.test(clean) ? `"${clean}"` : clean}`;
+}
+
 /** Lista grande da API v2: filtro RDQL (`filter=name:texto`) e paginação por `page`. */
 function pagedV2(endpoint: string) {
 	return async function (
@@ -88,7 +98,7 @@ function pagedV2(endpoint: string) {
 	): Promise<INodeListSearchResult> {
 		const page = Number(paginationToken) || 1;
 		const qs: IDataObject = { page };
-		if (filter) qs.filter = `name:${filter}`;
+		if (filter) qs.filter = rdqlContains('name', filter);
 
 		const response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, qs);
 		const items = (response?.data ?? []) as IDataObject[];

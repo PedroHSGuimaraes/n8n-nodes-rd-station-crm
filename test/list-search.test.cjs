@@ -35,8 +35,8 @@ describe('listSearch', () => {
 		const cases = [
 			['searchContacts', v1('contacts'), (qs) => qs.q === 'ana'],
 			['searchDeals', v1('deals'), (qs) => qs.name === 'ana'],
-			['searchContactsV2', v2, (qs) => qs.filter === 'name:ana'],
-			['searchDealsV2', v2, (qs) => qs.filter === 'name:ana'],
+			['searchContactsV2', v2, (qs) => qs.filter === 'name:~ana'],
+			['searchDealsV2', v2, (qs) => qs.filter === 'name:~ana'],
 		];
 		for (const [method, responder, sentFilter] of cases) {
 			const { context, requests } = makeSearchContext({ responder });
@@ -46,6 +46,20 @@ describe('listSearch', () => {
 			assert.deepEqual(found.results, [{ name: 'Ana', value: 'x1' }], method);
 		}
 	});
+});
+
+describe('listSearch RDQL and tasks', () => {
+	it('listSearch quotes RDQL text that has spaces', async () => {
+		const { context, requests } = makeSearchContext({
+			responder: () => ({ data: [], links: {} }),
+		});
+		await listSearch.searchContactsV2.call(context, 'Ana Lima');
+		assert.equal(requests[0].qs.filter, 'name:~"Ana Lima"');
+		// Aspas dentro do texto sairiam do valor e quebrariam a consulta: são removidas.
+		await listSearch.searchDealsV2.call(context, 'Ana "X" Lima');
+		assert.equal(requests[1].qs.filter, 'name:~"Ana X Lima"');
+	});
+
 });
 
 describe('listSearch errors', () => {
