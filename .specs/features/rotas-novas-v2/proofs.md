@@ -1,6 +1,6 @@
 # rotas-novas-v2 proofs
 
-**HEAD**: 271eebe
+**HEAD**: 23d949e
 **Tree**: clean
 **Shell**: /bin/sh
 **Result**: 51 pass, 0 fail
@@ -65,26 +65,26 @@
 
 ```
     1..12
-ok 15 - S2 webhooks v2 and the OAuth2 trigger
+ok 18 - S2 webhooks v2 and the OAuth2 trigger
   ---
-  duration_ms: 8.193338
+  duration_ms: 9.834389
   type: 'suite'
   ...
-1..15
-# tests 79
-# suites 15
-# pass 79
+1..18
+# tests 101
+# suites 18
+# pass 101
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 984.113724
+# duration_ms 963.718128
 ```
 
 `npm run lint && npx tsc --noEmit && npm run build 2>&1 / tail -1` - exit 0
 
 ```
-> n8n-nodes-rd-station-crm@2.4.0 lint
+> n8n-nodes-rd-station-crm@2.5.0 lint
 > n8n-node lint
 
 ┌   n8n-node lint  v0.55.5
