@@ -58,7 +58,7 @@ function fromItems(fetch: (ctx: ILoadOptionsFunctions) => Promise<INodePropertyO
  * Lista grande da API v1 (contatos, negócios): manda o texto à RD no parâmetro de filtro da rota
  * e devolve uma página por vez. `paginationToken` carrega o número da próxima página.
  */
-function pagedV1(propertyName: string, endpoint: string, filterParam: string) {
+function pagedV1(propertyName: string, endpoint: string, filterParam?: string, labelKey = 'name') {
 	return async function (
 		this: ILoadOptionsFunctions,
 		filter?: string,
@@ -66,14 +66,15 @@ function pagedV1(propertyName: string, endpoint: string, filterParam: string) {
 	): Promise<INodeListSearchResult> {
 		const page = Number(paginationToken) || 1;
 		const qs: IDataObject = { page, limit: PAGE_SIZE };
-		if (filter) qs[filterParam] = filter;
+		// Rota sem filtro de texto (tarefas): a página inteira vem e o filtro roda no node, em toResults.
+		if (filter && filterParam) qs[filterParam] = filter;
 
 		const response = await rdCrmApiRequest.call(this, 'GET', endpoint, {}, qs);
 		const items = (Array.isArray(response) ? response : (response?.[propertyName] ?? [])) as IDataObject[];
 		const hasMore = !Array.isArray(response) && (response?.has_more === true || items.length === PAGE_SIZE);
 
 		return {
-			...toResults(toOptions(items)),
+			...toResults(toOptions(items, labelKey), filterParam ? undefined : filter),
 			...(hasMore ? { paginationToken: String(page + 1) } : {}),
 		};
 	};
@@ -90,7 +91,7 @@ function rdqlContains(field: string, text: string): string {
 }
 
 /** Lista grande da API v2: filtro RDQL (`filter=name:texto`) e paginação por `page`. */
-function pagedV2(endpoint: string) {
+function pagedV2(endpoint: string, filterable = true, labelKey = 'name') {
 	return async function (
 		this: ILoadOptionsFunctions,
 		filter?: string,
@@ -98,14 +99,15 @@ function pagedV2(endpoint: string) {
 	): Promise<INodeListSearchResult> {
 		const page = Number(paginationToken) || 1;
 		const qs: IDataObject = { page };
-		if (filter) qs.filter = rdqlContains('name', filter);
+		// A RDQL de tarefas não tem filtro por nome (só status, tipo, dono, datas): pagina e filtra no node.
+		if (filter && filterable) qs.filter = rdqlContains('name', filter);
 
 		const response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, qs);
 		const items = (response?.data ?? []) as IDataObject[];
 		const hasNext = Boolean((response?.links as IDataObject | undefined)?.next);
 
 		return {
-			...toResults(toOptionsV2(items)),
+			...toResults(toOptionsV2(items, labelKey), filterable ? undefined : filter),
 			...(hasNext ? { paginationToken: String(page + 1) } : {}),
 		};
 	};
@@ -128,9 +130,8 @@ export const listSearch = {
 	searchDeals: pagedV1('deals', '/deals', 'name'),
 
 	// ---- API v1: listas curtas sem loadOptions prévio ----
-	searchTasks: fromItems(async (ctx) =>
-		toOptions(await rdCrmApiRequestAllItems.call(ctx, 'tasks', 'GET', '/tasks'), 'subject'),
-	),
+	// Tarefas podem ser muitas e a RD não filtra por texto: uma página por vez, rótulo = assunto.
+	searchTasks: pagedV1('tasks', '/tasks', undefined, 'subject'),
 	searchCustomFields: fromItems(async (ctx) =>
 		toOptions(await rdCrmApiRequestAllItems.call(ctx, 'custom_fields', 'GET', '/custom_fields'), 'label'),
 	),
@@ -148,9 +149,7 @@ export const listSearch = {
 	searchContactsV2: pagedV2('/contacts'),
 	searchDealsV2: pagedV2('/deals'),
 	searchOrganizationsV2: fromLoader(loadOptionsV2.getOrganizationsV2),
-	searchTasksV2: fromItems(async (ctx) =>
-		toOptionsV2(await rdCrmV2RequestAllItems.call(ctx, '/tasks'), 'name'),
-	),
+	searchTasksV2: pagedV2('/tasks', false),
 	searchCustomFieldsV2: fromItems(async (ctx) =>
 		toOptionsV2(await rdCrmV2RequestAllItems.call(ctx, '/custom_fields')),
 	),

@@ -60,6 +60,27 @@ describe('listSearch RDQL and tasks', () => {
 		assert.equal(requests[1].qs.filter, 'name:~"Ana X Lima"');
 	});
 
+	it('listSearch pages tasks one page at a time', async () => {
+		const full = Array.from({ length: 50 }, (_, n) => ({ id: `t${n}`, subject: `Call ${n}`, name: `Call ${n}` }));
+		const v1 = makeSearchContext({ responder: () => ({ tasks: full }) });
+		const first = await listSearch.searchTasks.call(v1.context, 'call 7');
+		assert.equal(v1.requests.length, 1);
+		assert.equal(v1.requests[0].qs.page, 1);
+		assert.equal(v1.requests[0].qs.limit, 50);
+		assert.deepEqual(first.results, [{ name: 'Call 7', value: 't7' }]);
+		assert.equal(first.paginationToken, '2');
+		await listSearch.searchTasks.call(v1.context, '', '2');
+		assert.equal(v1.requests[1].qs.page, 2);
+
+		const v2 = makeSearchContext({
+			responder: () => ({ data: [{ id: 'k1', name: 'Visit' }], links: { next: 'https://x/tasks?page=2' } }),
+		});
+		const found = await listSearch.searchTasksV2.call(v2.context, 'vis');
+		assert.equal(v2.requests.length, 1);
+		assert.equal(v2.requests[0].qs.filter, undefined);
+		assert.deepEqual(found.results, [{ name: 'Visit', value: 'k1' }]);
+		assert.equal(found.paginationToken, '2');
+	});
 });
 
 describe('listSearch errors', () => {
