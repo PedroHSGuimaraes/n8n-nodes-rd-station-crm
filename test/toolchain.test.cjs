@@ -41,7 +41,8 @@ describe('toolchain', () => {
 		const ci = fs.readFileSync(path.join(root, '.github/workflows/ci.yml'), 'utf8');
 		assert.match(ci, /pull_request:/);
 		for (const step of ['npm ci', 'npm run lint', 'npm test', 'npm run build']) {
-			assert.ok(ci.includes(step), `ci.yml must run "${step}"`);
+			// Precisa ser um passo `run:` de verdade; o texto em comentário não vale.
+			assert.match(ci, new RegExp(`^\\s*run: ${step}\\b`, 'm'), `ci.yml must run "${step}"`);
 		}
 	});
 });

@@ -1,5 +1,6 @@
 import type { IDataObject, ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
+import { plainId } from '../helpers/resourceLocator';
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../transport';
 
 export function toOptions(items: IDataObject[], labelKey = 'name'): INodePropertyOptions[] {
@@ -60,7 +61,8 @@ export const loadOptions = {
 	async getStages(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		let pipelineId = '';
 		try {
-			pipelineId = this.getNodeParameter('pipelineId', '') as string;
+			// Na versão 2 o funil pode vir como Resource Locator; plainId tira o texto do objeto.
+			pipelineId = plainId(this.getNodeParameter('pipelineId', ''));
 		} catch {
 			pipelineId = '';
 		}

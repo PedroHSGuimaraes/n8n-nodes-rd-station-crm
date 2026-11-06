@@ -118,6 +118,18 @@ export function withGuidedIds(properties: INodeProperties[]): INodeProperties[] 
 }
 
 /**
+ * Normaliza o valor de um parâmetro de ID para texto, venha ele como texto (versão 1 ou dropdown)
+ * ou como Resource Locator `{ mode, value }` (versão 2). Locator vazio vira '' e nunca um objeto.
+ * Os `loadOptions` usam isto para ler o funil escolhido sem repassar o objeto à RD.
+ */
+export function plainId(raw: unknown): string {
+	if (typeof raw === 'object' && raw !== null) {
+		return String((raw as { value?: unknown }).value ?? '').trim();
+	}
+	return typeof raw === 'string' ? raw : '';
+}
+
+/**
  * Função única de leitura de ID: todos os `execute` passam por aqui.
  * - Versão 1 (ou campo que não virou locator): o parâmetro já é texto e volta como está.
  * - Versão 2: o parâmetro é `{ mode, value }`; devolve `value` sem espaços nas pontas,

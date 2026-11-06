@@ -1,5 +1,6 @@
 import type { IDataObject, ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
+import { plainId } from '../helpers/resourceLocator';
 import { rdCrmV2RequestAllItems } from '../transport/v2';
 
 export function toOptionsV2(items: IDataObject[], labelKey = 'name'): INodePropertyOptions[] {
@@ -58,7 +59,7 @@ export const loadOptionsV2 = {
 	async getStagesV2(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		let pipelineId = '';
 		try {
-			pipelineId = this.getNodeParameter('pipeline_id', '') as string;
+			pipelineId = plainId(this.getNodeParameter('pipeline_id', ''));
 		} catch {
 			pipelineId = '';
 		}
