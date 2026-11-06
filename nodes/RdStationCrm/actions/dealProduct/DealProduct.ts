@@ -81,6 +81,11 @@ const dealProductLineFields: INodeProperties[] = [
 	},
 ];
 
+// A rota PATCH .../batch/update só descreve id, amount e price por linha (AD-007). Os outros campos ficam na
+// tela porque o nome e o tipo de um parâmetro salvo não mudam; o aviso na descrição diz que eles não têm efeito.
+const UPDATE_SENDS = new Set(['amount', 'price']);
+const IGNORED_BY_UPDATE_NOTICE = ' Ignored by Update: the batch route only takes Deal Product ID, Amount and Price. Use Update One to change this field.';
+
 // Update rows also carry the existing deal_product id.
 const dealProductUpdateLineFields: INodeProperties[] = [
 	{
@@ -90,7 +95,11 @@ const dealProductUpdateLineFields: INodeProperties[] = [
 		default: '',
 		description: 'Unique ID of the existing deal product (line item) to update, as returned by a Get Many deal product operation',
 	},
-	...dealProductLineFields,
+	...dealProductLineFields.map((field) =>
+		UPDATE_SENDS.has(field.name)
+			? field
+			: { ...field, description: `${field.description ?? ''}${IGNORED_BY_UPDATE_NOTICE}` },
+	),
 ];
 
 export const dealProductDescription: INodeProperties[] = [

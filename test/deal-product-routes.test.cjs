@@ -222,4 +222,23 @@ describe('deal product routes (v1)', () => {
 		const available = new Set(visibleToV1.map((p) => `${p.name}|${p.type}`));
 		for (const pair of original) assert.ok(available.has(pair), `version 1 lost ${pair}`);
 	});
+
+	// Regra protegida (achado F1 do revisor): o Update em lote só envia id, amount e price. Os outros campos
+	// da linha continuam na tela porque o nome e o tipo não podem mudar (AD-007), então a descrição de cada um
+	// avisa que ele é ignorado e aponta Update One. Sem o aviso, quem preenche o desconto não sabe que sumiu.
+	it('v1 batch update row warns that the fields the route ignores have no effect', () => {
+		const row = new RdStationCrm().description.properties.find((p) => p.name === 'updateProductsUi');
+		const fields = row.options[0].values;
+		const ignored = ['product_id', 'discount', 'discount_type', 'recurrence', 'total'];
+		for (const name of ignored) {
+			const field = fields.find((f) => f.name === name);
+			assert.match(field.description, /Ignored by Update.*Update One/s, `${name} sem aviso`);
+		}
+		// Os três campos que a rota envia não ganham aviso, e o formulário do Add em lote não muda.
+		for (const name of ['id', 'amount', 'price']) {
+			assert.doesNotMatch(fields.find((f) => f.name === name).description, /Ignored by Update/, name);
+		}
+		const addRow = new RdStationCrm().description.properties.find((p) => p.name === 'productsUi');
+		for (const field of addRow.options[0].values) assert.doesNotMatch(field.description, /Ignored by Update/);
+	});
 });
