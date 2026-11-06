@@ -8,6 +8,8 @@ import type {
 } from 'n8n-workflow';
 import { NodeApiError } from 'n8n-workflow';
 
+import { REQUEST_TIMEOUT_MS } from './index';
+
 export const RD_CRM_V2_BASE_URL = 'https://api.rd.services/crm/v2';
 
 type RdV2Context = IExecuteFunctions | ILoadOptionsFunctions;
@@ -29,6 +31,8 @@ export async function rdCrmV2Request(
 		url: endpoint,
 		qs,
 		json: true,
+		// Sem timeout uma RD travada prende a execução do workflow; 30 s cobre as respostas normais da API.
+		timeout: REQUEST_TIMEOUT_MS,
 	};
 
 	if (Object.keys(body).length) {

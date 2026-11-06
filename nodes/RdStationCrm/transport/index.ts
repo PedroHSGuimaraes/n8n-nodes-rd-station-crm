@@ -10,6 +10,9 @@ import type {
 } from 'n8n-workflow';
 import { NodeApiError } from 'n8n-workflow';
 
+/** Tempo máximo, em milissegundos, que o node espera a RD responder antes de falhar. */
+export const REQUEST_TIMEOUT_MS = 30000;
+
 export const RD_CRM_BASE_URL = 'https://crm.rdstation.com/api/v1';
 
 type RdContext =
@@ -36,6 +39,8 @@ export async function rdCrmApiRequest(
 		qs,
 		body,
 		json: true,
+		// Sem timeout uma RD travada prende a execução do workflow; 30 s cobre as respostas normais da API.
+		timeout: REQUEST_TIMEOUT_MS,
 	};
 
 	if (!Object.keys(body).length) {
