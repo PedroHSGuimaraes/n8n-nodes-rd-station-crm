@@ -139,7 +139,7 @@ export async function executeWebhook(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const eventType = this.getNodeParameter('eventType', i) as string;
 		const url = this.getNodeParameter('url', i) as string;

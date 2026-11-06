@@ -91,7 +91,7 @@ export const contactV2Description: INodeProperties[] = [
 							{ name: 'Work', value: 'work' },
 						],
 						default: 'work',
-						description: 'Category of the phone number. One of: fax, home, mobile, work',
+						description: 'Category of the phone number. One of: fax, home, mobile, work.',
 					},
 				],
 			},
@@ -114,8 +114,7 @@ export const contactV2Description: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'slug',
 						type: 'options',
-						description:
-							'Custom field of the contact to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: 'Custom field of the contact to set, identified by its slug. Choose from the list, or specify a slug using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: { loadOptionsMethod: 'getContactCustomFieldsV2' },
 						default: '',
 					},
@@ -139,8 +138,7 @@ export const contactV2Description: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
 				type: 'options',
-				description:
-					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -162,8 +160,7 @@ export const contactV2Description: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
 				type: 'options',
-				description:
-					'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
 			},
@@ -244,7 +241,7 @@ export async function executeContactV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;

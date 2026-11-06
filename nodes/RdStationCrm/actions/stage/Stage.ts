@@ -64,8 +64,7 @@ export const stageDescription: INodeProperties[] = [
 		name: 'dealPipelineId',
 		type: 'options',
 		required: true,
-		description:
-			'Pipeline (sales funnel) that this deal stage belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'Pipeline (sales funnel) that this deal stage belongs to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getPipelines' },
 		default: '',
 		displayOptions: { show: { ...showOnlyForStages, operation: ['create'] } },
@@ -122,7 +121,7 @@ export const stageDescription: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
-		default: 12,
+		default: 50,
 		typeOptions: { minValue: 1, maxValue: 12 },
 		description: 'Max number of results to return',
 		displayOptions: {
@@ -142,8 +141,7 @@ export const stageDescription: INodeProperties[] = [
 				displayName: 'Pipeline Name or ID',
 				name: 'dealPipelineId',
 				type: 'options',
-				description:
-					'Only return deal stages that belong to this pipeline. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Only return deal stages that belong to this pipeline. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getPipelines' },
 				default: '',
 			},
@@ -155,7 +153,7 @@ export async function executeStage(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const dealPipelineId = this.getNodeParameter('dealPipelineId', i) as string;
 		const name = this.getNodeParameter('name', i) as string;

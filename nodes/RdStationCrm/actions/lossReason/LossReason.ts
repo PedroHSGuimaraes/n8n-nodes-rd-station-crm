@@ -130,7 +130,7 @@ export const lossReasonDescription: INodeProperties[] = [
 					{ name: 'Name', value: 'name' },
 				],
 				default: 'name',
-				description: 'Field to sort the returned deal loss reasons by. One of: name',
+				description: 'Field to sort the returned deal loss reasons by. One of: name.',
 			},
 		],
 	},
@@ -140,7 +140,7 @@ export async function executeLossReason(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		// Body is sent top-level (no wrapper). The deal lost reasons docs list `name`

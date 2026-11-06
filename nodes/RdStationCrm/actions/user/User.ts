@@ -86,7 +86,7 @@ export const userDescription: INodeProperties[] = [
 					{ name: 'User', value: 'user' },
 				],
 				default: 'user',
-				description: 'Filter users by their access role. One of: admin, manager, user',
+				description: 'Filter users by their access role. One of: admin, manager, user.',
 			},
 			{
 				displayName: 'Status',
@@ -98,14 +98,13 @@ export const userDescription: INodeProperties[] = [
 					{ name: 'Inactive', value: 'inactive' },
 				],
 				default: 'active',
-				description: 'Filter users by their account status. One of: active, all, inactive',
+				description: 'Filter users by their account status. One of: active, all, inactive.',
 			},
 			{
 				displayName: 'Team Name or ID',
 				name: 'teamId',
 				type: 'options',
-				description:
-					'Only return users belonging to this team. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Only return users belonging to this team. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getTeams' },
 				default: '',
 			},
@@ -117,7 +116,7 @@ export async function executeUser(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'get') {
 		const userId = this.getNodeParameter('userId', i) as string;
 		return rdCrmApiRequest.call(this, 'GET', `/users/${userId}`);

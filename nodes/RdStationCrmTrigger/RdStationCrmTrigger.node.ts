@@ -122,8 +122,12 @@ export class RdStationCrmTrigger implements INodeType {
 				for (const webhook of registered) {
 					try {
 						await rdCrmApiRequest.call(this, 'DELETE', `/webhooks/${webhook.id}`);
-					} catch {
-						// The webhook may already be gone; keep removing the rest.
+					} catch (error) {
+						// O webhook pode já ter sido apagado na RD. Registramos o erro (em vez de
+						// engoli-lo) para o problema aparecer nos logs e seguimos removendo os outros.
+						this.logger.warn(
+							`Could not remove RD Station CRM webhook ${webhook.id} (${webhook.event}): ${(error as Error).message}`,
+						);
 					}
 				}
 

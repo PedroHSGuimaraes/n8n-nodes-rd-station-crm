@@ -63,7 +63,7 @@ export const taskV2Description: INodeProperties[] = [
 		default: 'task',
 		options: taskTypeOptions,
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
-		description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp',
+		description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp.',
 	},
 
 	{
@@ -115,7 +115,7 @@ export const taskV2Description: INodeProperties[] = [
 					{ name: 'Completed', value: 'completed' },
 					{ name: 'Open', value: 'open' },
 				],
-				description: 'Status of the task. One of: canceled, completed, open',
+				description: 'Status of the task. One of: canceled, completed, open.',
 			},
 			{
 				displayName: 'Type',
@@ -123,7 +123,7 @@ export const taskV2Description: INodeProperties[] = [
 				type: 'options',
 				default: 'task',
 				options: taskTypeOptions,
-				description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp',
+				description: 'Kind of activity for the task. One of: call, email, lunch, meeting, task, visit, whatsapp.',
 			},
 		],
 	},
@@ -189,7 +189,7 @@ export async function executeTaskV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const type = this.getNodeParameter('type', i) as string;

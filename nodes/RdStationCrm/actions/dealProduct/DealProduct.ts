@@ -20,8 +20,7 @@ const dealProductLineFields: INodeProperties[] = [
 		displayName: 'Product Name or ID',
 		name: 'product_id',
 		type: 'options',
-		description:
-			'Product to attach to the deal, referenced by its product ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'Product to attach to the deal, referenced by its product ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getProducts' },
 		default: '',
 	},
@@ -49,7 +48,7 @@ const dealProductLineFields: INodeProperties[] = [
 	{
 		displayName: 'Discount Type',
 		name: 'discount_type',
-		description: 'How the discount is interpreted. One of: percentage, value',
+		description: 'How the discount is interpreted. One of: percentage, value.',
 		type: 'options',
 		options: [
 			{ name: 'Percentage', value: 'percentage' },
@@ -60,7 +59,7 @@ const dealProductLineFields: INodeProperties[] = [
 	{
 		displayName: 'Recurrence',
 		name: 'recurrence',
-		description: 'Billing recurrence of the product. One of: annual, monthly, spare',
+		description: 'Billing recurrence of the product. One of: annual, monthly, spare.',
 		type: 'options',
 		options: [
 			{ name: 'Annual', value: 'annual' },
@@ -242,7 +241,7 @@ export async function executeDealProduct(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	const dealId = this.getNodeParameter('dealId', i) as string;
 
 	if (operation === 'getMany') {

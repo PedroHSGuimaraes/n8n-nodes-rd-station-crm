@@ -50,8 +50,7 @@ export const noteV2Description: INodeProperties[] = [
 		type: 'options',
 		required: true,
 		default: '',
-		description:
-			'User to record as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		description: 'User to record as the author of the note. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: { loadOptionsMethod: 'getUsersV2' },
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 	},
@@ -79,7 +78,7 @@ export async function executeNoteV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const dealId = this.getNodeParameter('dealId', i) as string;
 		const description = this.getNodeParameter('description', i) as string;

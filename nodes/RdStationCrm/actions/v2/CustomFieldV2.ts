@@ -59,7 +59,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Organization', value: 'organization' },
 			{ name: 'Product', value: 'product' },
 		],
-		description: 'Type of record this custom field is attached to. One of: contact, deal, organization, product',
+		description: 'Type of record this custom field is attached to. One of: contact, deal, organization, product.',
 	},
 	{
 		displayName: 'Type',
@@ -74,7 +74,7 @@ export const customFieldV2Description: INodeProperties[] = [
 			{ name: 'Option', value: 'option' },
 			{ name: 'Text', value: 'text' },
 		],
-		description: 'Data type of the custom field. One of: date, multiple_choice, number, option, text',
+		description: 'Data type of the custom field. One of: date, multiple_choice, number, option, text.',
 	},
 
 	{
@@ -220,7 +220,7 @@ export async function executeCustomFieldV2(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const entity = this.getNodeParameter('entity', i) as string;

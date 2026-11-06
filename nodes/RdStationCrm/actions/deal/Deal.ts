@@ -19,9 +19,6 @@ const showOnlyForDeals = {
 	resource: ['deal'],
 };
 
-const loadOptionsDescription =
-	'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>';
-
 export const dealDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -114,9 +111,8 @@ export const dealDescription: INodeProperties[] = [
 		displayName: 'Pipeline Name or ID',
 		name: 'pipelineId',
 		type: 'options',
+		description: 'Sales funnel (pipeline) whose stages the Deal Stage field lists. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		default: '',
-		description:
-			'Sales funnel (pipeline) whose stages the Deal Stage field lists. ' + loadOptionsDescription,
 		typeOptions: { loadOptionsMethod: 'getPipelines' },
 		displayOptions: { show: { ...showOnlyForDeals, operation: ['create', 'moveToStage'] } },
 	},
@@ -126,10 +122,8 @@ export const dealDescription: INodeProperties[] = [
 		displayName: 'Deal Stage Name or ID',
 		name: 'dealStageId',
 		type: 'options',
+		description: 'Stage of the selected pipeline to place the new deal in; leave empty to use the account default. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		default: '',
-		description:
-			'Stage of the selected pipeline to place the new deal in; leave empty to use the account default. ' +
-			loadOptionsDescription,
 		typeOptions: { loadOptionsMethod: 'getStages', loadOptionsDependsOn: ['pipelineId'] },
 		displayOptions: { show: { ...showOnlyForDeals, operation: ['create'] } },
 	},
@@ -139,9 +133,9 @@ export const dealDescription: INodeProperties[] = [
 		displayName: 'Deal Stage Name or ID',
 		name: 'dealStageId',
 		type: 'options',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		required: true,
 		default: '',
-		description: loadOptionsDescription,
 		typeOptions: { loadOptionsMethod: 'getStages', loadOptionsDependsOn: ['pipelineId'] },
 		displayOptions: { show: { ...showOnlyForDeals, operation: ['moveToStage'] } },
 	},
@@ -151,9 +145,9 @@ export const dealDescription: INodeProperties[] = [
 		displayName: 'Deal Lost Reason Name or ID',
 		name: 'dealLostReasonId',
 		type: 'options',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		required: true,
 		default: '',
-		description: loadOptionsDescription,
 		typeOptions: { loadOptionsMethod: 'getLossReasons' },
 		displayOptions: { show: { ...showOnlyForDeals, operation: ['markAsLost'] } },
 	},
@@ -185,7 +179,7 @@ export const dealDescription: INodeProperties[] = [
 						displayName: 'Field Name or ID',
 						name: 'fieldId',
 						type: 'options',
-						description: loadOptionsDescription,
+						description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getDealCustomFields' },
 						default: '',
 					},
@@ -233,7 +227,7 @@ export const dealDescription: INodeProperties[] = [
 					{
 						displayName: 'Discount Type',
 						name: 'discount_type',
-						description: 'How the discount is interpreted. One of: amount, percent',
+						description: 'How the discount is interpreted. One of: amount, percent.',
 						type: 'options',
 						options: [
 							{ name: 'Amount', value: 'amount' },
@@ -252,7 +246,7 @@ export const dealDescription: INodeProperties[] = [
 						displayName: 'Product Name or ID',
 						name: 'product_id',
 						type: 'options',
-						description: loadOptionsDescription,
+						description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 						typeOptions: { loadOptionsMethod: 'getProducts' },
 						default: '',
 					},
@@ -289,7 +283,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Campaign Name or ID',
 				name: 'campaignId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getCampaigns' },
 				default: '',
 			},
@@ -297,7 +291,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Deal Source Name or ID',
 				name: 'dealSourceId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getSources' },
 				default: '',
 			},
@@ -305,7 +299,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -327,7 +321,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -346,7 +340,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Deal Stage Name or ID',
 				name: 'dealStageId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getStages' },
 				default: '',
 			},
@@ -355,7 +349,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getOrganizations' },
 				default: '',
 			},
@@ -377,7 +371,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'userId',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -417,7 +411,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Campaign Name or ID',
 				name: 'campaign_id',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getCampaigns' },
 				default: '',
 			},
@@ -432,7 +426,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Deal Lost Reason Name or ID',
 				name: 'deal_lost_reason_id',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getLossReasons' },
 				default: '',
 			},
@@ -440,7 +434,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Deal Pipeline Name or ID',
 				name: 'deal_pipeline_id',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getPipelines' },
 				default: '',
 			},
@@ -448,7 +442,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'Deal Stage Name or ID',
 				name: 'deal_stage_id',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getStages' },
 				default: '',
 			},
@@ -492,7 +486,7 @@ export const dealDescription: INodeProperties[] = [
 				displayName: 'User Name or ID',
 				name: 'user_id',
 				type: 'options',
-				description: loadOptionsDescription,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				typeOptions: { loadOptionsMethod: 'getUsers' },
 				default: '',
 			},
@@ -507,7 +501,7 @@ export const dealDescription: INodeProperties[] = [
 					{ name: 'Won', value: 'true' },
 				],
 				default: 'all',
-				description: 'Filter deals by outcome. One of: all (any), false (lost), null (open), true (won)',
+				description: 'Filter deals by outcome. One of: all (any), false (lost), null (open), true (won).',
 			},
 		],
 	},
@@ -523,7 +517,7 @@ export const dealDescription: INodeProperties[] = [
 			{
 				displayName: 'Sort By',
 				name: 'order',
-				description: 'Field to sort the deals by. One of: created_at, name, prediction_date, rating, updated_at',
+				description: 'Field to sort the deals by. One of: created_at, name, prediction_date, rating, updated_at.',
 				type: 'options',
 				options: [
 					{ name: 'Created At', value: 'created_at' },
@@ -537,7 +531,7 @@ export const dealDescription: INodeProperties[] = [
 			{
 				displayName: 'Sort Direction',
 				name: 'direction',
-				description: 'Direction to sort the deals. One of: asc, desc',
+				description: 'Direction to sort the deals. One of: asc, desc.',
 				type: 'options',
 				options: [
 					{ name: 'Ascending', value: 'asc' },
@@ -564,7 +558,7 @@ export async function executeDeal(
 	this: IExecuteFunctions,
 	operation: string,
 	i: number,
-): Promise<any> {
+): Promise<unknown> {
 	if (operation === 'create') {
 		const name = this.getNodeParameter('name', i) as string;
 		const dealStageId = this.getNodeParameter('dealStageId', i, '') as string;

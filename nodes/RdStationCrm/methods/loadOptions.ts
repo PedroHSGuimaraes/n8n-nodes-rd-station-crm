@@ -1,8 +1,8 @@
-import type { ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
+import type { IDataObject, ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../transport';
 
-function toOptions(items: any[], labelKey = 'name'): INodePropertyOptions[] {
+function toOptions(items: IDataObject[], labelKey = 'name'): INodePropertyOptions[] {
 	return items
 		.filter(Boolean)
 		.map((item) => ({

@@ -22,7 +22,7 @@ export async function rdCrmV2Request(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
-): Promise<any> {
+): Promise<IDataObject> {
 	const options: IHttpRequestOptions = {
 		method,
 		baseURL: RD_CRM_V2_BASE_URL,
@@ -57,12 +57,12 @@ export async function rdCrmV2RequestAllItems(
 	this: RdV2Context,
 	endpoint: string,
 	qs: IDataObject = {},
-): Promise<any[]> {
-	const returnData: any[] = [];
+): Promise<IDataObject[]> {
+	const returnData: IDataObject[] = [];
 	let response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, qs);
-	returnData.push(...((response?.data as unknown[]) ?? []));
+	returnData.push(...((response?.data as IDataObject[]) ?? []));
 
-	let next = response?.links?.next as string | undefined;
+	let next = (response?.links as IDataObject | undefined)?.next as string | undefined;
 	let guard = 0;
 	const maxPages = 1000;
 
@@ -75,8 +75,8 @@ export async function rdCrmV2RequestAllItems(
 			nextQs[key] = value;
 		});
 		response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, nextQs);
-		returnData.push(...((response?.data as unknown[]) ?? []));
-		next = response?.links?.next as string | undefined;
+		returnData.push(...((response?.data as IDataObject[]) ?? []));
+		next = (response?.links as IDataObject | undefined)?.next as string | undefined;
 	}
 
 	return returnData;
