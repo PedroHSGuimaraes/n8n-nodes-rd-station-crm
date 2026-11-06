@@ -33,6 +33,7 @@
 | C23 | `list-search.test.cjs` `listSearch quotes RDQL text that has spaces` | yes - exact equality on `name:~"Ana Lima"` fails if `~` or the quotes go; inner quotes stripped; no-space form `name:~ana` covered by C18; see F6 for blank-text edge |
 | C24 | `list-search.test.cjs` `listSearch pages tasks one page at a time` | yes - one request per call, `page`/`limit`, token `2` and page 2 on the next call (v1), `links.next` token and no filter (v2); a loop over all pages would fail on `requests.length` |
 | C25 | `toolchain.test.cjs` `publish workflow stages the package instead of publishing it` | yes - reads only `run:` lines, so a comment quoting the command does not count; fails if no `npm@12.2.2 stage publish ... --provenance` step exists, and fails if any `npm publish` step comes back; the same-Node-as-CI part of the claim is held by `publish workflow uses the same Node version as the ci workflow` (judged by the orchestrator, not the author of C25) |
+| C26 | `toolchain.test.cjs` `dev toolchain uses n8n-workflow 2.46.5 while the peer stays open` | yes - exact equality on `^2.46.5` and on the `*` peer, and it reads the version the lock really installs (major 2, minor >= 46), so a range bump with a stale lock fails (judged by the orchestrator, not the author of the test) |
 
 ## Findings
 
