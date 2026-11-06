@@ -101,6 +101,6 @@ Proof: `npm run lint && npm test --silent | grep -q '^# fail 0' && npx tsc --noE
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** none
-- **Boundary:** none
+- **Dispatched:** Verifier (sonnet) at HEAD d8eea70
+- **Boundary:** C1-C19 closed at d8eea70
 - **Abandoned:** none
