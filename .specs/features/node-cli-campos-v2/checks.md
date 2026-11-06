@@ -118,7 +118,7 @@ Proof: `npm run lint`
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** none
-- **Boundary:** nenhum
+- **Dispatched:** Verifier (sonnet) enviado em HEAD 19c9dda; returned (achados F1-F5 fechados em 76cb85f)
+- **Boundary:** C1-C22 fechados em 19c9dda
 - **Abandoned:** nenhum
 - **Walked:** sem tela; a conferência no editor do n8n fica para o dono (abrir um workflow novo, adicionar o node RD Station CRM e ver a lista no campo de ID)
