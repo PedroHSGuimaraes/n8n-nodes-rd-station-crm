@@ -6,7 +6,7 @@ Plan: `.specs/features/node-cli-campos-v2/plan.md`
 
 ## Intent
 
-22 checks in 4 slices · 3 one-way doors · 0 open
+24 checks in 4 slices · 3 one-way doors · 0 open
 
 ## Checks
 
@@ -83,6 +83,12 @@ Proof: run unit | ok publish workflow keeps the v tag trigger and provenance
 
 **C22** - Nenhum teste e nenhum arquivo de produção usa `any` explícito nem `catch` vazio (lint do node-cli cobre) (S1, AC 2)
 Proof: `npm run lint`
+
+**C23** - A busca v2 de contatos e negócios manda o filtro RDQL de trecho `name:~texto`, com aspas quando o texto tem espaço (S3, AC 6)
+Proof: run unit | ok listSearch quotes RDQL text that has spaces
+
+**C24** - A busca de tarefas (v1 e v2) pede uma página por vez com `paginationToken`, sem baixar todas as páginas (S3, AC 6)
+Proof: run unit | ok listSearch pages tasks one page at a time
 
 ## Coverage
 
