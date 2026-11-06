@@ -85,8 +85,10 @@ function pagedV1(propertyName: string, endpoint: string, filterParam?: string, l
  * `campo:valor` sem o `~` seria igualdade e só acharia o nome inteiro. Valor com espaço precisa de
  * aspas, e aspas dentro do texto são removidas porque fechariam o valor antes da hora.
  */
-function rdqlContains(field: string, text: string): string {
+function rdqlContains(field: string, text: string): string | undefined {
 	const clean = text.replace(/"/g, '').trim();
+	// Texto só com espaços ou aspas vira vazio; `campo:~` sem valor seria recusado pela RD.
+	if (!clean) return undefined;
 	return `${field}:~${/\s/.test(clean) ? `"${clean}"` : clean}`;
 }
 
@@ -100,7 +102,8 @@ function pagedV2(endpoint: string, filterable = true, labelKey = 'name') {
 		const page = Number(paginationToken) || 1;
 		const qs: IDataObject = { page };
 		// A RDQL de tarefas não tem filtro por nome (só status, tipo, dono, datas): pagina e filtra no node.
-		if (filter && filterable) qs.filter = rdqlContains('name', filter);
+		const rdql = filter && filterable ? rdqlContains('name', filter) : undefined;
+		if (rdql) qs.filter = rdql;
 
 		const response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, qs);
 		const items = (response?.data ?? []) as IDataObject[];

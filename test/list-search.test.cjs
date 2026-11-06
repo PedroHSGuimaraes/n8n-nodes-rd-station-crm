@@ -60,6 +60,16 @@ describe('listSearch RDQL and tasks', () => {
 		assert.equal(requests[1].qs.filter, 'name:~"Ana X Lima"');
 	});
 
+	it('listSearch sends no RDQL filter for blank text', async () => {
+		const { context, requests } = makeSearchContext({ responder: () => ({ data: [], links: {} }) });
+		for (const blank of ['   ', '""', '"']) {
+			await listSearch.searchContactsV2.call(context, blank);
+		}
+		for (const request of requests) {
+			assert.equal(request.qs.filter, undefined);
+		}
+	});
+
 	it('listSearch pages tasks one page at a time', async () => {
 		const full = Array.from({ length: 50 }, (_, n) => ({ id: `t${n}`, subject: `Call ${n}`, name: `Call ${n}` }));
 		const v1 = makeSearchContext({ responder: () => ({ tasks: full }) });
