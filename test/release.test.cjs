@@ -21,6 +21,7 @@ describe('release', () => {
 	it('publish workflow keeps the v tag trigger and provenance', () => {
 		const publish = fs.readFileSync(path.join(root, '.github/workflows/publish.yml'), 'utf8');
 		assert.match(publish, /tags:\s*\n\s*- 'v\*'/);
-		assert.ok(publish.includes('npm publish --provenance'));
+		// Desde o token stage only (06/11/2026) o comando é `npm stage publish`; a proveniência continua.
+		assert.ok(publish.includes('--provenance'));
 	});
 });

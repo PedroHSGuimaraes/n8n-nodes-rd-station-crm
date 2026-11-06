@@ -1,7 +1,7 @@
 name: Publish to npm
 
-# Publishes the package to npm with a provenance statement whenever a version
-# tag (e.g. v2.0.0) is pushed. Provenance is mandatory for n8n verified nodes.
+# Stages the package on npm (with a provenance statement) whenever a version
+# tag (e.g. v2.0.0) is pushed; the owner approves it on npmjs.com. Provenance is mandatory for n8n verified nodes.
 on:
   push:
     tags:
@@ -33,7 +33,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish (with provenance)
-        run: npm publish --provenance --access public
+      # O token NPM_TOKEN é granular "Read and write (stage only)" (decisão do dono, 06/11/2026):
+      # com ele `npm publish` falha com E_STAGE_REQUIRED. A versão vai para a fila de espera e o dono
+      # a aprova com 2FA na aba Staged Packages do npmjs.com.
+      # `npm stage` só existe no npm 12; o Node LTS do runner traz o npm 11, por isso o npx fixa a versão.
+      # Este pacote não tem `prepublishOnly: n8n-node prerelease`, então não precisa de RELEASE_MODE.
+      - name: Stage package for approval (with provenance)
+        run: npx -y npm@12.2.2 stage publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

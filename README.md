@@ -264,6 +264,10 @@ n8n-nodes-rd-station-crm/
 - [Referência da API do RD Station CRM](https://developers.rdstation.com/reference)
 - [Autenticação da API v2 (OAuth2)](https://developers.rdstation.com/reference/crm-v2-authentication)
 
+## 🚀 Publicação
+
+A tag `vX.Y.Z` dispara o workflow `publish.yml`, que envia a versão com `npm stage publish`. A versão **fica em espera**: ela só vai ao ar depois que o dono a aprova, com 2FA, na aba **Staged Packages** do npmjs.com. Sem a aprovação, nada muda no registro.
+
 ## 📈 Versões
 
 - **2.4.0** — **Campos de ID em lista pesquisável.** Em node novo (versão 2 do node), os campos de ID de contato, negócio, empresa, tarefa, funil, etapa, produto, origem, campanha, motivo de perda, campo personalizado, time, usuário e webhook mostram a lista da conta e aceitam colar o ID. Workflows salvos continuam na versão 1 e não mudam. Migração para o `@n8n/node-cli` 0.55.5, lint oficial sem erros, testes e CI. Veja o `CHANGELOG.md`.
