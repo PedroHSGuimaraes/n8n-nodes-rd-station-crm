@@ -10,7 +10,12 @@
  * para `@version` 1, e a cópia Resource Locator só para `@version` 2 ou maior. Workflows salvos
  * guardam typeVersion 1 e continuam lendo texto.
  */
-import type { IDisplayOptions, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
+import type {
+	DisplayCondition,
+	IDisplayOptions,
+	IExecuteFunctions,
+	INodeProperties,
+} from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
 /** Como cada campo de ID aparece na tela e qual lista alimenta a busca dele. */
@@ -47,11 +52,14 @@ export const ID_FIELDS: Record<string, IdFieldSpec> = {
 	webhookId: { noun: 'Webhook', search: 'searchWebhooks', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 };
 
+/** Faixa de `@version` aceita pelo n8n: números exatos ou condições como `{ _cnd: { gte: 2 } }`. */
+type VersionRange = Array<number | DisplayCondition>;
+
 /** Versões do node em que o Resource Locator aparece: 2 ou maior. */
-const FROM_VERSION_2 = [{ _cnd: { gte: 2 } }] as unknown as number[];
+const FROM_VERSION_2: VersionRange = [{ _cnd: { gte: 2 } }];
 
 /** Copia as regras de exibição do campo e acrescenta a faixa de `@version`. */
-function withVersion(displayOptions: IDisplayOptions | undefined, versions: number[]): IDisplayOptions {
+function withVersion(displayOptions: IDisplayOptions | undefined, versions: VersionRange): IDisplayOptions {
 	return {
 		...displayOptions,
 		show: { ...displayOptions?.show, '@version': versions },
