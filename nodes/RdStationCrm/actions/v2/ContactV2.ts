@@ -136,12 +136,99 @@ export const contactV2Description: INodeProperties[] = [
 			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '', description: 'Birthday of the contact in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
 			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '', description: 'Job title of the contact, e.g. Marketing Manager' },
 			{
+				displayName: 'Legal Bases',
+				name: 'legalBasesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Legal Basis',
+				default: {},
+				description: 'Legal bases (LGPD) that authorize processing the personal data of this contact',
+				options: [
+					{
+						name: 'legalBase',
+						displayName: 'Legal Basis',
+						values: [
+							{
+								displayName: 'Category',
+								name: 'category',
+								type: 'options',
+								options: [{ name: 'Communications', value: 'communications' }],
+								default: 'communications',
+								description: 'Category of the legal basis. One of: communications.',
+							},
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{ name: 'Consent', value: 'consent' },
+									{ name: 'Judicial Process', value: 'judicial_process' },
+									{ name: 'Legitimate Interest', value: 'legitimate_interest' },
+									{ name: 'Pre-Existent Contract', value: 'pre_existent_contract' },
+									{ name: 'Public Interest', value: 'public_interest' },
+									{ name: 'Vital Interest', value: 'vital_interest' },
+								],
+								default: 'consent',
+								description: 'Which legal basis authorizes the processing of the personal data',
+							},
+							{
+								displayName: 'Status',
+								name: 'status',
+								type: 'options',
+								options: [
+									{ name: 'Declined', value: 'declined' },
+									{ name: 'Granted', value: 'granted' },
+								],
+								default: 'granted',
+								description: 'Status of the legal basis. One of: granted, declined.',
+							},
+						],
+					},
+				],
+			},
+			{
 				displayName: 'Organization Name or ID',
 				name: 'organization_id',
 				type: 'options',
 				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
+			},
+			{
+				displayName: 'Social Profiles',
+				name: 'socialProfilesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Social Profile',
+				default: {},
+				description: 'Social network profiles of the contact',
+				options: [
+					{
+						name: 'profile',
+						displayName: 'Profile',
+						values: [
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{ name: 'Facebook', value: 'facebook' },
+									{ name: 'LinkedIn', value: 'linkedin' },
+									{ name: 'Skype', value: 'skype' },
+								],
+								default: 'linkedin',
+								description: 'Social network of the profile. One of: facebook, linkedin, skype.',
+							},
+							{
+								displayName: 'Username',
+								name: 'username',
+								type: 'string',
+								default: '',
+								description: 'Username of the contact on that social network',
+							},
+						],
+					},
+				],
 			},
 			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '', description: 'WhatsApp number or username of the contact, e.g. +55 11 99999-9999' },
 		],
@@ -156,6 +243,57 @@ export const contactV2Description: INodeProperties[] = [
 		options: [
 			{ displayName: 'Birthday', name: 'birthday', type: 'dateTime', default: '', description: 'Birthday of the contact in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
 			{ displayName: 'Job Title', name: 'job_title', type: 'string', default: '', description: 'Job title of the contact, e.g. Marketing Manager' },
+			{
+				displayName: 'Legal Bases',
+				name: 'legalBasesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Legal Basis',
+				default: {},
+				description: 'Legal bases (LGPD) that authorize processing the personal data of this contact',
+				options: [
+					{
+						name: 'legalBase',
+						displayName: 'Legal Basis',
+						values: [
+							{
+								displayName: 'Category',
+								name: 'category',
+								type: 'options',
+								options: [{ name: 'Communications', value: 'communications' }],
+								default: 'communications',
+								description: 'Category of the legal basis. One of: communications.',
+							},
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{ name: 'Consent', value: 'consent' },
+									{ name: 'Judicial Process', value: 'judicial_process' },
+									{ name: 'Legitimate Interest', value: 'legitimate_interest' },
+									{ name: 'Pre-Existent Contract', value: 'pre_existent_contract' },
+									{ name: 'Public Interest', value: 'public_interest' },
+									{ name: 'Vital Interest', value: 'vital_interest' },
+								],
+								default: 'consent',
+								description: 'Which legal basis authorizes the processing of the personal data',
+							},
+							{
+								displayName: 'Status',
+								name: 'status',
+								type: 'options',
+								options: [
+									{ name: 'Declined', value: 'declined' },
+									{ name: 'Granted', value: 'granted' },
+								],
+								default: 'granted',
+								description: 'Status of the legal basis. One of: granted, declined.',
+							},
+						],
+					},
+				],
+			},
 			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New full name for the contact, e.g. Maria Silva' },
 			{
 				displayName: 'Organization Name or ID',
@@ -164,6 +302,42 @@ export const contactV2Description: INodeProperties[] = [
 				description: 'Organization (company) the contact works for. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				typeOptions: { loadOptionsMethod: 'getOrganizationsV2' },
 				default: '',
+			},
+			{
+				displayName: 'Social Profiles',
+				name: 'socialProfilesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Social Profile',
+				default: {},
+				description: 'Social network profiles of the contact',
+				options: [
+					{
+						name: 'profile',
+						displayName: 'Profile',
+						values: [
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{ name: 'Facebook', value: 'facebook' },
+									{ name: 'LinkedIn', value: 'linkedin' },
+									{ name: 'Skype', value: 'skype' },
+								],
+								default: 'linkedin',
+								description: 'Social network of the profile. One of: facebook, linkedin, skype.',
+							},
+							{
+								displayName: 'Username',
+								name: 'username',
+								type: 'string',
+								default: '',
+								description: 'Username of the contact on that social network',
+							},
+						],
+					},
+				],
 			},
 			{ displayName: 'WhatsApp Username', name: 'whatsapp_username', type: 'string', default: '', description: 'WhatsApp number or username of the contact, e.g. +55 11 99999-9999' },
 		],
@@ -219,6 +393,20 @@ function buildContactV2Body(fields: IDataObject, customFieldsUi: IDataObject): I
 	if (Array.isArray((fields.emailsUi as IDataObject)?.email)) {
 		contact.emails = ((fields.emailsUi as IDataObject).email as IDataObject[]).map((e) => ({
 			email: e.email,
+		}));
+	}
+	// Perfis sociais e bases legais chegam como coleções do editor e vão como listas de objetos.
+	if (Array.isArray((fields.socialProfilesUi as IDataObject)?.profile)) {
+		contact.social_profiles = ((fields.socialProfilesUi as IDataObject).profile as IDataObject[]).map((s) => ({
+			type: s.type,
+			username: s.username,
+		}));
+	}
+	if (Array.isArray((fields.legalBasesUi as IDataObject)?.legalBase)) {
+		contact.legal_bases = ((fields.legalBasesUi as IDataObject).legalBase as IDataObject[]).map((b) => ({
+			category: b.category,
+			type: b.type,
+			status: b.status,
 		}));
 	}
 	if (Array.isArray((fields.phonesUi as IDataObject)?.phone)) {

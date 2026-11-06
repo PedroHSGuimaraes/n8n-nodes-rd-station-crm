@@ -143,6 +143,35 @@ export const dealV2Description: INodeProperties[] = [
 				default: '',
 				description: 'Comma-separated list of contact IDs to associate with the deal, each ID coming from a contact create or get operation',
 			},
+			{
+				displayName: 'Distribution Rule ID',
+				name: 'distribution_rule_id',
+				type: 'string',
+				default: '',
+				description: 'ID of the user or team that receives the deal when the rule type is User or Team',
+			},
+			{
+				displayName: 'Distribution Rule Type',
+				name: 'distribution_rule_type',
+				type: 'options',
+				options: [
+					{ name: 'All', value: 'all' },
+					{ name: 'All Admins', value: 'all_admins' },
+					{ name: 'All Users', value: 'all_users' },
+					{ name: 'Owner', value: 'owner' },
+					{ name: 'Team', value: 'team' },
+					{ name: 'User', value: 'user' },
+				],
+				default: 'user',
+				description: 'Who may receive the deal. One of: user, team, all, all_users, all_admins, owner.',
+			},
+			{
+				displayName: 'Distribution Stage ID',
+				name: 'distribution_stage_id',
+				type: 'string',
+				default: '',
+				description: 'ID of the pipeline stage the distribution applies to',
+			},
 			{ displayName: 'Expected Close Date', name: 'expected_close_date', type: 'dateTime', default: '', description: 'Expected close date of the deal in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
 			{ displayName: 'One Time Price', name: 'one_time_price', type: 'number', default: 0, description: 'One-time non-recurring deal value in the account currency as a decimal number, e.g. 1500.00' },
 			{
@@ -181,6 +210,35 @@ export const dealV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['update'] } },
 		options: [
+			{
+				displayName: 'Distribution Rule ID',
+				name: 'distribution_rule_id',
+				type: 'string',
+				default: '',
+				description: 'ID of the user or team that receives the deal when the rule type is User or Team',
+			},
+			{
+				displayName: 'Distribution Rule Type',
+				name: 'distribution_rule_type',
+				type: 'options',
+				options: [
+					{ name: 'All', value: 'all' },
+					{ name: 'All Admins', value: 'all_admins' },
+					{ name: 'All Users', value: 'all_users' },
+					{ name: 'Owner', value: 'owner' },
+					{ name: 'Team', value: 'team' },
+					{ name: 'User', value: 'user' },
+				],
+				default: 'user',
+				description: 'Who may receive the deal. One of: user, team, all, all_users, all_admins, owner.',
+			},
+			{
+				displayName: 'Distribution Stage ID',
+				name: 'distribution_stage_id',
+				type: 'string',
+				default: '',
+				description: 'ID of the pipeline stage the distribution applies to',
+			},
 			{ displayName: 'Expected Close Date', name: 'expected_close_date', type: 'dateTime', default: '', description: 'Expected close date of the deal in ISO 8601 format, e.g. 2026-07-08 or 2026-07-08T14:30:00Z' },
 			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New name for the deal, e.g. Website redesign for Acme' },
 			{ displayName: 'One Time Price', name: 'one_time_price', type: 'number', default: 0, description: 'One-time non-recurring deal value in the account currency as a decimal number, e.g. 1500.00' },
@@ -284,6 +342,14 @@ function buildDealV2Body(fields: IDataObject, customFieldsUi: IDataObject): IDat
 			.toISOString()
 			.split('T')[0];
 	}
+	// Distribuição: a doc v2 aceita { stage_id, rule: { type, id, email } }; só entra quando algo foi preenchido.
+	const rule: IDataObject = {};
+	if (fields.distribution_rule_type) rule.type = fields.distribution_rule_type;
+	if (fields.distribution_rule_id) rule.id = fields.distribution_rule_id;
+	const settings: IDataObject = {};
+	if (fields.distribution_stage_id) settings.stage_id = fields.distribution_stage_id;
+	if (Object.keys(rule).length) settings.rule = rule;
+	if (Object.keys(settings).length) deal.distribution_settings = settings;
 	if (fields.contact_ids) {
 		const ids = (fields.contact_ids as string)
 			.split(',')

@@ -83,7 +83,35 @@ export const organizationV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['create'] } },
 		options: [
+			{
+				displayName: 'Address Latitude',
+				name: 'address_latitude',
+				type: 'string',
+				default: '',
+				description: 'Latitude of the company address, for example -23.5505',
+			},
+			{
+				displayName: 'Address Line',
+				name: 'address_line',
+				type: 'string',
+				default: '',
+				description: 'Street address of the company, for example Rua A 1',
+			},
+			{
+				displayName: 'Address Longitude',
+				name: 'address_longitude',
+				type: 'string',
+				default: '',
+				description: 'Longitude of the company address, for example -46.6333',
+			},
 			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text description of the organization' },
+			{
+				displayName: 'Follower IDs',
+				name: 'follower_ids',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated IDs of the users who follow the company, for example 123,456',
+			},
 			{
 				displayName: 'Owner Name or ID',
 				name: 'owner_id',
@@ -110,7 +138,35 @@ export const organizationV2Description: INodeProperties[] = [
 		default: {},
 		displayOptions: { show: { ...showOnly, operation: ['update'] } },
 		options: [
+			{
+				displayName: 'Address Latitude',
+				name: 'address_latitude',
+				type: 'string',
+				default: '',
+				description: 'Latitude of the company address, for example -23.5505',
+			},
+			{
+				displayName: 'Address Line',
+				name: 'address_line',
+				type: 'string',
+				default: '',
+				description: 'Street address of the company, for example Rua A 1',
+			},
+			{
+				displayName: 'Address Longitude',
+				name: 'address_longitude',
+				type: 'string',
+				default: '',
+				description: 'Longitude of the company address, for example -46.6333',
+			},
 			{ displayName: 'Description', name: 'description', type: 'string', default: '', description: 'Free-text description of the organization' },
+			{
+				displayName: 'Follower IDs',
+				name: 'follower_ids',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated IDs of the users who follow the company, for example 123,456',
+			},
 			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New name for the company, e.g. Acme Corporation' },
 			{
 				displayName: 'Owner Name or ID',
@@ -195,6 +251,18 @@ function buildOrganizationV2Body(fields: IDataObject, customFieldsUi: IDataObjec
 	}
 	if (fields.segment_ids) {
 		organization.segment_ids = (fields.segment_ids as string)
+			.split(',')
+			.map((s) => s.trim())
+			.filter(Boolean);
+	}
+	// Endereço: a doc v2 usa { line, latitude, longitude }; só entra com algum campo preenchido.
+	const address: IDataObject = {};
+	if (fields.address_line) address.line = fields.address_line;
+	if (fields.address_latitude) address.latitude = fields.address_latitude;
+	if (fields.address_longitude) address.longitude = fields.address_longitude;
+	if (Object.keys(address).length) organization.address = address;
+	if (fields.follower_ids) {
+		organization.follower_ids = (fields.follower_ids as string)
 			.split(',')
 			.map((s) => s.trim())
 			.filter(Boolean);
