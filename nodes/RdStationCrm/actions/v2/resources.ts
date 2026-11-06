@@ -5,11 +5,12 @@
  * tem. Rotas e campos vêm das páginas oficiais `crm-v2-*` (OpenAPI), lidas em 06/11/2026; campo que a
  * OpenAPI marca como somente leitura não entra.
  */
-import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
+import type { IExecuteFunctions, INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
 import type { V2Field, V2Spec } from './resourceFactory';
 import { buildDescription, makeExecutor, standardOperations } from './resourceFactory';
 import { RD_CRM_WEBHOOK_EVENTS_V2 } from '../../helpers/constants';
+import { rdCrmV2Multipart } from '../../transport/v2';
 
 /** Atalho para um campo de texto simples. */
 const text = (name: string, displayName: string, description: string): V2Field => ({
@@ -145,7 +146,27 @@ export const userSpec: V2Spec = {
 	path: () => '/users',
 	idName: 'userId',
 	filter: true,
-	operations: standardOperations(['get', 'getMany'], 'user', 'users'),
+	operations: [
+		...standardOperations(['get', 'getMany'], 'user', 'users'),
+		// Disponibilidade para reuniões: rota própria, sem o filtro RDQL (a doc só aceita ordenar e paginar).
+		{
+			value: 'getMeetingAvailability',
+			kind: 'get',
+			name: 'Get Meeting Availability',
+			action: 'Get the meeting availability of a user',
+			description: 'Retrieve the meeting availability of one user from RD Station CRM (API v2)',
+			path: (_parentId, id) => `/users/${id}/meeting_availability`,
+		},
+		{
+			value: 'getManyMeetingAvailabilities',
+			kind: 'getMany',
+			name: 'Get Many Meeting Availabilities',
+			action: 'Get the meeting availability of many users',
+			description: 'Retrieve the meeting availability of all users from RD Station CRM (API v2)',
+			path: () => '/users/meeting_availability',
+			filter: false,
+		},
+	],
 };
 
 /** Produto de uma negociação: preço, quantidade, desconto e frequência de cobrança. */
@@ -324,6 +345,87 @@ export const teamSpec: V2Spec = {
 	operations: standardOperations(['get', 'getMany'], 'team', 'teams'),
 };
 
+/** Segmento de contatos. */
+export const segmentSpec: V2Spec = {
+	resource: 'segmentV2',
+	label: 'Segment',
+	summary: 'A saved group of contacts, in RD Station CRM API v2',
+	path: () => '/segments',
+	idName: 'segmentId',
+	filter: true,
+	operations: standardOperations(['create', 'get', 'getMany', 'update'], 'segment', 'segments'),
+	topFields: [text('name', 'Name', 'Name of the segment, for example VIP clients')],
+};
+
+/** Ligação do discador (webphone): somente leitura. */
+export const dialerCallSpec: V2Spec = {
+	resource: 'dialerCallV2',
+	label: 'Dialer Call',
+	summary: 'A call made through the RD Station CRM webphone, in RD Station CRM API v2',
+	path: () => '/dialer_calls',
+	idName: 'dialerCallId',
+	filter: true,
+	operations: standardOperations(['get', 'getMany'], 'dialer call', 'dialer calls'),
+};
+
+/**
+ * Envio de arquivo à negociação: o corpo é `multipart/form-data` com o arquivo em `data[file]`,
+ * então fica fora do molde JSON da fábrica. Valida o binário antes de qualquer requisição.
+ */
+async function uploadDealFile(
+	this: IExecuteFunctions,
+	operation: string,
+	i: number,
+	ids: { parentId: string },
+): Promise<unknown | undefined> {
+	if (operation !== 'upload') return undefined;
+	const propertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+	// Lança erro claro se o item não traz o binário, antes de qualquer chamada à RD.
+	const binary = this.helpers.assertBinaryData(i, propertyName);
+	const buffer = await this.helpers.getBinaryDataBuffer(i, propertyName);
+	const form = new FormData();
+	form.append(
+		'data[file]',
+		new Blob([buffer], { type: binary.mimeType }),
+		binary.fileName ?? 'file',
+	);
+	const response = await rdCrmV2Multipart.call(this, `/deals/${ids.parentId}/files`, form);
+	return response.data ?? response;
+}
+
+/** Anexos da negociação: listar, apagar e enviar arquivo. */
+export const dealFileSpec: V2Spec = {
+	resource: 'dealFileV2',
+	label: 'Deal File',
+	summary: 'A file attached to a deal, in RD Station CRM API v2',
+	path: (dealId) => `/deals/${dealId}/files`,
+	parent: 'dealId',
+	idName: 'fileId',
+	operations: [
+		...standardOperations(['delete', 'getMany'], 'deal file', 'deal files'),
+		{
+			value: 'upload',
+			kind: 'custom',
+			name: 'Upload',
+			action: 'Upload a file to a deal',
+			description: 'Attach a binary file from the item to a deal in RD Station CRM (API v2)',
+		},
+	],
+	custom: uploadDealFile,
+	extraProperties: [
+		{
+			displayName: 'Input Binary Field',
+			name: 'binaryPropertyName',
+			type: 'string',
+			required: true,
+			default: 'data',
+			displayOptions: { show: { resource: ['dealFileV2'], operation: ['upload'] } },
+			hint: 'The name of the input binary field that holds the file',
+			description: 'Name of the binary property of the item that holds the file to upload',
+		},
+	],
+};
+
 /** Webhook da API v2: cada webhook assina um evento e entrega o corpo na URL informada. */
 export const webhookSpec: V2Spec = {
 	resource: 'webhookV2',
@@ -358,13 +460,16 @@ export const webhookSpec: V2Spec = {
 /** Todas as especificações, na ordem em que aparecem no menu Resource. */
 export const v2Specs: V2Spec[] = [
 	campaignSpec,
+	dealFileSpec,
 	dealProductSpec,
+	dialerCallSpec,
 	leadSpec,
 	lostReasonSpec,
 	meetingSpec,
 	pipelineSpec,
 	productSpec,
 	proposalSpec,
+	segmentSpec,
 	sourceSpec,
 	stageSpec,
 	teamSpec,

@@ -92,6 +92,9 @@ describe('listSearch coverage', () => {
 			webhookId: ['searchWebhooks', 'searchWebhooksV2'],
 			leadId: ['searchLeadsV2', 'searchLeadsV2'],
 			meetingId: ['searchMeetingsV2', 'searchMeetingsV2'],
+			segmentId: ['searchSegmentsV2', 'searchSegmentsV2'],
+			dialerCallId: ['searchDialerCallsV2', 'searchDialerCallsV2'],
+			fileId: ['searchFilesV2', 'searchFilesV2'],
 			proposalId: ['searchProposalsV2', 'searchProposalsV2'],
 			dealProductId: ['searchDealProductsV2', 'searchDealProductsV2'],
 		};

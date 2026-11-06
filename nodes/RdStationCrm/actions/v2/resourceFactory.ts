@@ -53,7 +53,8 @@ export interface V2Field {
 }
 
 /** Os cinco formatos de operação que a fábrica entende. */
-export type V2Kind = 'create' | 'get' | 'getMany' | 'update' | 'delete';
+// `custom` é a operação que a especificação executa por conta própria (ex.: envio de arquivo).
+export type V2Kind = 'create' | 'get' | 'getMany' | 'update' | 'delete' | 'custom';
 
 /** Uma operação do recurso, com a rota própria quando ela foge do padrão. */
 export interface V2Operation {
@@ -87,6 +88,8 @@ export interface V2Spec {
 	topFields?: V2Field[];
 	/** Demais campos: vão em "Additional Fields" (criar) e "Update Fields" (atualizar). */
 	fields?: V2Field[];
+	/** Propriedades de tela das operações `custom`, com o próprio `displayOptions`. */
+	extraProperties?: INodeProperties[];
 	/** Parte fixa do corpo na criação (ex.: `http_method: 'POST'` do webhook). */
 	fixedCreateBody?: IDataObject;
 	/** `true` quando a listagem aceita o filtro RDQL. */
@@ -102,11 +105,11 @@ export interface V2Spec {
 
 /** Monta a lista de operações padrão (Create, Get, Get Many, Update, Delete) de um recurso. */
 export function standardOperations(
-	kinds: V2Kind[],
+	kinds: Array<Exclude<V2Kind, 'custom'>>,
 	singular: string,
 	plural: string,
 ): V2Operation[] {
-	const all: Record<V2Kind, V2Operation> = {
+	const all: Record<Exclude<V2Kind, 'custom'>, V2Operation> = {
 		create: {
 			value: 'create',
 			kind: 'create',
@@ -316,6 +319,9 @@ export function buildDescription(spec: V2Spec): INodeProperties[] {
 			});
 		}
 	}
+
+	// Campos das operações `custom` (por exemplo, o nome da propriedade binária do arquivo).
+	props.push(...(spec.extraProperties ?? []));
 
 	return props;
 }

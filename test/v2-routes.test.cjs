@@ -419,3 +419,75 @@ describe('S3 create and update routes, products, campaigns, meetings, proposals 
 		}
 	});
 });
+
+describe('S4 segments, deal files, availability and dialer calls', () => {
+	it('S4.1 segment create get list and update', async () => {
+		const [create] = await call({ resource: 'segmentV2', operation: 'create', name: 'VIP' });
+		expectRequest(create, 'POST', '/segments', { body: { data: { name: 'VIP' } } });
+		const [get] = await call({ resource: 'segmentV2', operation: 'get', segmentId: locator('SG1') });
+		expectRequest(get, 'GET', '/segments/SG1');
+		const [many] = await call({ resource: 'segmentV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/segments');
+		const [update] = await call({ resource: 'segmentV2', operation: 'update', segmentId: locator('SG1'), updateFields: { name: 'VIP 2' } });
+		expectRequest(update, 'PUT', '/segments/SG1', { body: { data: { name: 'VIP 2' } } });
+	});
+
+	it('S4.2 deal file list and delete', async () => {
+		const [many] = await call({ resource: 'dealFileV2', operation: 'getMany', dealId: locator('D1'), returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/deals/D1/files');
+		const [del] = await call({ resource: 'dealFileV2', operation: 'delete', dealId: locator('D1'), fileId: locator('F1') });
+		expectRequest(del, 'DELETE', '/deals/D1/files/F1');
+	});
+
+	it('S4.3 deal file upload sends multipart data', async () => {
+		const [request] = await runExecute({
+			version: 2,
+			params: { authentication: 'oauth2', resource: 'dealFileV2', operation: 'upload', dealId: locator('D1'), binaryPropertyName: 'data' },
+			binary: { data: { fileName: 'proposta.pdf', mimeType: 'application/pdf', buffer: Buffer.from('PDF-1') } },
+		});
+		assert.equal(request.method, 'POST');
+		assert.equal(request.url, '/deals/D1/files');
+		assert.equal(request.baseURL, BASE);
+		assert.equal(request.cred, 'rdStationCrmOAuth2Api');
+		assert.equal(request.timeout, 30000);
+		// O corpo é um multipart (FormData) e não o envelope JSON `{ data }` das outras rotas.
+		assert.ok(request.body instanceof FormData);
+		const file = request.body.get('data[file]');
+		assert.equal(file.name, 'proposta.pdf');
+		assert.equal(file.type, 'application/pdf');
+		assert.equal(await file.text(), 'PDF-1');
+	});
+
+	it('S4.4 deal file upload without binary fails first', async () => {
+		let sent = false;
+		await assert.rejects(
+			runExecute({
+				version: 2,
+				params: { authentication: 'oauth2', resource: 'dealFileV2', operation: 'upload', dealId: locator('D1'), binaryPropertyName: 'data' },
+				responder: () => {
+					sent = true;
+					return {};
+				},
+			}),
+			(error) => {
+				assert.match(error.message, /binary/i);
+				return true;
+			},
+		);
+		assert.equal(sent, false);
+	});
+
+	it('S4.5 user meeting availability routes', async () => {
+		const [one] = await call({ resource: 'userV2', operation: 'getMeetingAvailability', userId: locator('U1') });
+		expectRequest(one, 'GET', '/users/U1/meeting_availability');
+		const [many] = await call({ resource: 'userV2', operation: 'getManyMeetingAvailabilities', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/users/meeting_availability', { qs: { 'page[size]': 5 } });
+	});
+
+	it('S4.6 dialer call get and getMany', async () => {
+		const [get] = await call({ resource: 'dialerCallV2', operation: 'get', dialerCallId: locator('C1') });
+		expectRequest(get, 'GET', '/dialer_calls/C1');
+		const [many] = await call({ resource: 'dialerCallV2', operation: 'getMany', returnAll: false, limit: 5 });
+		expectRequest(many, 'GET', '/dialer_calls');
+	});
+});

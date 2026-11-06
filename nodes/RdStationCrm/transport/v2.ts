@@ -87,3 +87,33 @@ export async function rdCrmV2RequestAllItems(
 
 	return returnData;
 }
+
+/**
+ * Envia um arquivo à API v2 em `multipart/form-data` (anexos da negociação).
+ * Fica separado do `rdCrmV2Request` porque este embrulha o corpo em `{ data }` JSON, e o envio de arquivo
+ * pede o corpo como FormData; o n8n troca o cabeçalho `Content-Type` sozinho quando vê um FormData.
+ */
+export async function rdCrmV2Multipart(
+	this: RdV2Context,
+	endpoint: string,
+	form: FormData,
+): Promise<IDataObject> {
+	const options: IHttpRequestOptions = {
+		method: 'POST',
+		baseURL: RD_CRM_V2_BASE_URL,
+		url: endpoint,
+		body: form,
+		// Mesmo teto de 30 s das outras rotas: um arquivo grande não deve prender o workflow para sempre.
+		timeout: REQUEST_TIMEOUT_MS,
+	};
+
+	try {
+		return await this.helpers.httpRequestWithAuthentication.call(
+			this,
+			'rdStationCrmOAuth2Api',
+			options,
+		);
+	} catch (error) {
+		throw new NodeApiError(this.getNode(), error as JsonObject);
+	}
+}

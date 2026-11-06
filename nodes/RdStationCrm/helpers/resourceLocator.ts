@@ -53,6 +53,9 @@ export const ID_FIELDS: Record<string, IdFieldSpec> = {
 	dealProductId: { noun: 'Deal Product', search: 'searchDealProductsV2', searchV2: 'searchDealProductsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	meetingId: { noun: 'Meeting', search: 'searchMeetingsV2', searchV2: 'searchMeetingsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	proposalId: { noun: 'Proposal', search: 'searchProposalsV2', searchV2: 'searchProposalsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	segmentId: { noun: 'Segment', search: 'searchSegmentsV2', searchV2: 'searchSegmentsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	dialerCallId: { noun: 'Dialer Call', search: 'searchDialerCallsV2', searchV2: 'searchDialerCallsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
+	fileId: { noun: 'File', search: 'searchFilesV2', searchV2: 'searchFilesV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	leadId: { noun: 'Lead', search: 'searchLeadsV2', searchV2: 'searchLeadsV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 	webhookId: { noun: 'Webhook', search: 'searchWebhooks', searchV2: 'searchWebhooksV2', example: '5f8a1c2b3d4e5f6a7b8c9d0e' },
 };
