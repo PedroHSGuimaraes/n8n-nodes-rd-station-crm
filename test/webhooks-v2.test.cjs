@@ -283,6 +283,10 @@ describe('S2 webhooks v2 and the OAuth2 trigger', () => {
 		};
 		assert.equal(await hooks.checkExists.call(context), true);
 		assert.deepEqual(calls.filter((c) => c.startsWith('DELETE')), ['DELETE /webhooks/S']);
+		// `create` lê as mesmas páginas: o evento já existe na página 2, então não posta outro webhook.
+		calls.length = 0;
+		assert.equal(await hooks.create.call(context), true);
+		assert.deepEqual(calls.filter((c) => c.startsWith('POST')), []);
 	});
 
 	it('F7 the webhook url is compared without trailing slash or host case', async () => {
