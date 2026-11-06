@@ -50,6 +50,13 @@
 | C40 | `docs-v2.test.cjs` `S5.1 changelog documents the new v2 routes` | yes - presença de 5 palavras na seção; frouxo (achado 9) |
 | C41 | `docs-v2.test.cjs` `S5.2 readme documents the new resources and events` | yes - 16 recursos em negrito, `38` e 4 eventos; frouxo (achado 9) |
 | C42 | `npm run lint && npx tsc --noEmit && npm run build` | yes - prova é o comando, `proofs.md` mostra saída 0; rodei `npm run build` e saiu verde |
+| C43 | `test/v2-routes.test.cjs` `F1 lead create requires the owner and only offers the ongoing status` | yes - falha se `required` do owner_id cair, se `status` voltar ao additionalFields da criação ou se a atualização perder uma das 3 opções; fraco só em que a criação não oferece status algum (em vez de só `ongoing`) |
+| C44 | `test/v2-routes.test.cjs` `F2 no description has a broken placeholder` | yes - o regex pega `,,` e `the ,` em todas as descrições de topo e de coleções; voltar ao texto quebrado deixa a lista não vazia |
+| C45 | `test/webhooks-v2.test.cjs` `F3 checkExists and create read every page of the webhook list` | yes - velho `S` só existe na página 2 e webhook `Z` de outra URL na 1; ler só a página 1 ou apagar `Z` quebra o deepEqual dos DELETE; o título cita `create`, mas só `checkExists` é exercido |
+| C46 | `test/v2-routes.test.cjs` `F5 invalid dates fail clearly and an empty list sends nothing` | yes - confere classe e mensagem do erro e o corpo exato sem `contact_ids`; exemplos extras (data com fuso, `,c1,, ,`, só data, data inválida no update) deram o esperado |
+| C47 | `test/v2-routes.test.cjs` `F6 the page size is capped at 200` | yes - exige 3 limites com `maxValue` 200; tirar o teto de um deles falha; só confere a descrição, não o clamp em execução |
+| C48 | `test/webhooks-v2.test.cjs` `F7 the webhook url is compared without trailing slash or host case` | yes - remoto com host maiúsculo e barra final; voltar a `===` faz `checkExists` dar `false`; query diferente, porta diferente e caixa do caminho diferente seguem como webhook alheio (exemplos extras) |
+| C49 | `test/v2-routes.test.cjs` `F10 deal product accepts custom fields as a JSON list` | yes - deepEqual do corpo com a lista parseada; sem o campo ou sem o parse a asserção falha |
 
 ## Findings
 
