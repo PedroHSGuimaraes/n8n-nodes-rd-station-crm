@@ -20,7 +20,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          # Mesma versão do ci.yml: o `npm ci` só aceita o lock gerado pelo mesmo npm.
+          # Com Node 20 (npm 10) a tag v2.4.0 falhou com "Missing: ignore@7.0.14 from lock file".
+          node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
