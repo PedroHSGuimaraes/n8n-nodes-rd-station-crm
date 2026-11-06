@@ -221,18 +221,18 @@ Se você só precisa automatizar a sua própria conta, o **token (v1)** é o cam
 # Instalar dependências
 npm install
 
-# Compilar (tsc + cópia de ícones via gulp)
+# Compilar (n8n-node build: tsc + cópia de ícones)
 npm run build
+
+# Testes (node --test sobre o dist)
+npm test
 
 # Modo watch
 npm run dev
 
-# Lint (ESLint + plugin de community nodes)
+# Lint oficial do n8n (n8n-node lint)
 npm run lint
-npm run lintfix
-
-# Formatar
-npm run format
+npm run lint:fix
 ```
 
 Estrutura resumida:
@@ -266,6 +266,7 @@ n8n-nodes-rd-station-crm/
 
 ## 📈 Versões
 
+- **2.4.0** — **Campos de ID em lista pesquisável.** Em node novo (versão 2 do node), os campos de ID de contato, negócio, empresa, tarefa, funil, etapa, produto, origem, campanha, motivo de perda, campo personalizado, time, usuário e webhook mostram a lista da conta e aceitam colar o ID. Workflows salvos continuam na versão 1 e não mudam. Migração para o `@n8n/node-cli` 0.55.5, lint oficial sem erros, testes e CI. Veja o `CHANGELOG.md`.
 - **2.3.2** — Link de apoio no `package.json` e na documentação do npm, com acesso direto ao Buy Me a Coffee.
 - **2.3.1** — Metadado `funding` adicionado ao pacote para integração com `npm fund`.
 - **2.2.1** — **Menos alucinação da IA.** Fechamento de lacunas nas descrições: ~147 campos que estavam **sem descrição** ganharam descrição com formato + exemplo (e-mail, telefone, URL, preços, valores de custom field, aniversário…); todos os campos de **data** (`dateTime`) passam a indicar o formato exato **ISO 8601** com exemplo; e os campos de **enum** (`type: 'options'`) listam os **valores válidos** na descrição (ex.: `One of: call, email, meeting, task, whatsapp`). Reduz o espaço para o modelo inventar formato/valor ao preencher via `$fromAI()`.
