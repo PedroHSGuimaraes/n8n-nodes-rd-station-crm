@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // PRODUCT resource — mirrors the Contact.ts structure:
@@ -192,7 +193,7 @@ export async function executeProduct(
 	}
 
 	if (operation === 'get') {
-		const productId = this.getNodeParameter('productId', i) as string;
+		const productId = getIdParameter.call(this, 'productId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/products/${productId}`);
 	}
 
@@ -210,7 +211,7 @@ export async function executeProduct(
 	}
 
 	if (operation === 'update') {
-		const productId = this.getNodeParameter('productId', i) as string;
+		const productId = getIdParameter.call(this, 'productId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const product = buildProductBody(updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/products/${productId}`, product);

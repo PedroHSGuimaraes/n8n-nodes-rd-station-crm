@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // DEAL PRODUCT resource (line items on a deal) — mirrors the Contact.ts structure:
@@ -242,7 +243,7 @@ export async function executeDealProduct(
 	operation: string,
 	i: number,
 ): Promise<unknown> {
-	const dealId = this.getNodeParameter('dealId', i) as string;
+	const dealId = getIdParameter.call(this, 'dealId', i);
 
 	if (operation === 'getMany') {
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;

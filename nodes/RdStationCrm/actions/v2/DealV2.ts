@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) DEAL resource — mirrors the ContactV2 template:
@@ -319,7 +320,7 @@ export async function executeDealV2(
 	}
 
 	if (operation === 'get') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/deals/${dealId}`);
 		return response.data ?? response;
 	}
@@ -341,7 +342,7 @@ export async function executeDealV2(
 	}
 
 	if (operation === 'update') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 		const body = buildDealV2Body({ ...updateFields }, customFieldsUi);
@@ -350,13 +351,13 @@ export async function executeDealV2(
 	}
 
 	if (operation === 'markWon') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const response = await rdCrmV2Request.call(this, 'PUT', `/deals/${dealId}`, { status: 'won' });
 		return response.data ?? response;
 	}
 
 	if (operation === 'markLost') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const lostReasonId = this.getNodeParameter('lost_reason_id', i) as string;
 		const response = await rdCrmV2Request.call(this, 'PUT', `/deals/${dealId}`, {
 			status: 'lost',
@@ -366,7 +367,7 @@ export async function executeDealV2(
 	}
 
 	if (operation === 'moveToStage') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const stageId = this.getNodeParameter('stage_id', i) as string;
 		const response = await rdCrmV2Request.call(this, 'PUT', `/deals/${dealId}`, { stage_id: stageId });
 		return response.data ?? response;

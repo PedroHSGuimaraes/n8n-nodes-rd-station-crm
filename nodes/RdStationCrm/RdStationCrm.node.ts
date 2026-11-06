@@ -5,7 +5,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import {
 	executeResource,
@@ -14,6 +14,8 @@ import {
 	resourceProperties,
 	resourcePropertiesV2,
 } from './actions';
+import { withGuidedIds } from './helpers/resourceLocator';
+import { listSearch } from './methods/listSearch';
 import { loadOptions } from './methods/loadOptions';
 import { loadOptionsV2 } from './methods/loadOptionsV2';
 
@@ -23,7 +25,9 @@ export class RdStationCrm implements INodeType {
 		name: 'rdStationCrm',
 		icon: { light: 'file:rdStationCrm.svg', dark: 'file:rdStationCrm.dark.svg' },
 		group: ['transform'],
-		version: 1,
+		// Versão 2 troca os campos de ID por Resource Locator; a 1 fica igual para workflows salvos (AD-003).
+		version: [1, 2],
+		defaultVersion: 2,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description:
 			'Read and write data in RD Station CRM. Create, get, update and list contacts (leads/people), deals (sales opportunities), organizations (companies), tasks, notes, and manage pipelines, stages, products, custom fields, sources, campaigns, loss reasons, users, teams and webhooks. Supports API v1 (private token) and API v2 (OAuth2). Usable as an AI Agent tool.',
@@ -76,13 +80,14 @@ export class RdStationCrm implements INodeType {
 				options: resourceOptionsV2,
 				default: 'contactV2',
 			},
-			...resourceProperties,
-			...resourcePropertiesV2,
+			// Troca os campos de ID por Resource Locator (v2) e mantém o texto para a v1.
+			...withGuidedIds([...resourceProperties, ...resourcePropertiesV2]),
 		],
 	};
 
 	methods = {
 		loadOptions: { ...loadOptions, ...loadOptionsV2 },
+		listSearch,
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
@@ -110,7 +115,12 @@ export class RdStationCrm implements INodeType {
 					});
 					continue;
 				}
-				throw new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
+				// Erros que já são do n8n (resposta da RD, ID vazio) seguem como estão: assim o editor mostra o
+				// código HTTP e a descrição de ajuda em vez de um erro genérico embrulhado.
+				const alreadyN8nError = error instanceof NodeApiError || error instanceof NodeOperationError;
+				throw alreadyN8nError
+					? error
+					: new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
 			}
 		}
 

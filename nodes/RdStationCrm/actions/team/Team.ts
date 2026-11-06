@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForTeams = {
 	resource: ['team'],
@@ -102,7 +103,7 @@ export async function executeTeam(
 	i: number,
 ): Promise<unknown> {
 	if (operation === 'get') {
-		const teamId = this.getNodeParameter('teamId', i) as string;
+		const teamId = getIdParameter.call(this, 'teamId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/teams/${teamId}`);
 	}
 

@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // CUSTOM FIELD RESOURCE — mirrors the structure of the Contact template:
@@ -286,7 +287,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'get') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/custom_fields/${customFieldId}`);
 	}
 
@@ -314,7 +315,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'update') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		// NOTE: Body is sent TOP-LEVEL (not wrapped in a `custom_field` object) — see create note.
@@ -325,7 +326,7 @@ export async function executeCustomField(
 	}
 
 	if (operation === 'delete') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		await rdCrmApiRequest.call(this, 'DELETE', `/custom_fields/${customFieldId}`);
 		return { deleted: true };
 	}

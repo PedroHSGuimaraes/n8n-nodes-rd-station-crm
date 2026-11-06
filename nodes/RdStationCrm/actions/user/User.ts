@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForUsers = {
 	resource: ['user'],
@@ -118,7 +119,7 @@ export async function executeUser(
 	i: number,
 ): Promise<unknown> {
 	if (operation === 'get') {
-		const userId = this.getNodeParameter('userId', i) as string;
+		const userId = getIdParameter.call(this, 'userId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/users/${userId}`);
 	}
 

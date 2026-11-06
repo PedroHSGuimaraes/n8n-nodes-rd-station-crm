@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // NOTE resource — notes are RD Station "activities" of type "note".
@@ -139,8 +140,8 @@ export async function executeNote(
 	i: number,
 ): Promise<unknown> {
 	if (operation === 'create') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
-		const userId = this.getNodeParameter('userId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
+		const userId = getIdParameter.call(this, 'userId', i);
 		const text = this.getNodeParameter('text', i) as string;
 
 		// Notes are activities of type "note"; the docs wrap the payload in an

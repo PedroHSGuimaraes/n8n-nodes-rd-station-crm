@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -80,7 +81,7 @@ export async function executeNoteV2(
 	i: number,
 ): Promise<unknown> {
 	if (operation === 'create') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const description = this.getNodeParameter('description', i) as string;
 		const userId = this.getNodeParameter('user_id', i) as string;
 		const body: IDataObject = { description, user_id: userId };
@@ -89,7 +90,7 @@ export async function executeNoteV2(
 	}
 
 	if (operation === 'getMany') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 		const qs: IDataObject = {};
 

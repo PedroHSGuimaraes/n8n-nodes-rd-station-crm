@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForOrganizations = {
 	resource: ['organization'],
@@ -279,7 +280,7 @@ export async function executeOrganization(
 	}
 
 	if (operation === 'get') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/organizations/${organizationId}`);
 	}
 
@@ -300,14 +301,14 @@ export async function executeOrganization(
 	}
 
 	if (operation === 'update') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const organization = buildOrganizationBody.call(this, i, updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/organizations/${organizationId}`, { organization });
 	}
 
 	if (operation === 'getContacts') {
-		const organizationId = this.getNodeParameter('organizationId', i) as string;
+		const organizationId = getIdParameter.call(this, 'organizationId', i);
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 		const endpoint = `/organizations/${organizationId}/contacts`;
 

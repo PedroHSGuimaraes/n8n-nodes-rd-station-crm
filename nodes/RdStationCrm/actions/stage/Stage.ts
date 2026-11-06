@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // STAGE resource — RD Station "deal stages" (etapas do funil de vendas).
@@ -169,7 +170,7 @@ export async function executeStage(
 	}
 
 	if (operation === 'get') {
-		const stageId = this.getNodeParameter('stageId', i) as string;
+		const stageId = getIdParameter.call(this, 'stageId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/deal_stages/${stageId}`);
 	}
 
@@ -191,7 +192,7 @@ export async function executeStage(
 	}
 
 	if (operation === 'update') {
-		const stageId = this.getNodeParameter('stageId', i) as string;
+		const stageId = getIdParameter.call(this, 'stageId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		// Top-level body per docs (no `deal_stage` wrapper).

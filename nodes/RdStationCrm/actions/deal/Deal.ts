@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // DEAL RESOURCE — mirrors the structure of the Contact template:
@@ -598,12 +599,12 @@ export async function executeDeal(
 	}
 
 	if (operation === 'get') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/deals/${dealId}`);
 	}
 
 	if (operation === 'getContacts') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 
 		if (returnAll) {
@@ -651,7 +652,7 @@ export async function executeDeal(
 	}
 
 	if (operation === 'update') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		const deal: IDataObject = {};
@@ -674,12 +675,12 @@ export async function executeDeal(
 	}
 
 	if (operation === 'markAsWon') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		return rdCrmApiRequest.call(this, 'PUT', `/deals/${dealId}`, { deal: { win: true } });
 	}
 
 	if (operation === 'markAsLost') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const dealLostReasonId = this.getNodeParameter('dealLostReasonId', i) as string;
 		const dealLostNote = this.getNodeParameter('dealLostNote', i, '') as string;
 
@@ -690,7 +691,7 @@ export async function executeDeal(
 	}
 
 	if (operation === 'moveToStage') {
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const dealStageId = this.getNodeParameter('dealStageId', i) as string;
 		// deal_stage_id is a TOP-LEVEL sibling (no `deal` wrapper).
 		return rdCrmApiRequest.call(this, 'PUT', `/deals/${dealId}`, { deal_stage_id: dealStageId });

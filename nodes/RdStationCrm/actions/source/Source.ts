@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForSources = {
 	resource: ['source'],
@@ -137,7 +138,7 @@ export async function executeSource(
 	}
 
 	if (operation === 'get') {
-		const sourceId = this.getNodeParameter('sourceId', i) as string;
+		const sourceId = getIdParameter.call(this, 'sourceId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/deal_sources/${sourceId}`);
 	}
 
@@ -155,7 +156,7 @@ export async function executeSource(
 	}
 
 	if (operation === 'update') {
-		const sourceId = this.getNodeParameter('sourceId', i) as string;
+		const sourceId = getIdParameter.call(this, 'sourceId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		// Body is sent top-level (no wrapper), matching the create request shape.
 		return rdCrmApiRequest.call(this, 'PUT', `/deal_sources/${sourceId}`, updateFields);

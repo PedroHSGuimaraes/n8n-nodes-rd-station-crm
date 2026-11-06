@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // PIPELINE resource — RD Station "deal pipelines" (funis de vendas).
@@ -135,7 +136,7 @@ export async function executePipeline(
 	}
 
 	if (operation === 'get') {
-		const pipelineId = this.getNodeParameter('pipelineId', i) as string;
+		const pipelineId = getIdParameter.call(this, 'pipelineId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/deal_pipelines/${pipelineId}`);
 	}
 
@@ -151,7 +152,7 @@ export async function executePipeline(
 	}
 
 	if (operation === 'update') {
-		const pipelineId = this.getNodeParameter('pipelineId', i) as string;
+		const pipelineId = getIdParameter.call(this, 'pipelineId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
 		// Top-level body per docs (no `deal_pipeline` wrapper).

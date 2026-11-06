@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -232,13 +233,13 @@ export async function executeCustomFieldV2(
 	}
 
 	if (operation === 'delete') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		await rdCrmV2Request.call(this, 'DELETE', `/custom_fields/${customFieldId}`);
 		return { deleted: true };
 	}
 
 	if (operation === 'get') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/custom_fields/${customFieldId}`);
 		return response.data ?? response;
 	}
@@ -258,7 +259,7 @@ export async function executeCustomFieldV2(
 	}
 
 	if (operation === 'update') {
-		const customFieldId = this.getNodeParameter('customFieldId', i) as string;
+		const customFieldId = getIdParameter.call(this, 'customFieldId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const body = buildCustomFieldV2Body({ ...updateFields });
 		const response = await rdCrmV2Request.call(this, 'PUT', `/custom_fields/${customFieldId}`, body);

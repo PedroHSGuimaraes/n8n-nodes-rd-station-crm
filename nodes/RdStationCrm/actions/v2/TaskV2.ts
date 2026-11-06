@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) Task resource — mirrors the ContactV2 template:
@@ -200,7 +201,7 @@ export async function executeTaskV2(
 	}
 
 	if (operation === 'get') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		const response = await rdCrmV2Request.call(this, 'GET', `/tasks/${taskId}`);
 		return response.data ?? response;
 	}
@@ -220,7 +221,7 @@ export async function executeTaskV2(
 	}
 
 	if (operation === 'update') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const body = buildTaskV2Body({ ...updateFields });
 		const response = await rdCrmV2Request.call(this, 'PUT', `/tasks/${taskId}`, body);

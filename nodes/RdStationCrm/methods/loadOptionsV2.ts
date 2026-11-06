@@ -2,7 +2,7 @@ import type { IDataObject, ILoadOptionsFunctions, INodePropertyOptions } from 'n
 
 import { rdCrmV2RequestAllItems } from '../transport/v2';
 
-function toOptionsV2(items: IDataObject[], labelKey = 'name'): INodePropertyOptions[] {
+export function toOptionsV2(items: IDataObject[], labelKey = 'name'): INodePropertyOptions[] {
 	return items
 		.filter(Boolean)
 		.map((item) => ({

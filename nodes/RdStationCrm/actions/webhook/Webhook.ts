@@ -2,6 +2,7 @@ import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workfl
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
 import { RD_CRM_WEBHOOK_EVENTS } from '../../helpers/constants';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForWebhooks = {
 	resource: ['webhook'],
@@ -152,7 +153,7 @@ export async function executeWebhook(
 	}
 
 	if (operation === 'get') {
-		const webhookId = this.getNodeParameter('webhookId', i) as string;
+		const webhookId = getIdParameter.call(this, 'webhookId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/webhooks/${webhookId}`);
 	}
 
@@ -167,7 +168,7 @@ export async function executeWebhook(
 	}
 
 	if (operation === 'update') {
-		const webhookId = this.getNodeParameter('webhookId', i) as string;
+		const webhookId = getIdParameter.call(this, 'webhookId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const body: IDataObject = {};
 		if (updateFields.eventType) body.event_type = updateFields.eventType;
@@ -176,7 +177,7 @@ export async function executeWebhook(
 	}
 
 	if (operation === 'delete') {
-		const webhookId = this.getNodeParameter('webhookId', i) as string;
+		const webhookId = getIdParameter.call(this, 'webhookId', i);
 		await rdCrmApiRequest.call(this, 'DELETE', `/webhooks/${webhookId}`);
 		return { deleted: true };
 	}

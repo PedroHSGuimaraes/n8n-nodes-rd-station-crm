@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
+import { getIdParameter } from '../../helpers/resourceLocator';
 
 const showOnlyForTasks = {
 	resource: ['task'],
@@ -285,7 +286,7 @@ export async function executeTask(
 ): Promise<unknown> {
 	if (operation === 'create') {
 		const subject = this.getNodeParameter('subject', i) as string;
-		const dealId = this.getNodeParameter('dealId', i) as string;
+		const dealId = getIdParameter.call(this, 'dealId', i);
 		const type = this.getNodeParameter('type', i) as string;
 		const date = this.getNodeParameter('date', i, '') as string;
 		const hour = this.getNodeParameter('hour', i, '') as string;
@@ -295,7 +296,7 @@ export async function executeTask(
 	}
 
 	if (operation === 'get') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		return rdCrmApiRequest.call(this, 'GET', `/tasks/${taskId}`);
 	}
 
@@ -319,7 +320,7 @@ export async function executeTask(
 	}
 
 	if (operation === 'update') {
-		const taskId = this.getNodeParameter('taskId', i) as string;
+		const taskId = getIdParameter.call(this, 'taskId', i);
 		const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 		const task = buildTaskBody(updateFields);
 		return rdCrmApiRequest.call(this, 'PUT', `/tasks/${taskId}`, { task });

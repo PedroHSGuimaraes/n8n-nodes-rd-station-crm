@@ -1,0 +1,147 @@
+/**
+ * `listSearch` dos Resource Locators da versão 2: alimenta a lista pesquisável dos campos de ID.
+ *
+ * Regra de reaproveitamento: onde já existe um `loadOptions` para a mesma lista (organizações,
+ * usuários, times, funis, etapas, produtos, origens, campanhas, motivos de perda), o `listSearch`
+ * chama esse `loadOptions` e só aplica o texto de busca. Só as listas que não tinham
+ * `loadOptions` (contatos, negócios, tarefas, campos personalizados, webhooks) ganham busca nova aqui.
+ *
+ * Contatos e negócios podem ser milhares: para eles o texto vai à RD (parâmetro de filtro da rota)
+ * e a lista vem paginada. As demais listas são curtas, então carregam inteiras e o filtro roda no node.
+ */
+import type {
+	IDataObject,
+	ILoadOptionsFunctions,
+	INodeListSearchResult,
+	INodePropertyOptions,
+} from 'n8n-workflow';
+
+import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../transport';
+import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../transport/v2';
+import { loadOptions, toOptions } from './loadOptions';
+import { loadOptionsV2, toOptionsV2 } from './loadOptionsV2';
+
+/** Itens por página nas listas grandes (contatos e negócios); 50 cabe bem no dropdown do editor. */
+const PAGE_SIZE = 50;
+
+type Loader = (this: ILoadOptionsFunctions) => Promise<INodePropertyOptions[]>;
+
+/** Tira acento e caixa, para "ana" achar "Ânâ Lima" (busca sem diferenciar acento). */
+function normalize(text: string): string {
+	return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+
+/** Converte opções em resultados do n8n, filtrando pelo texto no próprio node quando houver. */
+function toResults(options: INodePropertyOptions[], filter?: string): INodeListSearchResult {
+	const needle = normalize(filter ?? '');
+	const results = options
+		.filter((option) => !needle || normalize(String(option.name)).includes(needle))
+		.map((option) => ({ name: String(option.name), value: String(option.value) }));
+	return { results };
+}
+
+/** Lista curta: reaproveita um `loadOptions` existente e filtra pelo texto. */
+function fromLoader(loader: Loader) {
+	return async function (this: ILoadOptionsFunctions, filter?: string): Promise<INodeListSearchResult> {
+		return toResults(await loader.call(this), filter);
+	};
+}
+
+/** Lista curta sem `loadOptions` prévio: busca tudo, monta as opções e filtra pelo texto. */
+function fromItems(fetch: (ctx: ILoadOptionsFunctions) => Promise<INodePropertyOptions[]>) {
+	return async function (this: ILoadOptionsFunctions, filter?: string): Promise<INodeListSearchResult> {
+		return toResults(await fetch(this), filter);
+	};
+}
+
+/**
+ * Lista grande da API v1 (contatos, negócios): manda o texto à RD no parâmetro de filtro da rota
+ * e devolve uma página por vez. `paginationToken` carrega o número da próxima página.
+ */
+function pagedV1(propertyName: string, endpoint: string, filterParam: string) {
+	return async function (
+		this: ILoadOptionsFunctions,
+		filter?: string,
+		paginationToken?: unknown,
+	): Promise<INodeListSearchResult> {
+		const page = Number(paginationToken) || 1;
+		const qs: IDataObject = { page, limit: PAGE_SIZE };
+		if (filter) qs[filterParam] = filter;
+
+		const response = await rdCrmApiRequest.call(this, 'GET', endpoint, {}, qs);
+		const items = (Array.isArray(response) ? response : (response?.[propertyName] ?? [])) as IDataObject[];
+		const hasMore = !Array.isArray(response) && (response?.has_more === true || items.length === PAGE_SIZE);
+
+		return {
+			...toResults(toOptions(items)),
+			...(hasMore ? { paginationToken: String(page + 1) } : {}),
+		};
+	};
+}
+
+/** Lista grande da API v2: filtro RDQL (`filter=name:texto`) e paginação por `page`. */
+function pagedV2(endpoint: string) {
+	return async function (
+		this: ILoadOptionsFunctions,
+		filter?: string,
+		paginationToken?: unknown,
+	): Promise<INodeListSearchResult> {
+		const page = Number(paginationToken) || 1;
+		const qs: IDataObject = { page };
+		if (filter) qs.filter = `name:${filter}`;
+
+		const response = await rdCrmV2Request.call(this, 'GET', endpoint, {}, qs);
+		const items = (response?.data ?? []) as IDataObject[];
+		const hasNext = Boolean((response?.links as IDataObject | undefined)?.next);
+
+		return {
+			...toResults(toOptionsV2(items)),
+			...(hasNext ? { paginationToken: String(page + 1) } : {}),
+		};
+	};
+}
+
+export const listSearch = {
+	// ---- API v1 (token): listas curtas que já tinham loadOptions ----
+	searchOrganizations: fromLoader(loadOptions.getOrganizations),
+	searchUsers: fromLoader(loadOptions.getUsers),
+	searchTeams: fromLoader(loadOptions.getTeams),
+	searchPipelines: fromLoader(loadOptions.getPipelines),
+	searchStages: fromLoader(loadOptions.getStages),
+	searchProducts: fromLoader(loadOptions.getProducts),
+	searchSources: fromLoader(loadOptions.getSources),
+	searchCampaigns: fromLoader(loadOptions.getCampaigns),
+	searchLossReasons: fromLoader(loadOptions.getLossReasons),
+
+	// ---- API v1: listas grandes, com o texto enviado à RD ----
+	searchContacts: pagedV1('contacts', '/contacts', 'q'),
+	searchDeals: pagedV1('deals', '/deals', 'name'),
+
+	// ---- API v1: listas curtas sem loadOptions prévio ----
+	searchTasks: fromItems(async (ctx) =>
+		toOptions(await rdCrmApiRequestAllItems.call(ctx, 'tasks', 'GET', '/tasks'), 'subject'),
+	),
+	searchCustomFields: fromItems(async (ctx) =>
+		toOptions(await rdCrmApiRequestAllItems.call(ctx, 'custom_fields', 'GET', '/custom_fields'), 'label'),
+	),
+	searchWebhooks: fromItems(async (ctx) => {
+		const response = await rdCrmApiRequest.call(ctx, 'GET', '/webhooks');
+		const items = (Array.isArray(response) ? response : (response?.webhooks ?? [])) as IDataObject[];
+		// O webhook é identificado por `uuid` e descrito pelo evento que assina.
+		return items.map((webhook) => ({
+			name: `${webhook.event_type ?? webhook.event_name ?? 'webhook'} (${webhook.url ?? webhook.uuid})`,
+			value: String(webhook.uuid ?? webhook.id),
+		}));
+	}),
+
+	// ---- API v2 (OAuth2) ----
+	searchContactsV2: pagedV2('/contacts'),
+	searchDealsV2: pagedV2('/deals'),
+	searchOrganizationsV2: fromLoader(loadOptionsV2.getOrganizationsV2),
+	searchTasksV2: fromItems(async (ctx) =>
+		toOptionsV2(await rdCrmV2RequestAllItems.call(ctx, '/tasks'), 'name'),
+	),
+	searchCustomFieldsV2: fromItems(async (ctx) =>
+		toOptionsV2(await rdCrmV2RequestAllItems.call(ctx, '/custom_fields')),
+	),
+};
