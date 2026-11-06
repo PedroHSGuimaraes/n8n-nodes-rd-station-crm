@@ -2,6 +2,7 @@ import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workfl
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
 import { getIdParameter } from '../../helpers/resourceLocator';
+import { toIdList } from '../../helpers/lists';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -94,6 +95,74 @@ export const customFieldV2Description: INodeProperties[] = [
 				description: 'Whether users can add new options when filling an option or multiple choice field',
 			},
 			{
+				displayName: 'Application Scope',
+				name: 'application_scope',
+				type: 'options',
+				options: [
+					{ name: 'All Products', value: 'all' },
+					{ name: 'Selected Products', value: 'selected' },
+				],
+				default: 'all',
+				description: 'Which products the field applies to. Only for product fields. One of: all, selected.',
+			},
+			{
+				displayName: 'Calculation Action',
+				name: 'calculation_action',
+				type: 'options',
+				options: [
+					{ name: 'Add', value: 'add' },
+					{ name: 'None', value: 'none' },
+					{ name: 'Subtract', value: 'subtract' },
+				],
+				default: 'none',
+				description: 'How the value changes the line total. Only for monetary and percentage product fields. One of: none, add, subtract.',
+			},
+			{
+				displayName: 'Display Rules',
+				name: 'displayRulesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Rule',
+				default: {},
+				description: 'Rules that define when the field is displayed',
+				options: [
+					{
+						name: 'rule',
+						displayName: 'Rule',
+						values: [
+							{
+								displayName: 'Property',
+								name: 'property',
+								type: 'string',
+								default: '',
+								description: 'Property the rule looks at, for example deal_stage_id or deal_pipeline_id',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'ID of the property value that triggers the rule',
+							},
+							{
+								displayName: 'Always',
+								name: 'always',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the rule always applies',
+							},
+						],
+					},
+				],
+			},
+			{
+				displayName: 'Editable on Deal',
+				name: 'editable_on_deal',
+				type: 'boolean',
+				default: false,
+				description: 'Whether the value can be edited on the deal. Only for product fields.',
+			},
+			{
 				displayName: 'Options',
 				name: 'options',
 				type: 'string',
@@ -107,6 +176,51 @@ export const customFieldV2Description: INodeProperties[] = [
 				type: 'number',
 				default: 0,
 				description: 'Numeric position of the custom field in the display order, lower numbers appear first',
+			},
+			{
+				displayName: 'Product IDs',
+				name: 'product_ids',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated IDs of the products the field applies to when Application Scope is Selected Products, for example 123,456',
+			},
+			{
+				displayName: 'Required Rules',
+				name: 'requiredRulesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Rule',
+				default: {},
+				description: 'Rules that define when the field is required',
+				options: [
+					{
+						name: 'rule',
+						displayName: 'Rule',
+						values: [
+							{
+								displayName: 'Property',
+								name: 'property',
+								type: 'string',
+								default: '',
+								description: 'Property the rule looks at, for example deal_stage_id or deal_pipeline_id',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'ID of the property value that triggers the rule',
+							},
+							{
+								displayName: 'Always',
+								name: 'always',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the rule always applies',
+							},
+						],
+					},
+				],
 			},
 			{
 				displayName: 'Unique',
@@ -132,6 +246,74 @@ export const customFieldV2Description: INodeProperties[] = [
 				default: false,
 				description: 'Whether users can add new options when filling an option or multiple choice field',
 			},
+			{
+				displayName: 'Application Scope',
+				name: 'application_scope',
+				type: 'options',
+				options: [
+					{ name: 'All Products', value: 'all' },
+					{ name: 'Selected Products', value: 'selected' },
+				],
+				default: 'all',
+				description: 'Which products the field applies to. Only for product fields. One of: all, selected.',
+			},
+			{
+				displayName: 'Calculation Action',
+				name: 'calculation_action',
+				type: 'options',
+				options: [
+					{ name: 'Add', value: 'add' },
+					{ name: 'None', value: 'none' },
+					{ name: 'Subtract', value: 'subtract' },
+				],
+				default: 'none',
+				description: 'How the value changes the line total. Only for monetary and percentage product fields. One of: none, add, subtract.',
+			},
+			{
+				displayName: 'Display Rules',
+				name: 'displayRulesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Rule',
+				default: {},
+				description: 'Rules that define when the field is displayed',
+				options: [
+					{
+						name: 'rule',
+						displayName: 'Rule',
+						values: [
+							{
+								displayName: 'Property',
+								name: 'property',
+								type: 'string',
+								default: '',
+								description: 'Property the rule looks at, for example deal_stage_id or deal_pipeline_id',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'ID of the property value that triggers the rule',
+							},
+							{
+								displayName: 'Always',
+								name: 'always',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the rule always applies',
+							},
+						],
+					},
+				],
+			},
+			{
+				displayName: 'Editable on Deal',
+				name: 'editable_on_deal',
+				type: 'boolean',
+				default: false,
+				description: 'Whether the value can be edited on the deal. Only for product fields.',
+			},
 			{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'New display name for the custom field' },
 			{
 				displayName: 'Options',
@@ -147,6 +329,51 @@ export const customFieldV2Description: INodeProperties[] = [
 				type: 'number',
 				default: 0,
 				description: 'Numeric position of the custom field in the display order, lower numbers appear first',
+			},
+			{
+				displayName: 'Product IDs',
+				name: 'product_ids',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated IDs of the products the field applies to when Application Scope is Selected Products, for example 123,456',
+			},
+			{
+				displayName: 'Required Rules',
+				name: 'requiredRulesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Rule',
+				default: {},
+				description: 'Rules that define when the field is required',
+				options: [
+					{
+						name: 'rule',
+						displayName: 'Rule',
+						values: [
+							{
+								displayName: 'Property',
+								name: 'property',
+								type: 'string',
+								default: '',
+								description: 'Property the rule looks at, for example deal_stage_id or deal_pipeline_id',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'ID of the property value that triggers the rule',
+							},
+							{
+								displayName: 'Always',
+								name: 'always',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the rule always applies',
+							},
+						],
+					},
+				],
 			},
 			{
 				displayName: 'Unique',
@@ -206,6 +433,20 @@ function buildCustomFieldV2Body(fields: IDataObject): IDataObject {
 
 	for (const key of ['name', 'entity', 'type', 'unique', 'allow_new_option', 'order']) {
 		if (fields[key] !== undefined && fields[key] !== '') body[key] = fields[key];
+	}
+	// Escopo por produto, cálculo e edição na negociação: só seguem quando preenchidos (false vale).
+	for (const key of ['application_scope', 'calculation_action', 'editable_on_deal']) {
+		if (fields[key] !== undefined && fields[key] !== '') body[key] = fields[key];
+	}
+	// `product_ids` aceita texto com vírgulas ou lista vinda de expressão.
+	const productIds = toIdList(fields.product_ids);
+	if (productIds.length) body.product_ids = productIds;
+	// Regras de exibição e de obrigatoriedade viram listas { property, value, always }.
+	for (const [ui, key] of [['displayRulesUi', 'display_rules'], ['requiredRulesUi', 'required_rules']]) {
+		const rows = (fields[ui] as IDataObject | undefined)?.rule;
+		if (Array.isArray(rows)) {
+			body[key] = (rows as IDataObject[]).map((r) => ({ property: r.property, value: r.value, always: r.always }));
+		}
 	}
 	if (typeof fields.options === 'string' && fields.options) {
 		body.options = (fields.options as string)

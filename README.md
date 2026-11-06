@@ -103,7 +103,7 @@ As operações disponíveis dependem da **Authentication** escolhida:
 | **Pipeline** (Funil) | Create, Get, Get Many, Update |
 | **Stage** (Etapa) | Create, Get, Get Many, Update |
 | **Product** (Produto) | Create, Get, Get Many, Update |
-| **Deal Product** (Produto do Negócio) | Add, Get Many, Update, Remove |
+| **Deal Product** (Produto do Negócio) | Add, Add One, Get Many, Update, Update One, Remove, Remove One |
 | **Custom Field** (Campo Personalizado) | Create, Get, Get Many, Update, Delete |
 | **Source** (Fonte) | Create, Get, Get Many, Update |
 | **Campaign** (Campanha) | Create, Get, Get Many, Update |
@@ -111,6 +111,10 @@ As operações disponíveis dependem da **Authentication** escolhida:
 | **User** (Usuário) | Get, Get Many, Get Current |
 | **Team** (Time) | Get, Get Many |
 | **Webhook** | Create, Get, Get Many, Update, Delete |
+
+**Produtos do negócio (API v1):** *Add*, *Update* e *Remove* trabalham em lote (até 100 por requisição) pelas rotas `POST .../deal_products/batch`, `PATCH .../deal_products/batch/update` e `DELETE .../deal_products/batch/destroy`. *Add One*, *Update One* e *Remove One* agem em um produto só: `POST .../deal_products`, `PUT .../deal_products/{id}` e `DELETE .../deal_products/{id}`. No *Update* em lote cada linha envia só `id`, `amount` e `price`, como a documentação da RD descreve.
+
+**Campos opcionais novos (API v1):** *Contact* → **Legal Bases** (bases legais da LGPD) em Create e Update. *Deal* → **Distribution Owner Type / ID / Email** em Create, que define quem recebe a negociação na distribuição.
 
 ### OAuth2 (API V2)
 
@@ -192,6 +196,7 @@ Em cada campo do node em modo tool aparece o botão **"Let the model define this
 
 ### Boas práticas
 
+- **Produtos do negócio (v1):** para a IA mexer em um item só, use as tools *Add One*, *Update One* e *Remove One* do recurso Deal Product; para listas, *Add*, *Update* e *Remove* (lote de até 100). O ID do item vem de *Get Many*.
 - **Restrinja o escopo:** exponha só as operações que o agente precisa (ex.: só *Create*/*Get Many* de Contact e Deal), em vez de liberar tudo.
 - **Credencial dedicada** com permissões mínimas para o agente.
 - **n8n atualizado:** versões antigas tinham um bug em que a tool de community node retornava resposta vazia para o agente ([n8n#26202](https://github.com/n8n-io/n8n/issues/26202)); já corrigido.
@@ -270,6 +275,7 @@ A tag `vX.Y.Z` dispara o workflow `publish.yml`, que envia a versão com `npm st
 
 ## 📈 Versões
 
+- **2.5.0** — **Correção de rota e operações novas na API v1.** *Update* e *Remove* em lote de Deal Product passam a usar `PATCH .../batch/update` e `DELETE .../batch/destroy`, como na documentação oficial (correção de rota; nomes e tipos de parâmetro não mudam). Novas operações *Add One*, *Update One* e *Remove One* em Deal Product. Campos opcionais novos: `legal_bases` no contato e `distribution_settings` na negociação; na API v2, `social_profiles`, `legal_bases`, os campos de escopo e regras do campo personalizado, `distribution_settings` e o endereço e os seguidores da empresa. Veja o `CHANGELOG.md`.
 - **2.4.0** — **Campos de ID em lista pesquisável.** Em node novo (versão 2 do node), os campos de ID de contato, negócio, empresa, tarefa, funil, etapa, produto, origem, campanha, motivo de perda, campo personalizado, time, usuário e webhook mostram a lista da conta e aceitam colar o ID. Workflows salvos continuam na versão 1 e não mudam. Migração para o `@n8n/node-cli` 0.55.5, lint oficial sem erros, testes e CI. Veja o `CHANGELOG.md`.
 - **2.3.2** — Link de apoio no `package.json` e na documentação do npm, com acesso direto ao Buy Me a Coffee.
 - **2.3.1** — Metadado `funding` adicionado ao pacote para integração com `npm fund`.

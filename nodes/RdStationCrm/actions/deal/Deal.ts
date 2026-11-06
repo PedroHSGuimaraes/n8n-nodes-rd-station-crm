@@ -297,6 +297,28 @@ export const dealDescription: INodeProperties[] = [
 				default: '',
 			},
 			{
+				displayName: 'Distribution Owner Email',
+				name: 'distributionOwnerEmail',
+				type: 'string',
+				placeholder: 'e.g. name@example.com',
+				default: '',
+				description: 'Email of the user who receives the deal when it is distributed',
+			},
+			{
+				displayName: 'Distribution Owner ID',
+				name: 'distributionOwnerId',
+				type: 'string',
+				default: '',
+				description: 'ID of the user or team that receives the deal when it is distributed',
+			},
+			{
+				displayName: 'Distribution Owner Type',
+				name: 'distributionOwnerType',
+				type: 'string',
+				default: '',
+				description: 'Kind of owner that receives the deal, as accepted by RD Station CRM, for example team',
+			},
+			{
 				displayName: 'Organization Name or ID',
 				name: 'organizationId',
 				type: 'options',
@@ -544,6 +566,15 @@ export const dealDescription: INodeProperties[] = [
 	},
 ];
 
+/** Copia só os campos preenchidos, trocando o nome do editor pelo nome da API. */
+function pickFilled(source: IDataObject, names: Record<string, string>): IDataObject {
+	const picked: IDataObject = {};
+	for (const [from, to] of Object.entries(names)) {
+		if (source[from] !== undefined && source[from] !== '') picked[to] = source[from];
+	}
+	return picked;
+}
+
 function readDealCustomFields(this: IExecuteFunctions, i: number): IDataObject[] | undefined {
 	const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;
 	if (Array.isArray(customFieldsUi.field)) {
@@ -581,6 +612,14 @@ export async function executeDeal(
 		if (additionalFields.dealSourceId) body.deal_source = { _id: additionalFields.dealSourceId };
 		if (additionalFields.campaignId) body.campaign = { _id: additionalFields.campaignId };
 		if (additionalFields.organizationId) body.organization = { _id: additionalFields.organizationId };
+
+		// Distribuição da negociação: a doc v1 manda `distribution_settings.owner` na raiz do corpo.
+		const owner = pickFilled(additionalFields, {
+			distributionOwnerType: 'type',
+			distributionOwnerId: 'id',
+			distributionOwnerEmail: 'email',
+		});
+		if (Object.keys(owner).length) body.distribution_settings = { owner };
 
 		const dealProductsUi = this.getNodeParameter('dealProductsUi', i, {}) as IDataObject;
 		if (Array.isArray(dealProductsUi.product)) {

@@ -169,6 +169,46 @@ export const contactDescription: INodeProperties[] = [
 		],
 	},
 
+	{
+		displayName: 'Legal Bases',
+		name: 'legalBasesUi',
+		type: 'fixedCollection',
+		typeOptions: { multipleValues: true },
+		placeholder: 'Add Legal Basis',
+		default: {},
+		description: 'Legal bases (LGPD) that authorize processing the personal data of this contact',
+		displayOptions: { show: { ...showOnlyForContacts, operation: ['create', 'update'] } },
+		options: [
+			{
+				name: 'legalBase',
+				displayName: 'Legal Basis',
+				values: [
+					{
+						displayName: 'Category',
+						name: 'category',
+						type: 'string',
+						default: 'data_processing',
+						description: 'Category of the legal basis, as accepted by RD Station CRM, for example data_processing',
+					},
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'string',
+						default: 'consent',
+						description: 'Which legal basis authorizes the processing, for example consent',
+					},
+					{
+						displayName: 'Status',
+						name: 'status',
+						type: 'string',
+						default: 'granted',
+						description: 'Status of the legal basis, for example granted',
+					},
+				],
+			},
+		],
+	},
+
 	// ----- Additional / Update fields -----
 	{
 		displayName: 'Additional Fields',
@@ -320,6 +360,16 @@ function buildContactBody(this: IExecuteFunctions, i: number, fields: IDataObjec
 	const phonesUi = this.getNodeParameter('phonesUi', i, {}) as IDataObject;
 	if (Array.isArray(phonesUi.phone)) {
 		contact.phones = (phonesUi.phone as IDataObject[]).map((p) => ({ phone: p.phone, type: p.type }));
+	}
+
+	// Bases legais (LGPD): a doc v1 aceita a lista em `contact.legal_bases`, no create e no update.
+	const legalBasesUi = this.getNodeParameter('legalBasesUi', i, {}) as IDataObject;
+	if (Array.isArray(legalBasesUi.legalBase)) {
+		contact.legal_bases = (legalBasesUi.legalBase as IDataObject[]).map((b) => ({
+			category: b.category,
+			type: b.type,
+			status: b.status,
+		}));
 	}
 
 	const customFieldsUi = this.getNodeParameter('customFieldsUi', i, {}) as IDataObject;

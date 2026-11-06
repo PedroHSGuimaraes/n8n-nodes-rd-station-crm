@@ -1,4 +1,4 @@
-/** Prova o lançamento 2.4.0 (slice S4): versão, changelog e workflow de publicação. */
+/** Prova o lançamento 2.5.0 (slice S5 do plano rotas-novas-v1): versão, changelog e workflow de publicação. */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -7,13 +7,16 @@ const { describe, it } = require('node:test');
 const root = path.resolve(__dirname, '..');
 
 describe('release', () => {
-	it('release 2.4.0 is documented in the changelog', () => {
+	it('release 2.5.0 is documented in the changelog', () => {
 		const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-		assert.equal(pkg.version, '2.4.0');
+		assert.equal(pkg.version, '2.5.0');
 		const changelog = fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8');
-		const section = changelog.split(/^## /m).find((part) => part.startsWith('2.4.0'));
-		assert.ok(section, 'CHANGELOG.md needs a "## 2.4.0" section');
-		for (const topic of [/node-cli/i, /version 2/i, /lint/i]) {
+		const section = changelog.split(/^## /m).find((part) => part.startsWith('2.5.0'));
+		assert.ok(section, 'CHANGELOG.md needs a "## 2.5.0" section');
+		// A decisão da correção de rota fica registrada no STATE.md (AD-007).
+		const state = fs.readFileSync(path.join(root, '.specs/STATE.md'), 'utf8');
+		assert.match(state, /AD-007/);
+		for (const topic of [/correção de rota/i, /Add One/i, /legal_bases/i]) {
 			assert.match(section, topic);
 		}
 	});
