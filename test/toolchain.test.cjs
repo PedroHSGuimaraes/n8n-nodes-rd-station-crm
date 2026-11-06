@@ -45,4 +45,18 @@ describe('toolchain', () => {
 			assert.match(ci, new RegExp(`^\\s*run: ${step}\\b`, 'm'), `ci.yml must run "${step}"`);
 		}
 	});
+
+	// Regressão da tag v2.4.0 (06/11/2026): o publish rodava Node 20 (npm 10) e o `npm ci` recusou
+	// o lock gerado pelo npm do Node LTS que o CI usa ("Missing: ignore@7.0.14 from lock file").
+	// O CI passava e a publicação falhava. Este teste falha se os dois workflows voltarem a divergir.
+	it('publish workflow uses the same Node version as the ci workflow', () => {
+		// Lê o valor de `node-version` de cada workflow, sem aspas, para comparar os dois.
+		const nodeVersion = (file) => {
+			const text = fs.readFileSync(path.join(root, '.github/workflows', file), 'utf8');
+			const found = text.match(/^\s*node-version:\s*['"]?([^'"\n]+)['"]?\s*$/m);
+			return found ? found[1].trim() : undefined;
+		};
+		// O lock só é instalável pelo mesmo npm que o gerou; por isso a versão precisa ser igual.
+		assert.equal(nodeVersion('publish.yml'), nodeVersion('ci.yml'));
+	});
 });
