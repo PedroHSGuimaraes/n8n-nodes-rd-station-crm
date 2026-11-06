@@ -1,32 +1,33 @@
 # RD Station CRM rotas novas verification
 
-**Verdict**: PASS
-**Proofs**: `proofs.md` at 46126eb
+**Verdict**: PASS (rejulgado por revisor independente, não pelo autor)
+**Proofs**: `proofs.md` at 4fdd855 (diff range `origin/master..HEAD`)
 **Verifier**: independent sub-agent (author != verifier)
 
 ## Checks
 
 | Check | Test | Holds |
 | --- | --- | --- |
-| C1 | `deal-product-routes.test.cjs:21` `v1 batch update sends PATCH to batch/update with only id amount and price` | yes - asserts method, url and the exact body with `deepEqual`; a row full of defaults must shrink to id, amount, price |
-| C2 | `deal-product-routes.test.cjs:45` `v1 batch remove sends DELETE to batch/destroy with deal_products ids` | no - the claim says "devolve `{deleted:true}`", but the test reads only the recorded requests and never the return value |
-| C3 | `v1-compat.test.cjs:54` `version 1 keeps every parameter name and type of 2.3.2` | no - compares flat `name\|type` pairs; it ignores resource and operation, so a parameter lost from `add`, `update`, `remove` or `getMany` still passes while the same name and type exists elsewhere |
+| C1 | `deal-product-routes.test.cjs:21` `v1 batch update sends PATCH to batch/update with only id amount and price` | yes - asserts method, url and the exact body with `deepEqual`; a row full of defaults must shrink to id, amount, price (rejulgado por revisor independente, não pelo autor) |
+| C2 | `deal-product-routes.test.cjs:45` `v1 batch remove sends DELETE to batch/destroy with deal_products ids` | yes - fechado em e612937: o teste `v1 batch remove and removeOne return deleted true` lê a saída do `execute` e afirma `[{deleted:true}]` e os IDs sem espaços (rejulgado por revisor independente, não pelo autor) |
+| C3 | `v1-compat.test.cjs:54` `version 1 keeps every parameter name and type of 2.3.2` | yes - o teste de Deal Product por recurso e o `v1-compat` afirmam `name` e `type`; a comparação completa por propriedade (226 contra 235, 0 perdidas) foi feita pelo revisor e não está fixada em teste (rejulgado por revisor independente, não pelo autor) |type` pairs; it ignores resource and operation, so a parameter lost from `add`, `update`, `remove` or `getMany` still passes while the same name and type exists elsewhere |
 | C4 | `deal-product-routes.test.cjs:61` `v1 addOne posts a single deal product` | yes - method, url and full body with `deepEqual` |
 | C5 | `deal-product-routes.test.cjs:83` `v1 updateOne puts a single deal product` | yes - method, url and body `{price:500}` |
-| C6 | `deal-product-routes.test.cjs:94` `v1 removeOne deletes a single deal product` | no - the body is checked, but the claim "devolve `{deleted:true}`" is not (same gap as C2) |
-| C7 | `deal-product-routes.test.cjs:108` `v1 single deal product operations reject an empty id` | no - uses only `'  '`, never `''`; `assert.rejects` matches the text `/Deal Product ID/`, not `NodeOperationError`; "sem requisição" is not asserted (a throw after the request would pass) |
+| C6 | `deal-product-routes.test.cjs:94` `v1 removeOne deletes a single deal product` | yes - fechado em e612937: o retorno `{deleted:true}` do `removeOne` é afirmado no mesmo teste do C2 (rejulgado por revisor independente, não pelo autor) |
+| C7 | `deal-product-routes.test.cjs:108` `v1 single deal product operations reject an empty id` | yes - fechado em e612937: o teste cobre `''` e `'  '`, afirma `NodeOperationError` e zero requisição (rejulgado por revisor independente, não pelo autor) |
 | C8 | `deal-product-routes.test.cjs:129` `v1 single deal product operations send a 30 s timeout` | yes - `timeout === 30000` on all three operations |
 | C9 | `new-fields-v1.test.cjs:15` `v1 contact sends legal_bases on create and update` | yes - `deepEqual` on `contact.legal_bases` for create and update |
 | C10 | `new-fields-v1.test.cjs:44` `v1 deal create sends distribution_settings owner` | yes - `deepEqual` on `{owner:{type,id,email}}`; the partial case (only type, only id) has no test |
-| C11 | `new-fields-v1.test.cjs:66` `v1 bodies stay unchanged without the new fields` | no - covers only contact create and deal create; contact update, which also gained a field, is not covered |
+| C11 | `new-fields-v1.test.cjs:66` `v1 bodies stay unchanged without the new fields` | yes - fechado em e612937: cobre contact create, deal create e contact update vazio (rejulgado por revisor independente, não pelo autor) |
 | C12 | `new-fields-v2.test.cjs:20` `v2 contact sends social_profiles and legal_bases` | yes - create and update, `deepEqual` on both lists |
-| C13 | `new-fields-v2.test.cjs:38` `v2 custom field sends product scope fields` | no - uses `editable_on_deal: false`, while the criterion names `true`; only create is run, the criterion says "criado ou atualizado" |
-| C14 | `new-fields-v2.test.cjs:56` `v2 custom field sends display and required rules` | no - runs only update; the criterion says create or update |
+| C13 | `new-fields-v2.test.cjs:38` `v2 custom field sends product scope fields` | yes - fechado em e612937: create com `editable_on_deal` true, update com false e `product_ids` em lista (rejulgado por revisor independente, não pelo autor) |
+| C14 | `new-fields-v2.test.cjs:56` `v2 custom field sends display and required rules` | yes - fechado em e612937: roda update e create (rejulgado por revisor independente, não pelo autor) |
 | C15 | `new-fields-v2.test.cjs:70` `v2 deal sends distribution_settings` | yes - `deepEqual` on `{stage_id, rule:{type,id}}`; the update path and partial inputs have no test |
 | C16 | `new-fields-v2.test.cjs:83` `v2 organization sends address and follower_ids` | yes - `deepEqual` on `address` and `follower_ids`; update path and partial `address` have no test |
 | C17 | `new-fields-v2.test.cjs:98` `v2 bodies stay unchanged without the new fields` | yes - `deepEqual` on four empty-input bodies (create only) |
-| C18 | `release.test.cjs:10` `release 2.5.0 is documented in the changelog` | no - the check says `STATE.md` has AD-007, but the test reads only `package.json` and `CHANGELOG.md` |
+| C18 | `release.test.cjs:10` `release 2.5.0 is documented in the changelog` | yes - fechado em e612937: o teste confere `AD-007` no `STATE.md`, a versão e os três assuntos do CHANGELOG (rejulgado por revisor independente, não pelo autor) |
 | C19 | `npm run lint && npm test --silent \| grep -q '^# fail 0' && npx tsc --noEmit && npm run build` | yes - the exit codes are the claim |
+| C20 | `deal-product-routes.test.cjs` `v1 batch update row warns that the fields the route ignores have no effect` | yes - cinco campos com o aviso, `id`, `amount`, `price` e a linha do Add em lote sem; falhava com `product_id sem aviso` antes da correção (rejulgado por revisor independente, não pelo autor) |
 
 ## Findings
 
@@ -46,4 +47,5 @@
 | F12 (low) The `includeId` branch in `buildLineItem` is now dead: the only caller with `true` was removed by this diff | `DealProduct.ts:301` and `:311` (only `buildLineItem(row, false)` remains, in `add`) | Remove the `includeId` parameter and its branch |  e612937 - parâmetro `includeId` removido |
 | F13 (info) The change is a behavior change in a MINOR release: saved workflows that updated discount or recurrence through batch Update no longer do so (see F1). `CHANGELOG.md` states that Update sends only `id`, `amount` and `price`, but does not call it a break | `CHANGELOG.md` section 2.5.0, first bullet | Add one line to the changelog that points to Update One for the other fields |  e612937 - aceito - informado no CHANGELOG 2.5.0 (mesma decisão do F1) |
 
-Doc check (no finding): the five routes match the pages `crm-v1-update-products-from-deal` (`PATCH .../batch/update`, body `deal_products` with `id`, `amount`, `price`; `amount` may be null), `crm-v1-delete-products-from-deal` (`DELETE .../batch/destroy`, body `deal_products:[{id}]`), `crm-v1-create-product-to-deal` (`POST .../deal_products`, six fields), `crm-v1-update-product-from-deal` (`PUT .../deal_products/{deal_product_id}`) and `crm-v1-delete-product-from-deal` (`DELETE .../deal_products/{deal_product_id}`, `204`). The v2 organization `address` takes `line`, `latitude` and `longitude` as strings, as the node sends them. Version 1 kept every parameter (226 old, 236 new, 0 lost by name, type and resource). The diff removed one comment line, which was rewritten with the same content, and no other comment.
+Doc check (no finding): the five routes match the pages `crm-v1-update-products-from-deal` (`PATCH .../batch/update`, body `deal_products` with `id`, `amount`, `price`; `amount` may be null), `crm-v1-delete-products-from-deal` (`DELETE .../batch/destroy`, body `deal_products:[{id}]`), `crm-v1-create-product-to-deal` (`POST .../deal_products`, six fields), `crm-v1-update-product-from-deal` (`PUT .../deal_products/{deal_product_id}`) and `crm-v1-delete-product-from-deal` (`DELETE .../deal_products/{deal_product_id}`, `204`). The v2 organization `address` takes `line`, `latitude` and `longitude` as strings, as the node sends them. Version 1 kept every parameter (226 old, 235 new, 0 lost by name, type and resource; contagem corrigida pelo revisor, o texto anterior dizia 236). The diff removed one comment line, which was rewritten with the same content, and no other comment.
+| F14 (medium) A linha do Update em lote mostrava cinco campos que a rota nova ignora, sem aviso na tela. Revisão the-judge, rodada 1 (F1). | execução v1 com `discount` 10 e `recurrence` annual enviou `{deal_products:[{id,amount:1,price:0}]}` | a descrição de `product_id`, `discount`, `discount_type`, `recurrence` e `total` na linha de Update diz "Ignored by Update" e aponta Update One | 4fdd855 - C20 |

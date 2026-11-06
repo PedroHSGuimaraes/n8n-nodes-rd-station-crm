@@ -6,7 +6,7 @@ Plan: `.specs/features/rotas-novas-v1/plan.md`
 
 ## Intent
 
-19 checks in 5 slices · 3 one-way doors · 0 open
+20 checks in 5 slices · 3 one-way doors · 0 open
 
 ## Checks
 
@@ -20,6 +20,9 @@ Proof: run unit | ok v1 batch remove sends DELETE to batch/destroy with deal_pro
 
 **C3** - Todo parâmetro visível da 2.4.0 mantém `name` e `type` na versão 1 (S1, AC 3)
 Proof: run unit | ok v1 deal product keeps every parameter name and type of 2.4.0
+
+**C20** - Na linha do Update em lote, `product_id`, `discount`, `discount_type`, `recurrence` e `total` trazem na descrição o aviso "Ignored by Update" e a indicação de Update One; `id`, `amount`, `price` e a linha do Add em lote não trazem (S1, AC 1, achado F1 do revisor)
+Proof: run unit | ok v1 batch update row warns that the fields the route ignores have no effect
 
 ### S2 - três operações novas em Deal Product
 
@@ -102,5 +105,6 @@ Proof: `npm run lint && npm test --silent | grep -q '^# fail 0' && npx tsc --noE
 
 - **Settled mid-build:** none
 - **Dispatched:** Verifier (sonnet) at HEAD d8eea70
-- **Boundary:** C1-C19 closed at d8eea70
+- **Boundary:** C1-C19 closed at d8eea70; C20 fecha o achado F1 do revisor the-judge
+- **Dispatched (revisor independente):** the-judge, rodada 1 no HEAD 5cead92: https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm/pull/5#pullrequestreview-5807742738 (1 correção, 2 notas)
 - **Abandoned:** none
