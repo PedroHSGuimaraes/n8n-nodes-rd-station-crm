@@ -1,6 +1,6 @@
 # node-cli-campos-v2 proofs
 
-**HEAD**: 76cb85f
+**HEAD**: 2d4974f
 **Tree**: dirty - .codegraph/, .serena/, CLAUDE.md, RD_Station_idLX4wPRs4_0.svg, RD_Station_idLX4wPRs4_1.svg
 **Shell**: /bin/sh
 **Result**: 24 pass, 0 fail
@@ -40,7 +40,7 @@
     1..4
 ok 8 - version 1
   ---
-  duration_ms: 5.780147
+  duration_ms: 5.647171
   type: 'suite'
   ...
 1..8
@@ -51,7 +51,7 @@ ok 8 - version 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 476.846611
+# duration_ms 498.139144
 ```
 
 `npm run lint` - exit 0
