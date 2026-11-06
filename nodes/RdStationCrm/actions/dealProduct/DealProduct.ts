@@ -1,4 +1,5 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
 import { rdCrmApiRequest, rdCrmApiRequestAllItems } from '../../transport';
 import { getIdParameter } from '../../helpers/resourceLocator';
@@ -8,7 +9,9 @@ import { getIdParameter } from '../../helpers/resourceLocator';
 //   1. `dealProductDescription` = operations dropdown + fields (INodeProperties[])
 //   2. `executeDealProduct(operation, i)` = programmatic dispatch using the transport helpers
 // Every operation targets a specific deal, so `dealId` is required and shown for all.
-// Add / Update / Remove use the deal_products/batch endpoints (max 100 per request).
+// Add / Update / Remove use the deal_products/batch endpoints (max 100 per request): POST .../batch,
+// PATCH .../batch/update and DELETE .../batch/destroy, as in the official v1 docs (AD-007).
+// Add One / Update One / Remove One use the single-item routes under .../deal_products[/{id}].
 // ---------------------------------------------------------------------------
 
 const showOnlyForDealProducts = {
@@ -105,6 +108,12 @@ export const dealProductDescription: INodeProperties[] = [
 				description: 'Add one or more product line items (price, quantity, discount) to a deal in RD Station CRM',
 			},
 			{
+				name: 'Add One',
+				value: 'addOne',
+				action: 'Add one product to a deal',
+				description: 'Add a single product line item (price, quantity, discount) to a deal in RD Station CRM',
+			},
+			{
 				name: 'Get Many',
 				value: 'getMany',
 				action: 'Get many deal products',
@@ -117,10 +126,22 @@ export const dealProductDescription: INodeProperties[] = [
 				description: 'Remove one or more product line items from a deal in RD Station CRM, identified by their IDs',
 			},
 			{
+				name: 'Remove One',
+				value: 'removeOne',
+				action: 'Remove one product from a deal',
+				description: 'Remove a single product line item from a deal in RD Station CRM, identified by its ID',
+			},
+			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update products on a deal',
 				description: 'Update one or more existing product line items on a deal in RD Station CRM',
+			},
+			{
+				name: 'Update One',
+				value: 'updateOne',
+				action: 'Update one product on a deal',
+				description: 'Update a single existing product line item on a deal in RD Station CRM',
 			},
 		],
 		default: 'add',
@@ -175,6 +196,37 @@ export const dealProductDescription: INodeProperties[] = [
 		],
 	},
 
+	// ----- Add One: uma linha de produto, campos soltos (a rota recebe o objeto direto) -----
+	...dealProductLineFields.map((field) => ({
+		...field,
+		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['addOne'] } },
+	})),
+
+	// ----- Deal Product ID (updateOne / removeOne) -----
+	{
+		displayName: 'Deal Product ID',
+		name: 'dealProductId',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['updateOne', 'removeOne'] } },
+		description: 'Unique ID of the deal product (line item) to act on, as returned by a Get Many deal product operation',
+	},
+
+	// ----- Update One: só os campos escolhidos seguem no PUT -----
+	{
+		displayName: 'Update Fields',
+		name: 'updateOneFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['updateOne'] } },
+		options: dealProductLineFields
+			// Total não existe no corpo do PUT de um item, segundo a doc.
+			.filter((field) => field.name !== 'total')
+			.map((field) => ({ ...field })),
+	},
+
 	// ----- IDs (remove) -----
 	{
 		displayName: 'Deal Products to Remove',
@@ -224,6 +276,28 @@ export const dealProductDescription: INodeProperties[] = [
 	},
 ];
 
+/**
+ * Lê o ID do produto da negociação (texto livre) e recusa vazio ou só espaços.
+ * Sem o ID a rota apontaria para a coleção inteira, então a falha vem antes da requisição.
+ */
+function getDealProductId(this: IExecuteFunctions, i: number): string {
+	const id = String(this.getNodeParameter('dealProductId', i, '') ?? '').trim();
+	if (id) return id;
+	throw new NodeOperationError(this.getNode(), `The 'Deal Product ID' parameter is empty [item ${i}]`, {
+		itemIndex: i,
+		description: 'Paste the ID of a deal product, as returned by Get Many',
+	});
+}
+
+/** Mantém só os campos preenchidos: a RD trata campo ausente como "não mudar". */
+function keepFilled(source: IDataObject, keys: string[]): IDataObject {
+	const body: IDataObject = {};
+	for (const key of keys) {
+		if (source[key] !== undefined && source[key] !== '') body[key] = source[key];
+	}
+	return body;
+}
+
 function buildLineItem(row: IDataObject, includeId: boolean): IDataObject {
 	const item: IDataObject = {
 		product_id: row.product_id,
@@ -272,11 +346,12 @@ export async function executeDealProduct(
 	if (operation === 'update') {
 		const productsUi = this.getNodeParameter('updateProductsUi', i, {}) as IDataObject;
 		const rows = (productsUi.product as IDataObject[]) ?? [];
-		const deal_products = rows.map((row) => buildLineItem(row, true));
+		// A doc v1 só descreve id, amount e price por linha no PATCH em lote (AD-007).
+		const deal_products = rows.map((row) => keepFilled(row, ['id', 'amount', 'price']));
 		return rdCrmApiRequest.call(
 			this,
-			'PUT',
-			`/deals/${dealId}/deal_products/batch`,
+			'PATCH',
+			`/deals/${dealId}/deal_products/batch/update`,
 			{ deal_products },
 		);
 	}
@@ -284,13 +359,41 @@ export async function executeDealProduct(
 	if (operation === 'remove') {
 		const idsUi = this.getNodeParameter('idsUi', i, {}) as IDataObject;
 		const rows = (idsUi.id as IDataObject[]) ?? [];
-		const product_ids = rows.map((row) => row.id).filter(Boolean);
+		// A doc v1 espera uma lista de objetos { id } em batch/destroy (AD-007).
+		const deal_products = rows.filter((row) => row.id).map((row) => ({ id: row.id }));
 		await rdCrmApiRequest.call(
 			this,
 			'DELETE',
-			`/deals/${dealId}/deal_products/batch`,
-			{ product_ids },
+			`/deals/${dealId}/deal_products/batch/destroy`,
+			{ deal_products },
 		);
+		return { deleted: true };
+	}
+
+	if (operation === 'addOne') {
+		// POST na coleção cria um item; o corpo é o próprio objeto, sem lista.
+		const keys = ['product_id', 'amount', 'price', 'discount', 'discount_type', 'recurrence'];
+		const typed: IDataObject = {};
+		for (const key of keys) typed[key] = this.getNodeParameter(key, i, undefined) as never;
+		const body = keepFilled(typed, keys);
+		return rdCrmApiRequest.call(this, 'POST', `/deals/${dealId}/deal_products`, body);
+	}
+
+	if (operation === 'updateOne') {
+		const dealProductId = getDealProductId.call(this, i);
+		const fields = this.getNodeParameter('updateOneFields', i, {}) as IDataObject;
+		return rdCrmApiRequest.call(
+			this,
+			'PUT',
+			`/deals/${dealId}/deal_products/${dealProductId}`,
+			keepFilled(fields, ['product_id', 'amount', 'price', 'discount', 'discount_type', 'recurrence']),
+		);
+	}
+
+	if (operation === 'removeOne') {
+		const dealProductId = getDealProductId.call(this, i);
+		// A RD responde 204 sem corpo; devolvemos um aviso claro no lugar do vazio.
+		await rdCrmApiRequest.call(this, 'DELETE', `/deals/${dealId}/deal_products/${dealProductId}`);
 		return { deleted: true };
 	}
 
