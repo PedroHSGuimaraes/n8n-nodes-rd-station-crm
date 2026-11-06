@@ -89,8 +89,8 @@ Com OAuth2 o node cria, lê e atualiza leads, lê funis, etapas, fontes, motivos
 7. WHEN `sourceV2` e `lostReasonV2` rodam `get` e `getMany` THEN o sistema SHALL chamar `GET /sources/{id}`, `GET /sources`, `GET /lost_reasons/{id}` e `GET /lost_reasons`
 8. WHEN `userV2` roda `get` com `userId` `U1` e `getMany` THEN o sistema SHALL chamar `GET /users/U1` e `GET /users`
 9. WHEN `dealProductV2` `create` com `dealId` `D1`, `productId` `PR1`, `price` 10, `quantity` 2, `discount_type` `percentage`, `discount` 5 e `billing_frequency` `monthly` THEN o sistema SHALL chamar `POST /deals/D1/products` com esse corpo dentro de `data`
-10. WHEN `dealProductV2` `getMany` com `dealId` `D1`, `update` com `dealProductId` `X1` e `delete` com `dealProductId` `X1` THEN o sistema SHALL chamar `GET /deals/D1/products`, `PUT /deals/D1/products/X1` e `DELETE /deals/D1/products/X1`
-11. The node SHALL expor, para `@version` 2, como `resourceLocator` com modos `list` (padrão) e `id`, os parâmetros `leadId`, `pipelineId`, `stageId`, `sourceId`, `lossReasonId`, `userId` e `dealProductId` dos recursos novos, com listas `searchLeadsV2`, `searchPipelinesV2`, `searchStagesV2`, `searchSourcesV2`, `searchLossReasonsV2` e `searchUsersV2`
+10. WHEN `dealProductV2` `getMany` com `dealId` `D1`, `update` com `dealProductLineId` `X1` e `delete` com `dealProductLineId` `X1` THEN o sistema SHALL chamar `GET /deals/D1/products`, `PUT /deals/D1/products/X1` e `DELETE /deals/D1/products/X1`
+11. The node SHALL expor, para `@version` 2, como `resourceLocator` com modos `list` (padrão) e `id`, os parâmetros `leadId`, `pipelineId`, `stageId`, `sourceId`, `lossReasonId`, `userId` e `dealProductLineId` dos recursos novos, com listas `searchLeadsV2`, `searchPipelinesV2`, `searchStagesV2`, `searchSourcesV2`, `searchLossReasonsV2` e `searchUsersV2`
 12. IF o Resource Locator de `leadId` chega vazio THEN o sistema SHALL lançar `NodeOperationError` com a mensagem `The 'Lead' parameter is empty [item 0]`
 13. The node SHALL manter, para as operações que já existiam, o mesmo `name` e o mesmo `type` de todo parâmetro nas versões 1 e 2 (comparação com `origin/master`)
 

@@ -6,7 +6,7 @@ Plan: `.specs/features/rotas-novas-v2/plan.md`
 
 ## Intent
 
-49 checks in 6 slices · 3 one-way doors · 0 open
+52 checks in 6 slices · 3 one-way doors · 0 open
 
 ## Checks
 
@@ -169,6 +169,15 @@ Proof: run unit | ok F7 the webhook url is compared without trailing slash or ho
 **C49** - `dealProductV2` `create` aceita `deal_product_custom_fields` em JSON lista (S1, AC 9)
 Proof: run unit | ok F10 deal product accepts custom fields as a JSON list
 
+**C50** - O `dealProductId` do recurso `dealProduct` da API v1 continua uma cópia só, em texto, em toda versão do node, e o recurso novo `dealProductV2` usa `dealProductLineId` com lista guiada na versão 2 (S1, AC 11, achado F1 do revisor)
+Proof: run unit | ok S6.1 dealProduct keeps dealProductId as text in every node version
+
+**C51** - Na versão 2 do node com token, `dealProduct` `removeOne` lê o ID em texto e chama `DELETE /deals/d1/deal_products/DP9` (S1, AC 11, achado F1 do revisor)
+Proof: run unit | ok S6.2 version 2 node with token reads a plain deal product id on the v1 routes
+
+**C52** - Os Delete de Webhook, Deal Product e Deal File têm `Confirm Delete` booleano, padrão falso, e sem ele ligado falham com `NodeOperationError` antes de qualquer requisição; ligado, chamam a rota (S1, AC 9, S2, S4, achado F2 do revisor)
+Proof: run unit | ok S7.2 without confirmation the delete fails before any request
+
 ## Coverage
 
 | Set (size) | Member -> proof | Unproven |
@@ -176,7 +185,7 @@ Proof: run unit | ok F10 deal product accepts custom fields as a JSON list
 | recursos novos do node (16) - leadV2, pipelineV2, stageV2, sourceV2, lostReasonV2, userV2, teamV2, dealProductV2, webhookV2, productV2, campaignV2, meetingV2, proposalV2, segmentV2, dealFileV2, dialerCallV2 | lead C1-C4 · pipeline C5 C24 · stage C6 C25 · source C7 C26 · lostReason C7 C26 · user C8 C38 · team C32 · dealProduct C9 C10 · webhook C14 C15 · product C27 · campaign C28 · meeting C29 · proposal C30 · segment C34 · dealFile C35 C36 · dialerCall C39 | - |
 | lista `eventsV2` do trigger (1) | os 38 valores em C16 | - |
 | modos do trigger (2) | oauth2 C18-C21 · accessToken C22 | - |
-| IDs com locator (14) - leadId, pipelineId, stageId, sourceId, lossReasonId, userId, dealProductId, meetingId, campaignId, productId, teamId, segmentId, dialerCallId, webhookId | leadId C11 C2 C12 · pipelineId C11 · stageId C11 · sourceId C11 · lossReasonId C11 · userId C11 · dealProductId C11 · meetingId C33 · campaignId C33 · productId C33 · teamId C33 · segmentId C34 · dialerCallId C39 · webhookId C15 | - |
+| IDs com locator (14) - leadId, pipelineId, stageId, sourceId, lossReasonId, userId, dealProductLineId, meetingId, campaignId, productId, teamId, segmentId, dialerCallId, webhookId | leadId C11 C2 C12 · pipelineId C11 · stageId C11 · sourceId C11 · lossReasonId C11 · userId C11 · dealProductLineId C11 · meetingId C33 · campaignId C33 · productId C33 · teamId C33 · segmentId C34 · dialerCallId C39 · webhookId C15 | - |
 | node `rdStationCrm` statuses (2) | 200 C1 · erro 4xx vira `NodeApiError` C1 | - |
 | trigger statuses (2) | 200 C23 · 401 da RD na criação C18 | - |
 
@@ -198,6 +207,7 @@ Proof: run unit | ok F10 deal product accepts custom fields as a JSON list
 
 - **Settled mid-build:** none
 - **Dispatched:** Verifier (sonnet) enviado em HEAD 1a8cfd0
-- **Boundary:** C1-C42 construídos e provados em HEAD
+- **Boundary:** C1-C42 construídos e provados em HEAD; C50-C52 fecham os achados F1 e F2 do revisor the-judge
+- **Dispatched (revisor independente):** the-judge, rodada 1 no HEAD f5b1bb2: https://github.com/PedroHSGuimaraes/n8n-nodes-rd-station-crm/pull/6#pullrequestreview-5807920259 (1 bloqueador, 1 correção, 1 nota)
 - **Abandoned:** nenhum
 - **Walked:** sem tela; a conferência no editor do n8n fica para o dono
