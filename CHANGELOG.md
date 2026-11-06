@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Ferramentas de desenvolvimento.** A devDependency `n8n-workflow` sobe de 2.16.0 para 2.46.5, a versão estável que o n8n 2.46.6 usa. O `peerDependencies` continua `*`, e nada muda no pacote publicado.
+
 ## 2.4.0
 
 - **Campos de ID em lista pesquisável (node version 2).** Em node novo, os campos de ID de contato, negócio, empresa, tarefa, funil, etapa, produto, origem, campanha, motivo de perda, campo personalizado, time, usuário e webhook mostram a lista da conta, com busca, e aceitam colar o ID. Contatos e negócios enviam o texto da busca à RD.

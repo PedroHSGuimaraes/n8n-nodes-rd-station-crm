@@ -81,4 +81,18 @@ describe('toolchain', () => {
 		assert.match(publish, /NODE_AUTH_TOKEN:\s*\$\{\{\s*secrets\.NPM_TOKEN\s*\}\}/);
 		assert.match(publish, /id-token:\s*write/);
 	});
+
+	// Versão do `n8n-workflow` (06/11/2026): a tag `latest` do npm ficou parada em 2.16.0, que traz
+	// lodash, form-data, zod e uuid com avisos de segurança. A tag `stable` (2.46.5) é a que o n8n
+	// 2.46.6 usa. O peer fica em `*` (template oficial): o pacote publicado não impõe versão ao n8n.
+	// Este teste falha se a devDependency ou o lock voltarem para uma 2.x anterior à 2.46.
+	it('dev toolchain uses n8n-workflow 2.46.5 while the peer stays open', () => {
+		assert.equal(pkg.devDependencies['n8n-workflow'], '^2.46.5');
+		assert.equal(pkg.peerDependencies['n8n-workflow'], '*');
+		// A versão realmente instalada vem do lock, não do intervalo do package.json.
+		const lock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8'));
+		const [major, minor] = lock.packages['node_modules/n8n-workflow'].version.split('.').map(Number);
+		assert.equal(major, 2);
+		assert.ok(minor >= 46, `lock has n8n-workflow 2.${minor}, expected 2.46 or newer`);
+	});
 });
