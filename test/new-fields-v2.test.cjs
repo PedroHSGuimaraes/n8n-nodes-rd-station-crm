@@ -42,14 +42,21 @@ describe('new writable fields (v2)', () => {
 				application_scope: 'selected',
 				product_ids: 'P1, P2',
 				calculation_action: 'add',
-				editable_on_deal: false,
+				editable_on_deal: true,
 			},
 		});
 		assert.equal(data.application_scope, 'selected');
 		assert.deepEqual(data.product_ids, ['P1', 'P2']);
 		assert.equal(data.calculation_action, 'add');
-		// `false` é valor válido e precisa seguir no corpo.
-		assert.equal(data.editable_on_deal, false);
+		assert.equal(data.editable_on_deal, true);
+		// `false` também é valor válido e precisa seguir no corpo; o update usa o mesmo construtor.
+		const updated = await dataOf({
+			resource: 'customFieldV2', operation: 'update', customFieldId: 'cf1',
+			updateFields: { editable_on_deal: false, product_ids: ['P3'] },
+		});
+		assert.equal(updated.editable_on_deal, false);
+		// Uma expressão pode devolver lista; ela segue como lista de IDs.
+		assert.deepEqual(updated.product_ids, ['P3']);
 	});
 
 	// C14: regras de exibição e de obrigatoriedade.
@@ -64,6 +71,11 @@ describe('new writable fields (v2)', () => {
 		});
 		assert.deepEqual(data.display_rules, [rule]);
 		assert.deepEqual(data.required_rules, [{ ...rule, always: true }]);
+		const created = await dataOf({
+			resource: 'customFieldV2', operation: 'create', name: 'F', entity: 'deal', type: 'text',
+			additionalFields: { displayRulesUi: { rule: [rule] } },
+		});
+		assert.deepEqual(created.display_rules, [rule]);
 	});
 
 	// C15: distribuição da negociação.
@@ -77,6 +89,12 @@ describe('new writable fields (v2)', () => {
 			},
 		});
 		assert.deepEqual(data.distribution_settings, { stage_id: 'S1', rule: { type: 'user', id: 'U1' } });
+		// Update e preenchimento parcial: só o que foi preenchido segue.
+		const updated = await dataOf({
+			resource: 'dealV2', operation: 'update', dealId: 'd1',
+			updateFields: { distribution_stage_id: 'S2' },
+		});
+		assert.deepEqual(updated.distribution_settings, { stage_id: 'S2' });
 	});
 
 	// C16: endereço e seguidores da empresa.
@@ -92,6 +110,13 @@ describe('new writable fields (v2)', () => {
 		});
 		assert.deepEqual(data.address, { line: 'Rua A 1', latitude: '-23.5', longitude: '-46.6' });
 		assert.deepEqual(data.follower_ids, ['U1', 'U2']);
+		// Update com só uma linha de endereço; e lista vinda de expressão (array) não quebra.
+		const updated = await dataOf({
+			resource: 'organizationV2', operation: 'update', organizationId: 'o1', customFieldsUi: {},
+			updateFields: { address_line: 'Rua B 2', follower_ids: ['U3'] },
+		});
+		assert.deepEqual(updated.address, { line: 'Rua B 2' });
+		assert.deepEqual(updated.follower_ids, ['U3']);
 	});
 
 	// C17: sem campo novo o corpo é o da 2.4.0.

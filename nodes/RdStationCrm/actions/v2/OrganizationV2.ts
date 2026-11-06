@@ -2,6 +2,7 @@ import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workfl
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
 import { getIdParameter } from '../../helpers/resourceLocator';
+import { toIdList } from '../../helpers/lists';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) Organization resource — mirrors the ContactV2 template:
@@ -261,12 +262,9 @@ function buildOrganizationV2Body(fields: IDataObject, customFieldsUi: IDataObjec
 	if (fields.address_latitude) address.latitude = fields.address_latitude;
 	if (fields.address_longitude) address.longitude = fields.address_longitude;
 	if (Object.keys(address).length) organization.address = address;
-	if (fields.follower_ids) {
-		organization.follower_ids = (fields.follower_ids as string)
-			.split(',')
-			.map((s) => s.trim())
-			.filter(Boolean);
-	}
+	// `follower_ids` aceita texto com vírgulas ou lista vinda de expressão.
+	const followerIds = toIdList(fields.follower_ids);
+	if (followerIds.length) organization.follower_ids = followerIds;
 	if (Array.isArray(customFieldsUi.field)) {
 		const customFields: IDataObject = {};
 		for (const f of customFieldsUi.field as IDataObject[]) {

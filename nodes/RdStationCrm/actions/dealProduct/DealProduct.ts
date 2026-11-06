@@ -197,10 +197,13 @@ export const dealProductDescription: INodeProperties[] = [
 	},
 
 	// ----- Add One: uma linha de produto, campos soltos (a rota recebe o objeto direto) -----
-	...dealProductLineFields.map((field) => ({
-		...field,
-		displayOptions: { show: { ...showOnlyForDealProducts, operation: ['addOne'] } },
-	})),
+	...dealProductLineFields
+		// O POST de um item não aceita `total` (a doc só lista seis campos); não mostrar evita campo sem efeito.
+		.filter((field) => field.name !== 'total')
+		.map((field) => ({
+			...field,
+			displayOptions: { show: { ...showOnlyForDealProducts, operation: ['addOne'] } },
+		})),
 
 	// ----- Deal Product ID (updateOne / removeOne) -----
 	{
@@ -298,8 +301,9 @@ function keepFilled(source: IDataObject, keys: string[]): IDataObject {
 	return body;
 }
 
-function buildLineItem(row: IDataObject, includeId: boolean): IDataObject {
-	const item: IDataObject = {
+function buildLineItem(row: IDataObject): IDataObject {
+	// Só o `add` em lote usa esta linha; o `update` em lote envia id, amount e price (AD-007).
+	return {
 		product_id: row.product_id,
 		amount: row.amount,
 		price: row.price,
@@ -308,8 +312,6 @@ function buildLineItem(row: IDataObject, includeId: boolean): IDataObject {
 		recurrence: row.recurrence,
 		total: row.total,
 	};
-	if (includeId && row.id) item.id = row.id;
-	return item;
 }
 
 export async function executeDealProduct(
@@ -334,7 +336,7 @@ export async function executeDealProduct(
 	if (operation === 'add') {
 		const productsUi = this.getNodeParameter('productsUi', i, {}) as IDataObject;
 		const rows = (productsUi.product as IDataObject[]) ?? [];
-		const deal_products = rows.map((row) => buildLineItem(row, false));
+		const deal_products = rows.map((row) => buildLineItem(row));
 		return rdCrmApiRequest.call(
 			this,
 			'POST',
@@ -360,7 +362,18 @@ export async function executeDealProduct(
 		const idsUi = this.getNodeParameter('idsUi', i, {}) as IDataObject;
 		const rows = (idsUi.id as IDataObject[]) ?? [];
 		// A doc v1 espera uma lista de objetos { id } em batch/destroy (AD-007).
-		const deal_products = rows.filter((row) => row.id).map((row) => ({ id: row.id }));
+		// O id sai sem espaços nas pontas, como no removeOne.
+		const deal_products = rows
+			.map((row) => String(row.id ?? '').trim())
+			.filter(Boolean)
+			.map((id) => ({ id }));
+		// Lista sem id válido apagaria nada e ainda devolveria { deleted: true }; falhar antes é mais honesto.
+		if (!deal_products.length) {
+			throw new NodeOperationError(this.getNode(), 'Add at least one Deal Product ID to remove [item ' + i + ']', {
+				itemIndex: i,
+				description: 'Paste the ID of each deal product, as returned by Get Many',
+			});
+		}
 		await rdCrmApiRequest.call(
 			this,
 			'DELETE',
@@ -376,24 +389,40 @@ export async function executeDealProduct(
 		const typed: IDataObject = {};
 		for (const key of keys) typed[key] = this.getNodeParameter(key, i, undefined) as never;
 		const body = keepFilled(typed, keys);
+		// Sem produto a RD recusaria o POST; a falha local diz o que falta.
+		if (!body.product_id) {
+			throw new NodeOperationError(this.getNode(), `The 'Product Name or ID' parameter is empty [item ${i}]`, {
+				itemIndex: i,
+				description: 'Choose a product from the list, or set its ID with an expression',
+			});
+		}
 		return rdCrmApiRequest.call(this, 'POST', `/deals/${dealId}/deal_products`, body);
 	}
 
 	if (operation === 'updateOne') {
 		const dealProductId = getDealProductId.call(this, i);
 		const fields = this.getNodeParameter('updateOneFields', i, {}) as IDataObject;
+		const body = keepFilled(fields, ['product_id', 'amount', 'price', 'discount', 'discount_type', 'recurrence']);
+		// PUT sem campo não muda nada; avisar antes evita uma chamada inútil.
+		if (!Object.keys(body).length) {
+			throw new NodeOperationError(this.getNode(), `Choose at least one field to update [item ${i}]`, {
+				itemIndex: i,
+				description: 'Add a field under Update Fields, for example Price',
+			});
+		}
+		// O ID vem de texto livre; codificar impede que `../` ou `?` mudem a rota.
 		return rdCrmApiRequest.call(
 			this,
 			'PUT',
-			`/deals/${dealId}/deal_products/${dealProductId}`,
-			keepFilled(fields, ['product_id', 'amount', 'price', 'discount', 'discount_type', 'recurrence']),
+			`/deals/${dealId}/deal_products/${encodeURIComponent(dealProductId)}`,
+			body,
 		);
 	}
 
 	if (operation === 'removeOne') {
 		const dealProductId = getDealProductId.call(this, i);
 		// A RD responde 204 sem corpo; devolvemos um aviso claro no lugar do vazio.
-		await rdCrmApiRequest.call(this, 'DELETE', `/deals/${dealId}/deal_products/${dealProductId}`);
+		await rdCrmApiRequest.call(this, 'DELETE', `/deals/${dealId}/deal_products/${encodeURIComponent(dealProductId)}`);
 		return { deleted: true };
 	}
 

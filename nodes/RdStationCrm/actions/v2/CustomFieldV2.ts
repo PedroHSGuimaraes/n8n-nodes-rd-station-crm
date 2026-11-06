@@ -2,6 +2,7 @@ import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workfl
 
 import { rdCrmV2Request, rdCrmV2RequestAllItems } from '../../transport/v2';
 import { getIdParameter } from '../../helpers/resourceLocator';
+import { toIdList } from '../../helpers/lists';
 
 // ---------------------------------------------------------------------------
 // v2 (OAuth2) resource — mirrors ContactV2 template.
@@ -427,14 +428,6 @@ export const customFieldV2Description: INodeProperties[] = [
 	},
 ];
 
-/** Quebra uma lista separada por vírgula em IDs sem espaços nem itens vazios. */
-function splitList(text: string): string[] {
-	return text
-		.split(',')
-		.map((s) => s.trim())
-		.filter(Boolean);
-}
-
 function buildCustomFieldV2Body(fields: IDataObject): IDataObject {
 	const body: IDataObject = {};
 
@@ -445,9 +438,9 @@ function buildCustomFieldV2Body(fields: IDataObject): IDataObject {
 	for (const key of ['application_scope', 'calculation_action', 'editable_on_deal']) {
 		if (fields[key] !== undefined && fields[key] !== '') body[key] = fields[key];
 	}
-	if (typeof fields.product_ids === 'string' && fields.product_ids) {
-		body.product_ids = splitList(fields.product_ids);
-	}
+	// `product_ids` aceita texto com vírgulas ou lista vinda de expressão.
+	const productIds = toIdList(fields.product_ids);
+	if (productIds.length) body.product_ids = productIds;
 	// Regras de exibição e de obrigatoriedade viram listas { property, value, always }.
 	for (const [ui, key] of [['displayRulesUi', 'display_rules'], ['requiredRulesUi', 'required_rules']]) {
 		const rows = (fields[ui] as IDataObject | undefined)?.rule;

@@ -19,7 +19,7 @@ Proof: run unit | ok v1 batch update sends PATCH to batch/update with only id am
 Proof: run unit | ok v1 batch remove sends DELETE to batch/destroy with deal_products ids
 
 **C3** - Todo parâmetro visível da 2.4.0 mantém `name` e `type` na versão 1 (S1, AC 3)
-Proof: run unit | ok version 1 keeps every parameter name and type of 2.3.2
+Proof: run unit | ok v1 deal product keeps every parameter name and type of 2.4.0
 
 ### S2 - três operações novas em Deal Product
 

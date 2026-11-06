@@ -13,6 +13,9 @@ describe('release', () => {
 		const changelog = fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8');
 		const section = changelog.split(/^## /m).find((part) => part.startsWith('2.5.0'));
 		assert.ok(section, 'CHANGELOG.md needs a "## 2.5.0" section');
+		// A decisão da correção de rota fica registrada no STATE.md (AD-007).
+		const state = fs.readFileSync(path.join(root, '.specs/STATE.md'), 'utf8');
+		assert.match(state, /AD-007/);
 		for (const topic of [/correção de rota/i, /Add One/i, /legal_bases/i]) {
 			assert.match(section, topic);
 		}

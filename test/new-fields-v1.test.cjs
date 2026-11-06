@@ -81,5 +81,12 @@ describe('new writable fields (v1)', () => {
 			},
 		});
 		assert.deepEqual(deal.body, { deal: { name: 'Negócio', deal_stage_id: 's1' } });
+
+		// Contato update também ganhou campo novo: vazio continua igual ao da 2.4.0.
+		const [update] = await runExecute({
+			version: 1,
+			params: { resource: 'contact', operation: 'update', contactId: 'c1', updateFields: {} },
+		});
+		assert.deepEqual(update.body, { contact: {} });
 	});
 });
